@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Cinehub</title>
+    <style>
+        :root {
+            --cor-primaria: #800080; /* Valor padrão */
+            --cor-fundo: #1a1a1a;
+            --cor-card: #2a2a2a;
+            --cor-texto: #ffffff;
+        }
+
+        body {
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .nav-bar {
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            background-color: var(--cor-card);
+            padding: 10px;
+            border-radius: 30px;
+            width: 95%;
+            max-width: 500px;
+        }
+
+        .nav-bar a { padding: 10px 15px; color: white; text-decoration: none; border-radius: 20px; font-weight: bold; font-size: 0.85em; }
+        .nav-bar a.active { background-color: var(--cor-primaria); }
+
+        .perfil-container {
+            background-color: var(--cor-card);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid #444;
+        }
+
+        .foto-grande {
+            width: 100px;
+            height: 100px;
+            background-color: var(--cor-primaria);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            font-weight: bold;
+            box-shadow: 0 0 20px var(--cor-primaria);
+        }
+
+        .label-custom { display: block; margin-top: 25px; font-size: 0.9em; color: #aaa; margin-bottom: 10px; }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 100%;
+            height: 50px;
+            cursor: pointer;
+            background: none;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 10px; }
+
+        .btn-salvar-tema {
+            margin-top: 30px;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--cor-primaria);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html">🔍 Buscar</a>
+    <a href="library.html">📖 Diário</a>
+    <a href="perfil.html" class="active">⚙️ Perfil</a>
+</div>
+
+<div class="perfil-container">
+    <div class="foto-grande" id="perfil-letra">J</div>
+    <h2 id="perfil-nome">Carregando...</h2>
+    <p id="perfil-nick" style="color: #aaa;">@nickname</p>
+
+    <span class="label-custom">🎨 Personalize a Cor do seu Cinehub</span>
+    <input type="color" id="color-picker" value="#800080">
+
+    <button class="btn-salvar-tema" onclick="salvarCor()">Aplicar Novo Estilo</button>
+</div>
+
+<script>
+    const dadosUsuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+    if (!dadosUsuario) window.location.href = 'login.html';
+
+    // Aplica o tema salvo ao carregar
+    if (dadosUsuario.corTema) {
+        document.documentElement.style.setProperty('--cor-primaria', dadosUsuario.corTema);
+        document.getElementById('color-picker').value = dadosUsuario.corTema;
+    }
+
+    // Preenche dados do perfil
+    document.getElementById('perfil-nome').innerText = dadosUsuario.nome;
+    document.getElementById('perfil-nick').innerText = `@${dadosUsuario.nickname}`;
+    document.getElementById('perfil-letra').innerText = dadosUsuario.nome.charAt(0);
+
+    async function salvarCor() {
+        const novaCor = document.getElementById('color-picker').value;
+
+        try {
+            const res = await fetch(`/usuarios/${dadosUsuario.id}/tema`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cor: novaCor })
+            });
+
+            if (res.ok) {
+                // Atualiza o CSS na hora
+                document.documentElement.style.setProperty('--cor-primaria', novaCor);
+
+                // Atualiza o localStorage para as outras páginas saberem da mudança
+                dadosUsuario.corTema = novaCor;
+                localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+
+                alert("Visual atualizado com sucesso! 🚀");
+                location.reload(); // Recarrega para aplicar em tudo
+            }
+        } catch (e) { console.error(e); }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes - Cinehub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cor-primaria: #800080;
+            --cor-fundo: #14181c;
+            --cor-card: #1b2228;
+            --cor-texto: #ffffff;
+            --cor-texto-sec: #8c9baf;
+            --cor-sucesso: #21d07a;
+            --cor-alerta: #d2d531;
+            --cor-perigo: #db2360;
+            --cor-borda: rgba(255, 255, 255, 0.1);
+            --transicao: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--cor-fundo); color: var(--cor-texto);
+            font-family: 'Inter', sans-serif; padding-bottom: 90px;
+        }
+
+        /* HEADER SIMPLES */
+        .header-top { padding: 20px; display: flex; justify-content: center; }
+        .brand { font-size: 1.5rem; font-weight: 900; letter-spacing: -1px; color: var(--cor-primaria); text-decoration: none; }
+
+        /* SESSÃO DO BACKDROP (Fundo) */
+        .backdrop-section {
+            position: relative; width: 100%; min-height: 80vh;
+            background-color: var(--cor-fundo);
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            display: flex; align-items: center; justify-content: center;
+            transition: background-image 0.5s ease;
+        }
+
+        .backdrop-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                linear-gradient(to top, var(--cor-fundo) 0%, transparent 15%),
+                linear-gradient(to right, rgba(20, 24, 28, 1) 15%, rgba(20, 24, 28, 0.85) 50%, rgba(20, 24, 28, 0.7) 100%);
+        }
+
+        /* CONTEÚDO PRINCIPAL DO FILME */
+        .content-wrapper {
+            position: relative; z-index: 2; display: flex; flex-direction: column;
+            gap: 40px; padding: 40px 20px; max-width: 1200px; width: 100%;
+        }
+        @media (min-width: 768px) { .content-wrapper { flex-direction: row; align-items: flex-start; } }
+
+        /* PÔSTER */
+        .poster-detalhe { width: 100%; max-width: 300px; margin: 0 auto; flex-shrink: 0; }
+        .poster-detalhe img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); background-color: var(--cor-card); }
+
+        /* INFORMAÇÕES */
+        .info-detalhe { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .titulo { font-size: 2.2rem; font-weight: 900; line-height: 1.1; margin-bottom: 8px; color: #fff; }
+        .titulo span { font-weight: 400; color: var(--cor-texto-sec); }
+
+        .dados-tecnicos { font-size: 0.95rem; color: #ccc; margin-bottom: 25px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .classificacao-box {
+            border: 1px solid rgba(255,255,255,0.4); border-radius: 3px;
+            padding: 1px 5px; font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.8);
+        }
+
+        /* AVALIAÇÃO E BOTÕES */
+        .acoes-container { display: flex; align-items: center; gap: 25px; margin-bottom: 30px; flex-wrap: wrap; }
+
+        .avaliacao-box { display: flex; align-items: center; gap: 12px; }
+        .nota-donut-grande {
+            width: 65px; height: 65px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; box-shadow: 0 0 0 4px #081c22;
+            background: conic-gradient(
+                var(--cor-anel) var(--progresso, 0%),
+                rgba(255,255,255,0.05) var(--progresso, 0%)
+            );
+        }
+
+        .nota-donut-grande::after {
+            content: ""; position: absolute; inset: 5px;
+            background-color: #081c22; border-radius: 50%;
+        }
+
+        .porcentagem-texto {
+            z-index: 2; color: #fff; font-weight: 800; display: flex; align-items: flex-start; line-height: 1;
+        }
+
+        .nota-valor { font-size: 1.4rem; }
+        .super-porcento { font-size: 0.65rem; position: relative; top: 1px; font-weight: 600; margin-left: 1px;}
+        .texto-avaliacao { font-size: 0.95rem; font-weight: 700; line-height: 1.2; width: 60px; color: #fff;}
+
+        .btn-acao {
+            width: 48px; height: 48px; border-radius: 50%; background: #081c22;
+            border: none; color: #fff; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: var(--transicao); font-size: 1.3rem; font-weight: 800;
+        }
+        .btn-acao:hover { background: var(--cor-primaria); transform: scale(1.1); }
+
+        .btn-texto { background: transparent; border: none; color: #fff; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 1rem; transition: var(--transicao); }
+        .btn-texto:hover { color: var(--cor-texto-sec); }
+        /* Quando não tiver trailer, o botão fica apagado */
+        .btn-texto:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* SINOPSE E EQUIPE */
+        .sinopse-container { margin-top: 10px; }
+        .tagline { font-size: 1.1rem; font-style: italic; color: var(--cor-texto-sec); margin-bottom: 15px; }
+        .sinopse-titulo { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .sinopse-texto { font-size: 1.05rem; line-height: 1.6; color: #ddd; }
+
+        .equipe-tecnica { display: flex; gap: 50px; margin-top: 30px; flex-wrap: wrap; }
+        .membro-equipe { display: flex; flex-direction: column; }
+        .membro-nome { font-weight: 700; color: #fff; font-size: 1rem; margin-bottom: 2px;}
+        .membro-cargo { font-size: 0.85rem; color: var(--cor-texto-sec); }
+
+        /* SEÇÃO DE ELENCO */
+        .elenco-wrapper { max-width: 1200px; width: 100%; margin: 40px auto 0; padding: 0 20px; }
+        .elenco-titulo { font-size: 1.4rem; font-weight: 800; margin-bottom: 20px; color: #fff; }
+        .elenco-carrossel {
+            display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px;
+            scrollbar-width: thin; scrollbar-color: var(--cor-primaria) transparent;
+        }
+        .ator-card {
+            flex: 0 0 130px; background: var(--cor-card); border-radius: 8px;
+            overflow: hidden; border: 1px solid var(--cor-borda); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .ator-foto { width: 100%; height: 180px; object-fit: cover; display: block; background-color: #232a31;}
+        .ator-info { padding: 12px; }
+        .ator-nome { font-size: 0.9rem; font-weight: 700; margin: 0 0 4px 0; color: #fff; line-height: 1.2; }
+        .ator-papel { font-size: 0.8rem; color: var(--cor-texto-sec); margin: 0; line-height: 1.2; }
+
+        /* NAV E MODAL */
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; max-width: 600px; background: rgba(27, 34, 40, 0.9); backdrop-filter: blur(12px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--cor-borda); z-index: 1000; border-top-left-radius: 20px; border-top-right-radius: 20px; left: 50%; transform: translateX(-50%); }
+        @media (min-width: 600px) { .nav-bottom { bottom: 20px; border-radius: 20px; border: 1px solid var(--cor-borda); } }
+        .nav-bottom a { color: var(--cor-texto-sec); text-decoration: none; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-icon { font-size: 1.2rem; }
+
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--cor-card); width: 90%; max-width: 400px; padding: 25px; border-radius: 12px; border: 1px solid var(--cor-borda); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+
+        /* >>> CSS ESPECÍFICO PARA O MODAL DO TRAILER <<< */
+        .modal-trailer-content {
+            background: transparent; width: 90%; max-width: 1000px; border: none; box-shadow: none; padding: 0; position: relative;
+        }
+        .video-container {
+            position: relative; width: 100%; padding-bottom: 56.25%; /* Proporção 16:9 para o YouTube */ height: 0;
+        }
+        .video-container iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .close-btn-trailer {
+            position: absolute; top: -40px; right: 0; font-size: 2rem; cursor: pointer; color: #fff; line-height: 1; z-index: 2001; transition: var(--transicao);
+        }
+        .close-btn-trailer:hover { color: var(--cor-primaria); transform: scale(1.1); }
+
+        .close-btn { float: right; font-size: 1.5rem; cursor: pointer; color: var(--cor-texto-sec); line-height: 1; }
+        .modal-form label { font-size: 0.75rem; font-weight: 600; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; margin-top: 15px;}
+        .modal-form select, .modal-form input, .modal-form textarea { background: #232a31; border: 1px solid #344150; color: white; padding: 10px 14px; border-radius: 6px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.95rem; }
+        .modal-form select:focus, .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); background: #2c3440; }
+        .btn-salvar-modal { background: var(--cor-sucesso); border: none; color: #000; padding: 14px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; font-size: 0.9rem; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="header-top">
+    <a href="index.html" class="brand">🎬 CINEHUB</a>
+</div>
+
+<div class="backdrop-section" id="backdrop-bg">
+    <div class="backdrop-overlay"></div>
+    <div class="content-wrapper">
+        <div class="poster-detalhe">
+            <img id="poster-img" src="" alt="Poster">
+        </div>
+        <div class="info-detalhe">
+            <h1 class="titulo" id="titulo-filme">Carregando... <span id="ano-filme"></span></h1>
+
+            <div class="dados-tecnicos" id="dados-filme">
+                Buscando dados no servidor...
+            </div>
+
+            <div class="acoes-container">
+                <div class="avaliacao-box">
+                    <div class="nota-donut-grande" id="nota-anel">
+                    </div>
+                    <div class="texto-avaliacao">Avaliação dos usuários</div>
+                </div>
+
+                <button class="btn-acao" onclick="abrirModal()" title="Adicionar à Library">＋</button>
+                <button class="btn-acao" title="Marcar como Favorito">♥</button>
+
+                <button class="btn-texto" id="btn-trailer" onclick="abrirTrailer()" disabled>▶ Reproduzir trailer</button>
+            </div>
+
+            <div class="sinopse-container">
+                <p class="tagline" id="tagline-filme"></p>
+                <h3 class="sinopse-titulo">Sinopse</h3>
+                <p class="sinopse-texto" id="sinopse-filme"></p>
+            </div>
+
+            <div class="equipe-tecnica" id="equipe-lista">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="elenco-wrapper">
+    <h3 class="elenco-titulo">Elenco principal</h3>
+    <div class="elenco-carrossel" id="elenco-lista">
+        <p style="color: var(--cor-texto-sec);">Aguardando dados...</p>
+    </div>
+</div>
+
+<nav class="nav-bottom">
+    <a href="index.html"><span class="nav-icon">🔍</span>Home</a>
+    <a href="library.html"><span class="nav-icon">📖</span>Library</a>
+    <a href="calendario.html"><span class="nav-icon">📅</span>Agenda</a>
+    <a href="comunidade.html"><span class="nav-icon">👥</span>Social</a>
+    <a href="perfil.html"><span class="nav-icon">⚙️</span>Perfil</a>
+</nav>
+
+<div id="modal-adicao" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="fecharModal()">&times;</span>
+        <h2 id="modal-titulo" style="margin: 0 0 10px 0; color: #fff; font-size: 1.2rem; font-weight: 800; line-height: 1.2;">Título</h2>
+        <div class="modal-form">
+            <input type="hidden" id="modal-id-tmdb">
+            <label>STATUS</label>
+            <select id="modal-status"><option value="QUERO_VER">Quero Ver</option><option value="JA_VI">Já Vi</option><option value="ASSISTINDO">Assistindo</option><option value="ABANDONEI">Abandonei</option></select>
+            <label>IDIOMA</label>
+            <select id="modal-idioma"><option value="">Selecione...</option><option value="Dublado">🇧🇷 Dublado</option><option value="Legendado">💬 Legendado</option><option value="Original">🇺🇸 Áudio Original</option></select>
+            <label>NOTA PESSOAL (0-5)</label>
+            <input type="number" id="modal-nota" step="0.5" min="0" max="5" placeholder="Para o seu diário...">
+            <label>TAGS</label>
+            <input type="text" id="modal-tags" placeholder="Clássico, Plot Twist...">
+            <label>REVIEW</label>
+            <textarea id="modal-review" rows="3"></textarea>
+            <button class="btn-salvar-modal" onclick="salvarNoDiario()">SALVAR NO DIÁRIO</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-trailer" class="modal">
+    <div class="modal-content modal-trailer-content">
+        <span class="close-btn-trailer" onclick="fecharTrailer()">&times;</span>
+        <div class="video-container" id="video-container-yt">
+        </div>
+    </div>
+</div>
+
+<script>
+    const dadosUser = JSON.parse(localStorage.getItem('usuarioLogado'));
+    if (dadosUser && dadosUser.corTema) { document.documentElement.style.setProperty('--cor-primaria', dadosUser.corTema); }
+    if (!dadosUser) window.location.href = 'login.html';
+
+    const placeholderImagem = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750' style='background:%231b2228'%3E%3Ctext fill='%238c9baf' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24'%3ESem Foto%3C/text%3E%3C/svg%3E";
+
+    document.getElementById('poster-img').src = placeholderImagem;
+    document.getElementById('poster-img').onerror = function() { this.src = placeholderImagem; };
+
+    let filmeAtual = null;
+    let chaveTrailerYouTube = null; // Guardamos a ID do vídeo aqui
+
+    window.onload = async function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idFilme = urlParams.get('id');
+        if (!idFilme) { window.location.href = 'index.html'; return; }
+
+        await carregarDetalhes(idFilme);
+    };
+
+    function formatarData(dataString) {
+        if (!dataString) return 'N/A';
+        const partes = dataString.split('-');
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    function formatarDuracao(minutos) {
+        if (!minutos || minutos === 0) return '';
+        const h = Math.floor(minutos / 60);
+        const m = minutos % 60;
+        return h > 0 ? `${h}h ${m}m` : `${m}m`;
+    }
+
+    async function carregarDetalhes(id) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+            const response = await fetch(`/api/tmdb/${id}`, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
+            if (!response.ok) throw new Error("Erro na comunicação com o servidor.");
+
+            filmeAtual = await response.json();
+
+            if (!filmeAtual || !filmeAtual.tituloExibicao) {
+                throw new Error("Filme não encontrado na API.");
+            }
+
+            // Povoar o Título
+            document.getElementById('titulo-filme').innerHTML = `${filmeAtual.tituloExibicao} <span id="ano-filme">(${filmeAtual.dataExibicao ? filmeAtual.dataExibicao.split('-')[0] : ''})</span>`;
+
+            // Povoar Gêneros e Duração e Classificação
+            const stringGeneros = filmeAtual.generos && filmeAtual.generos.length > 0
+                ? filmeAtual.generos.map(g => g.nome || g.name).join(', ')
+                : (filmeAtual.tipoMidia === 'tv' ? 'Série' : 'Filme');
+
+            const stringDuracao = formatarDuracao(filmeAtual.runtime);
+            const bolinhaDuracao = stringDuracao ? ` • ${stringDuracao}` : '';
+
+            document.getElementById('dados-filme').innerHTML = `
+                <span class="classificacao-box">14</span>
+                <span>${formatarData(filmeAtual.dataExibicao)} (BR) • ${stringGeneros}${bolinhaDuracao}</span>
+            `;
+
+            // Tagline e Sinopse
+            document.getElementById('tagline-filme').innerText = filmeAtual.tagline || '';
+            document.getElementById('sinopse-filme').innerText = filmeAtual.overview || filmeAtual.sinopse || 'Nenhuma sinopse disponível em português.';
+
+            document.getElementById('poster-img').src = filmeAtual.linkPoster || placeholderImagem;
+
+            // Fundo Escurecido
+            if (filmeAtual.linkBackdrop) {
+                document.getElementById('backdrop-bg').style.backgroundImage = `url('${filmeAtual.linkBackdrop}')`;
+            } else if (filmeAtual.linkPoster) {
+                document.getElementById('backdrop-bg').style.backgroundImage = `url('${filmeAtual.linkPoster}')`;
+            }
+
+            // Lógica do Donut (Nota)
+            let valorNota = filmeAtual.notaTmdb || filmeAtual.vote_average || filmeAtual.voteAverage || 0;
+            const porcentagemNum = valorNota > 0 ? (valorNota * 10).toFixed(0) : 0;
+
+            let corAnel = 'var(--cor-sucesso)';
+            if (valorNota < 7) corAnel = 'var(--cor-alerta)';
+            if (valorNota < 5 && valorNota > 0) corAnel = 'var(--cor-perigo)';
+            if (valorNota === 0) corAnel = '#666';
+
+            const donut = document.getElementById('nota-anel');
+            donut.style.setProperty('--cor-anel', corAnel);
+            donut.style.setProperty('--progresso', `${porcentagemNum}%`);
+
+            if (porcentagemNum == 0) {
+                donut.innerHTML = `<span class="porcentagem-texto"><span class="nota-valor">NR</span></span>`;
+            } else {
+                donut.innerHTML = `
+                    <span class="porcentagem-texto">
+                        <span class="nota-valor">${porcentagemNum}</span>
+                        <span class="super-porcento">%</span>
+                    </span>
+                `;
+            }
+
+            // >>> NOVA LÓGICA DO TRAILER <<<
+            if (filmeAtual.videos && filmeAtual.videos.results) {
+                // Tenta achar um Trailer oficial no YouTube
+                const trailer = filmeAtual.videos.results.find(v => v.site === 'YouTube' && v.type === 'Trailer');
+                // Se não achar Trailer, pega um Teaser ou Featurette pra não deixar o botão morto
+                const videoAlternativo = filmeAtual.videos.results.find(v => v.site === 'YouTube');
+
+                const videoFinal = trailer || videoAlternativo;
+
+                if (videoFinal && videoFinal.key) {
+                    chaveTrailerYouTube = videoFinal.key;
+                    document.getElementById('btn-trailer').disabled = false; // Acende o botão
+                }
+            }
+
+            // Processar Elenco
+            if (filmeAtual.credits && filmeAtual.credits.cast && filmeAtual.credits.cast.length > 0) {
+                const elencoGrid = document.getElementById('elenco-lista');
+                elencoGrid.innerHTML = filmeAtual.credits.cast.slice(0, 12).map(ator => {
+                    const atorNome = ator.name || ator.nome || 'Desconhecido';
+                    const atorPapel = ator.character || ator.personagem || 'Elenco';
+                    return `
+                        <div class="ator-card">
+                            <img src="${ator.linkFoto || placeholderImagem}" alt="${atorNome}" class="ator-foto" onerror="this.src='${placeholderImagem}'">
+                            <div class="ator-info">
+                                <p class="ator-nome">${atorNome}</p>
+                                <p class="ator-papel">${atorPapel}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                document.getElementById('elenco-lista').innerHTML = '<p style="color: var(--cor-texto-sec);">Elenco não disponível no TMDB.</p>';
+            }
+
+            // Processar Equipe
+            if (filmeAtual.credits && filmeAtual.credits.crew) {
+                const diretores = filmeAtual.credits.crew.filter(c => {
+                    const cargo = c.job || c.cargo;
+                    return cargo === 'Director' || cargo === 'Executive Producer' || cargo === 'Screenplay' || cargo === 'Novel';
+                });
+
+                const diretoresTop = [];
+                const nomesVistos = new Set();
+                for (let d of diretores) {
+                    const nomeDiretor = d.name || d.nome;
+                    if (!nomesVistos.has(nomeDiretor) && diretoresTop.length < 3) {
+                        diretoresTop.push({nome: nomeDiretor, cargo: d.job || d.cargo});
+                        nomesVistos.add(nomeDiretor);
+                    }
+                }
+
+                if (diretoresTop.length > 0) {
+                    document.getElementById('equipe-lista').innerHTML = diretoresTop.map(d => `
+                        <div class="membro-equipe">
+                            <span class="membro-nome">${d.nome}</span>
+                            <span class="membro-cargo">${d.cargo}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+
+        } catch (e) {
+            console.error("[Cinehub] Falha crítica:", e);
+            document.getElementById('titulo-filme').innerText = "Erro ao carregar o filme.";
+            document.getElementById('dados-filme').innerText = "Falha ao processar os dados do servidor.";
+        }
+    }
+
+    // --- FUNÇÕES DO DIÁRIO ---
+    function abrirModal() {
+        if (!filmeAtual) return;
+        document.getElementById('modal-id-tmdb').value = filmeAtual.id;
+        document.getElementById('modal-titulo').innerText = filmeAtual.tituloExibicao;
+        document.getElementById('modal-status').value = "QUERO_VER";
+        document.getElementById('modal-idioma').value = "";
+        document.getElementById('modal-nota').value = "";
+        document.getElementById('modal-tags').value = "";
+        document.getElementById('modal-review').value = "";
+        document.getElementById('modal-adicao').style.display = 'flex';
+    }
+
+    function fecharModal() { document.getElementById('modal-adicao').style.display = 'none'; }
+
+    async function salvarNoDiario() {
+        const payload = {
+            idFilmeTmdb: document.getElementById('modal-id-tmdb').value,
+            status: document.getElementById('modal-status').value,
+            idiomaAudio: document.getElementById('modal-idioma').value,
+            nota: document.getElementById('modal-nota').value ? parseFloat(document.getElementById('modal-nota').value) : null,
+            tags: document.getElementById('modal-tags').value,
+            review: document.getElementById('modal-review').value
+        };
+        const response = await fetch(`/interacoes/usuario/${dadosUser.id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+            alert('Salvo na sua Library!');
+            fecharModal();
+        }
+    }
+
+    // --- FUNÇÕES DO TRAILER ---
+    function abrirTrailer() {
+        if (!chaveTrailerYouTube) return;
+
+        // Injetamos o iframe do YouTube
+        const container = document.getElementById('video-container-yt');
+        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${chaveTrailerYouTube}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+
+        // Mostramos o modal escuro
+        document.getElementById('modal-trailer').style.display = 'flex';
+    }
+
+    function fecharTrailer() {
+        document.getElementById('modal-trailer').style.display = 'none';
+        // Removemos o iframe para o vídeo parar de tocar e economizar memória
+        document.getElementById('video-container-yt').innerHTML = '';
+    }
+
+    // Fechar qualquer modal se clicar fora (na área escura)
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('modal-adicao')) fecharModal();
+        if (event.target == document.getElementById('modal-trailer')) fecharTrailer();
+    }
+</script>
+</body>
+</html>

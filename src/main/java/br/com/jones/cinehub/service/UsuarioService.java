@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UsuarioService {
@@ -13,28 +14,52 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Método para cadastrar um novo usuário com regras de negócio
-    public Usuario cadastrarUsuario(Usuario novoUsuario) {
-
-        // Regra 1: Verifica se o email já existe
-        Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(novoUsuario.getEmail());
-        if (usuarioExistente.isPresent()) {
-            throw new RuntimeException("Já existe um usuário cadastrado com este email.");
+    public Usuario cadastrarUsuario(Usuario usuario) {
+        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+            throw new RuntimeException("Este e-mail já está cadastrado.");
         }
-
-        // Regra 2: Verifica se o nickname já existe
-        Optional<Usuario> nickExistente = usuarioRepository.findByNickname(novoUsuario.getNickname());
-        if (nickExistente.isPresent()) {
-            throw new RuntimeException("Este nickname já está em uso. Escolha outro.");
+        if (usuarioRepository.findByNickname(usuario.getNickname()).isPresent()) {
+            throw new RuntimeException("Este nickname já está em uso.");
         }
-
-        // Se passar pelas regras, salva no banco!
-        return usuarioRepository.save(novoUsuario);
+        return usuarioRepository.save(usuario);
     }
 
-    // Método para buscar um usuário pelo ID (vai ser útil para buscar o perfil depois)
+    public Usuario fazerLogin(String email, String senha) {
+        return usuarioRepository.findByEmail(email)
+                .filter(user -> user.getSenha().equals(senha))
+                .orElseThrow(() -> new RuntimeException("E-mail ou senha inválidos."));
+    }
+
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+    }
+
+    // NOVO: Busca por Nickname para o Social
+    public Usuario buscarPorNickname(String nickname) {
+        return usuarioRepository.findByNickname(nickname)
+                .orElseThrow(() -> new RuntimeException("Usuário @" + nickname + " não encontrado."));
+    }
+
+    // NOVO: Lógica de Seguir/Parar de Seguir
+    public void seguirOuDeixarDeSeguir(Long usuarioId, Long seguidoId) {
+        if (usuarioId.equals(seguidoId)) {
+            throw new RuntimeException("Você não pode seguir a si mesmo!");
+        }
+
+        Usuario usuario = buscarPorId(usuarioId);
+        Usuario seguido = buscarPorId(seguidoId);
+
+        if (usuario.getSeguindo().contains(seguido)) {
+            usuario.getSeguindo().remove(seguido); // Unfollow
+        } else {
+            usuario.getSeguindo().add(seguido); // Follow
+        }
+
+        usuarioRepository.save(usuario);
+    }
+
+    public Set<Usuario> listarQuemEuSigo(Long id) {
+        return buscarPorId(id).getSeguindo();
     }
 }

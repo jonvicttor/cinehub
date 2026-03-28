@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário - Cinehub</title>
+    <style>
+        :root {
+            --cor-primaria: #800080;
+            --cor-fundo: #1a1a1a;
+            --cor-card: #2a2a2a;
+            --cor-texto: #ffffff;
+            --cor-texto-secundario: #aaa;
+        }
+
+        body {
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 { color: var(--cor-primaria); margin-bottom: 5px; }
+
+        .nav-bar {
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            background-color: var(--cor-card);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid #444;
+            width: 95%;
+            max-width: 700px;
+        }
+
+        .nav-bar a { padding: 8px 15px; color: var(--cor-texto); text-decoration: none; border-radius: 20px; font-weight: bold; font-size: 0.9em; }
+        .nav-bar a.active { background-color: var(--cor-primaria); }
+
+        .container-calendario {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .mes-secao {
+            border-left: 4px solid var(--cor-primaria);
+            padding-left: 20px;
+        }
+
+        .mes-titulo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--cor-primaria);
+            margin-bottom: 20px;
+            text-transform: capitalize;
+        }
+
+        .grid-estreias {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        .card-estreia {
+            background-color: var(--cor-card);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #333;
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
+        .card-estreia img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+        }
+
+        .data-badge {
+            background-color: var(--cor-primaria);
+            font-size: 0.75em;
+            font-weight: bold;
+            padding: 5px 10px;
+            margin-top: -15px;
+            position: relative;
+            display: inline-block;
+            border-radius: 5px;
+            border: 2px solid var(--cor-fundo);
+        }
+
+        .info-estreia {
+            padding: 10px;
+        }
+
+        .info-estreia h3 {
+            font-size: 0.9em;
+            margin: 5px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--cor-primaria);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html">🔍 Buscar</a>
+    <a href="library.html">📖 Diário</a>
+    <a href="calendario.html" class="active">📅 Calendário</a>
+    <a href="comunidade.html">👥 Comunidade</a>
+</div>
+
+<h1>📅 Calendário de Estreias</h1>
+<p style="color: #aaa; margin-bottom: 30px;">Filmes da sua lista "Quero Ver" organizados por lançamento</p>
+
+<div id="loading" class="loader"></div>
+
+<div class="container-calendario" id="container-calendario">
+</div>
+
+<script>
+    const dadosUsuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+    if (!dadosUsuario) window.location.href = 'login.html';
+
+    window.onload = async function() {
+        await carregarCalendario();
+    };
+
+    async function carregarCalendario() {
+        try {
+            // 1. Busca todas as interações do usuário
+            const resInteracoes = await fetch(`/interacoes/usuario/${dadosUsuario.id}`);
+            const interacoes = await resInteracoes.json();
+
+            // 2. Filtra apenas quem é "QUERO_VER"
+            const watchlist = interacoes.filter(i => i.status === 'QUERO_VER');
+
+            if (watchlist.length === 0) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('container-calendario').innerHTML = '<p style="text-align:center;">Sua lista de "Quero Ver" está vazia. Adicione filmes na busca!</p>';
+                return;
+            }
+
+            // 3. Busca detalhes de cada filme no TMDB para pegar a data de lançamento
+            const promessas = watchlist.map(item => fetch(`/api/tmdb/${item.idFilmeTmdb}`).then(r => r.json()));
+            const detalhesFilmes = await Promise.all(promessas);
+
+            // 4. Organiza por data
+            detalhesFilmes.sort((a, b) => {
+                const dataA = a.dataExibicao ? new Date(a.dataExibicao) : new Date(9999, 11, 31);
+                const dataB = b.dataExibicao ? new Date(b.dataExibicao) : new Date(9999, 11, 31);
+                return dataA - dataB;
+            });
+
+            renderizarCalendario(detalhesFilmes);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+
+    function renderizarCalendario(filmes) {
+        const container = document.getElementById('container-calendario');
+        const meses = {};
+
+        // Agrupa filmes por mês/ano
+        filmes.forEach(filme => {
+            if (!filme.dataExibicao) return;
+            const dataObj = new Date(filme.dataExibicao);
+            const chaveMes = dataObj.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+
+            if (!meses[chaveMes]) meses[chaveMes] = [];
+            meses[chaveMes].push(filme);
+        });
+
+        for (const [mes, listaFilmes] of Object.entries(meses)) {
+            const secao = document.createElement('div');
+            secao.className = 'mes-secao';
+
+            let gridHtml = `<div class="mes-titulo">${mes}</div><div class="grid-estreias">`;
+
+            listaFilmes.forEach(f => {
+                const dataFormatada = f.dataExibicao.split('-').reverse().join('/');
+                gridHtml += `
+                    <div class="card-estreia">
+                        <img src="${f.linkPoster}" onerror="this.src='https://via.placeholder.com/500x750?text=Sem+Poster'">
+                        <div class="data-badge">${dataFormatada}</div>
+                        <div class="info-estreia">
+                            <h3>${f.tituloExibicao}</h3>
+                        </div>
+                    </div>
+                `;
+            });
+
+            gridHtml += `</div>`;
+            secao.innerHTML = gridHtml;
+            container.appendChild(secao);
+        }
+    }
+</script>
+</body>
+</html>

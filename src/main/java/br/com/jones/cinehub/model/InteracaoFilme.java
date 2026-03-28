@@ -12,25 +12,24 @@ public class InteracaoFilme {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Relacionamento: Várias interações de filmes pertencem a um único usuário
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    // Salvamos apenas o ID oficial da API do TMDB (O front-end vai puxar a capa e o título de lá)
     @Column(name = "id_filme_tmdb", nullable = false)
     private Long idFilmeTmdb;
 
-    // Salva no banco como texto (QUERO_VER, JA_VI, etc)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusFilme status;
 
-    // Nota que o usuário vai dar (ex: 1 a 5 estrelas ou 0 a 100)
-    private Integer nota;
+    private Double nota;
 
-    // columnDefinition = "TEXT" permite salvar textos longos, ideal para a sua review do Letterboxd
     @Column(columnDefinition = "TEXT")
     private String review;
+
+    // NOVOS CAMPOS: Tags e Registro de Idioma
+    private String tags; // Ex: "Plot Twist, Clássico"
+    private String idiomaAudio; // Ex: "Dublado", "Legendado", "Original"
 
 }

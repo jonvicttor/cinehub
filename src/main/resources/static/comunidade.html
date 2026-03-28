@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidade - Cinehub</title>
+    <style>
+        :root {
+            --cor-primaria: #800080;
+            --cor-fundo: #1a1a1a;
+            --cor-card: #2a2a2a;
+            --cor-texto: #ffffff;
+            --cor-perigo: #dc3545;
+            --cor-sucesso: #28a745;
+        }
+
+        body {
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 { color: var(--cor-primaria); margin-top: 0; }
+
+        .nav-bar {
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            background-color: var(--cor-card);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid #444;
+            width: 95%;
+            max-width: 600px;
+        }
+
+        .nav-bar a { padding: 8px 15px; color: var(--cor-texto); text-decoration: none; border-radius: 20px; font-weight: bold; font-size: 0.9em; }
+        .nav-bar a.active { background-color: var(--cor-primaria); }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 40px;
+        }
+
+        input { padding: 12px; border-radius: 8px; border: none; flex-grow: 1; background-color: #333; color: white; }
+        .btn-busca { padding: 12px 20px; background-color: var(--cor-primaria); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        .secao-titulo { width: 100%; max-width: 800px; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 20px; color: var(--cor-primaria); font-weight: bold; }
+
+        .grid-usuarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .card-usuario {
+            background-color: var(--cor-card);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #333;
+            transition: 0.3s;
+        }
+
+        .card-usuario:hover { border-color: var(--cor-primaria); }
+
+        .foto-perfil {
+            width: 60px;
+            height: 60px;
+            background-color: var(--cor-primaria);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .nome-user { font-weight: bold; display: block; margin-bottom: 2px; }
+        .nick-user { color: #aaa; font-size: 0.85em; display: block; margin-bottom: 15px; }
+
+        .btn-seguir {
+            width: 100%;
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid var(--cor-primaria);
+            background: none;
+            color: var(--cor-primaria);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-seguir.seguindo {
+            background-color: var(--cor-primaria);
+            color: white;
+        }
+
+        .btn-ver-diario {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.75em;
+            color: #aaa;
+            text-decoration: none;
+        }
+        .btn-ver-diario:hover { text-decoration: underline; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html">🔍 Buscar</a>
+    <a href="library.html">📖 Diário</a>
+    <a href="comunidade.html" class="active">👥 Comunidade</a>
+</div>
+
+<h1>👥 Cinehub Social</h1>
+<p style="color: #ccc; margin-bottom: 30px;">Encontre amigos pelo @nickname</p>
+
+<div class="search-box">
+    <input type="text" id="input-nick" placeholder="Ex: jones_dev">
+    <button class="btn-busca" onclick="buscarUsuario()">Buscar</button>
+</div>
+
+<div class="secao-titulo" id="titulo-resultado" style="display: none;">Resultado da Busca</div>
+<div class="grid-usuarios" id="resultado-busca"></div>
+
+<div class="secao-titulo" style="margin-top: 40px;">Pessoas que você segue</div>
+<div class="grid-usuarios" id="lista-seguindo">
+    <p style="color: #666; font-size: 0.9em;">Você ainda não segue ninguém.</p>
+</div>
+
+<script>
+    const dadosLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    if (!dadosLogado) window.location.href = 'login.html';
+
+    let idsSeguindo = new Set();
+
+    window.onload = async function() {
+        await carregarQuemEuSigo();
+    };
+
+    async function carregarQuemEuSigo() {
+        try {
+            const res = await fetch(`/usuarios/${dadosLogado.id}/seguindo`);
+            const seguindo = await res.json();
+            idsSeguindo = new Set(seguindo.map(u => u.id));
+
+            renderizarListaSeguindo(seguindo);
+        } catch (e) { console.error(e); }
+    }
+
+    async function buscarUsuario() {
+        const nick = document.getElementById('input-nick').value.replace('@', '');
+        if (!nick) return;
+
+        try {
+            const res = await fetch(`/usuarios/busca/${nick}`);
+            if (res.ok) {
+                const user = await res.json();
+                document.getElementById('titulo-resultado').style.display = 'block';
+                renderizarResultado(user);
+            } else {
+                alert("Usuário não encontrado.");
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    function renderizarResultado(user) {
+        const container = document.getElementById('resultado-busca');
+        const isSeguindo = idsSeguindo.has(user.id);
+        const textoBotao = isSeguindo ? "Seguindo" : "Seguir";
+        const classeBotao = isSeguindo ? "btn-seguir seguindo" : "btn-seguir";
+
+        // Esconde o botão de seguir se for você mesmo
+        const displayBotao = user.id === dadosLogado.id ? 'none' : 'block';
+
+        container.innerHTML = `
+            <div class="card-usuario">
+                <div class="foto-perfil">${user.nome.charAt(0)}</div>
+                <span class="nome-user">${user.nome}</span>
+                <span class="nick-user">@${user.nickname}</span>
+                <button class="${classeBotao}" style="display: ${displayBotao}" onclick="toggleSeguir(${user.id})">
+                    ${textoBotao}
+                </button>
+            </div>
+        `;
+    }
+
+    function renderizarListaSeguindo(lista) {
+        const container = document.getElementById('lista-seguindo');
+        if (lista.length === 0) {
+            container.innerHTML = '<p style="color: #666;">Você ainda não segue ninguém.</p>';
+            return;
+        }
+
+        container.innerHTML = lista.map(user => `
+            <div class="card-usuario">
+                <div class="foto-perfil">${user.nome.charAt(0)}</div>
+                <span class="nome-user">${user.nome}</span>
+                <span class="nick-user">@${user.nickname}</span>
+                <button class="btn-seguir seguindo" onclick="toggleSeguir(${user.id})">Seguindo</button>
+                <a href="diario.html?amigoId=${user.id}" class="btn-ver-diario">📖 Ver Diário</a>
+            </div>
+        `).join('');
+    }
+
+    async function toggleSeguir(seguidoId) {
+        try {
+            const res = await fetch(`/usuarios/${dadosLogado.id}/seguir/${seguidoId}`, {
+                method: 'POST'
+            });
+
+            if (res.ok) {
+                await carregarQuemEuSigo(); // Recarrega a lista
+                // Se houver um resultado de busca aberto, atualiza ele também
+                const nickBusca = document.getElementById('input-nick').value.replace('@', '');
+                if (nickBusca) buscarUsuario();
+            }
+        } catch (e) { console.error(e); }
+    }
+</script>
+</body>
+</html>

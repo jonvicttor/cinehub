@@ -24,65 +24,77 @@ public class TmdbService {
 
     public List<FilmeDTO> buscarFilmes(String query) {
         String url = apiUrl + "/search/multi?query=" + query + "&language=pt-BR";
+        return realizarChamadaLista(url, null);
+    }
 
+    public List<FilmeDTO> buscarLista(String categoria, String tipoMidia) {
+        String url;
+
+        if ("awards".equals(categoria)) {
+            int minVotes = "tv".equals(tipoMidia) ? 1000 : 5000;
+            url = apiUrl + "/discover/" + tipoMidia + "?sort_by=vote_average.desc&vote_count.gte=" + minVotes + "&language=pt-BR";
+        } else if ("upcoming".equals(categoria)) {
+            // >>> NOVA LÓGICA: Exige 20 resultados do futuro direto do TMDB <<<
+            String dataHoje = java.time.LocalDate.now().toString();
+            String dataParam = "tv".equals(tipoMidia) ? "first_air_date.gte" : "primary_release_date.gte";
+
+            // Usamos o /discover/ com a data de hoje, e ordenamos por popularidade para ter os melhores primeiro
+            url = apiUrl + "/discover/" + tipoMidia + "?" + dataParam + "=" + dataHoje + "&sort_by=popularity.desc&language=pt-BR";
+        } else {
+            url = apiUrl + "/" + tipoMidia + "/" + categoria + "?language=pt-BR&region=BR";
+        }
+
+        return realizarChamadaLista(url, tipoMidia);
+    }
+
+    private List<FilmeDTO> realizarChamadaLista(String url, String tipoForcado) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         try {
-            ResponseEntity<TmdbResponse> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    entity,
-                    TmdbResponse.class
-            );
+            ResponseEntity<TmdbResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity, TmdbResponse.class);
+            List<FilmeDTO> resultados = response.getBody() != null ? response.getBody().getResults() : List.of();
 
-            List<FilmeDTO> resultadosBrutos = response.getBody() != null ? response.getBody().getResults() : List.of();
-
-            return resultadosBrutos.stream()
+            return resultados.stream().map(item -> {
+                        if (tipoForcado != null) item.setTipoMidia(tipoForcado);
+                        return item;
+                    })
                     .filter(item -> "movie".equals(item.getTipoMidia()) || "tv".equals(item.getTipoMidia()))
                     .collect(Collectors.toList());
-
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao buscar no TMDB: " + e.getMessage());
+            throw new RuntimeException("Erro ao buscar lista no TMDB: " + e.getMessage());
         }
     }
 
-    // NOVO MÉTODO: Busca inteligente por ID (Tenta Filme, se falhar tenta Série)
     public FilmeDTO buscarPorId(Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        // Tentativa 1: Buscar como Filme
         try {
-            String urlMovie = apiUrl + "/movie/" + id + "?language=pt-BR";
+            // >>> AQUI ADICIONEI O ,videos PARA ELE MANDAR OS TRAILERS <<<
+            String urlMovie = apiUrl + "/movie/" + id + "?language=pt-BR&append_to_response=credits,videos";
             ResponseEntity<FilmeDTO> response = restTemplate.exchange(urlMovie, HttpMethod.GET, entity, FilmeDTO.class);
-            FilmeDTO result = response.getBody();
-            if (result != null) {
-                result.setTipoMidia("movie"); // Marca que é um filme
-                return result;
+            if (response.getBody() != null) {
+                response.getBody().setTipoMidia("movie");
+                return response.getBody();
             }
-        } catch (Exception e) {
-            // Se der erro (ex: 404 porque não é filme), ele ignora e passa para a tentativa 2
-        }
+        } catch (Exception e) {}
 
-        // Tentativa 2: Buscar como Série
         try {
-            String urlTv = apiUrl + "/tv/" + id + "?language=pt-BR";
+            // >>> AQUI ADICIONEI O ,videos PARA ELE MANDAR OS TRAILERS <<<
+            String urlTv = apiUrl + "/tv/" + id + "?language=pt-BR&append_to_response=credits,videos";
             ResponseEntity<FilmeDTO> responseTv = restTemplate.exchange(urlTv, HttpMethod.GET, entity, FilmeDTO.class);
-            FilmeDTO resultTv = responseTv.getBody();
-            if (resultTv != null) {
-                resultTv.setTipoMidia("tv"); // Marca que é uma série
-                return resultTv;
+            if (responseTv.getBody() != null) {
+                responseTv.getBody().setTipoMidia("tv");
+                return responseTv.getBody();
             }
         } catch (Exception e) {
-            throw new RuntimeException("Erro: ID " + id + " não encontrado nem como Filme nem como Série no TMDB.");
+            throw new RuntimeException("ID não encontrado no TMDB.");
         }
-
         return null;
     }
 
@@ -90,7 +102,6 @@ public class TmdbService {
     private static class TmdbResponse {
         @JsonProperty("results")
         private List<FilmeDTO> results;
-
         public List<FilmeDTO> getResults() { return results; }
         public void setResults(List<FilmeDTO> results) { this.results = results; }
     }

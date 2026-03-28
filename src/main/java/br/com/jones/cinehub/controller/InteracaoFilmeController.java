@@ -15,8 +15,6 @@ public class InteracaoFilmeController {
     @Autowired
     private InteracaoFilmeService interacaoFilmeService;
 
-    // Rota para salvar uma interação (Nota, Review, Status)
-    // O ID do usuário vem na URL para sabermos de quem é o diário
     @PostMapping("/usuario/{usuarioId}")
     public ResponseEntity<InteracaoFilme> salvar(@PathVariable Long usuarioId, @RequestBody InteracaoFilme interacao) {
         try {
@@ -27,10 +25,20 @@ public class InteracaoFilmeController {
         }
     }
 
-    // Rota para listar todos os filmes do diário de um usuário
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<InteracaoFilme>> listar(@PathVariable Long usuarioId) {
         List<InteracaoFilme> lista = interacaoFilmeService.listarPorUsuario(usuarioId);
         return ResponseEntity.ok(lista);
+    }
+
+    // NOVA ROTA: Rota para deletar um filme do diário
+    @DeleteMapping("/usuario/{usuarioId}/filme/{idFilmeTmdb}")
+    public ResponseEntity<Void> deletar(@PathVariable Long usuarioId, @PathVariable Long idFilmeTmdb) {
+        try {
+            interacaoFilmeService.deletarInteracao(usuarioId, idFilmeTmdb);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -14,14 +14,17 @@ public class TmdbController {
     @Autowired
     private TmdbService tmdbService;
 
-    // Rota para buscar filmes/séries pelo nome
     @GetMapping("/busca")
     public List<FilmeDTO> buscar(@RequestParam String titulo) {
         return tmdbService.buscarFilmes(titulo);
     }
 
-    // NOVA ROTA: Buscar os detalhes exatos de um filme/série pelo ID
-    // Exemplo de uso no front: localhost:8080/api/tmdb/12345
+    // NOVA ROTA: Carrega as listas prontas (Populares, Awards, etc)
+    @GetMapping("/lista")
+    public List<FilmeDTO> buscarLista(@RequestParam String cat, @RequestParam(defaultValue = "movie") String tipo) {
+        return tmdbService.buscarLista(cat, tipo);
+    }
+
     @GetMapping("/{id}")
     public FilmeDTO buscarPorId(@PathVariable Long id) {
         return tmdbService.buscarPorId(id);
