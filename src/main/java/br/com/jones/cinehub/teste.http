@@ -1,0 +1,10 @@
+POST http://localhost:8080/usuarios
+Content-Type: application/json
+
+{
+  "nome": "João Victor",
+  "nickname": "Jones",
+  "email": "jones@email.com",
+  "senha": "minha_senha_secreta",
+  "corTema": "#800080"
+}
