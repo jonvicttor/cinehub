@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinehub - Busca</title>
+    <style>
+        /* Variáveis CSS: O segredo para trocar o tema inteiro com 1 clique no futuro */
+        :root {
+            --cor-primaria: #800080;
+            --cor-fundo: #1a1a1a;
+            --cor-card: #2a2a2a;
+            --cor-texto: #ffffff;
+        }
+
+        body {
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 { color: var(--cor-primaria); margin-top: 0; margin-bottom: 5px; }
+
+        /* Estilo elegante para o Menu de Navegação (Responsivo para Celular) */
+        .nav-bar {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap; /* Ajuda a não quebrar o layout em telas de celular muito estreitas */
+            justify-content: center;
+            gap: 15px;
+            background-color: var(--cor-card);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid #444;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .nav-bar a {
+            padding: 8px 15px;
+            color: var(--cor-texto);
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 0.9em;
+        }
+
+        .nav-bar a:hover { background-color: #444; }
+        .nav-bar a.active { background-color: var(--cor-primaria); }
+
+        .search-box {
+            margin-top: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        input {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            flex-grow: 1;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--cor-primaria);
+            color: var(--cor-texto);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: filter 0.2s;
+        }
+
+        button:hover {
+            filter: brightness(1.2); /* Dá um brilho no botão ao passar o dedo/mouse */
+        }
+
+        #lista-filmes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .card-filme {
+            background-color: var(--cor-card);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-filme img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: bold;
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-bar">
+    <a href="index.html" class="active">🔍 Buscar no TMDB</a>
+    <a href="diario.html">📖 Meu Diário</a>
+</div>
+
+<h1>🎬 Cinehub</h1>
+
+<div class="search-box">
+    <input type="text" id="input-busca" placeholder="Filme ou Série...">
+    <button onclick="buscarFilme()">Buscar</button>
+</div>
+
+<div id="lista-filmes">
+</div>
+
+<script>
+    async function buscarFilme() {
+        const tituloBusca = document.getElementById('input-busca').value;
+        const response = await fetch(`/api/tmdb/busca?titulo=${tituloBusca}`);
+        const filmes = await response.json();
+
+        const lista = document.getElementById('lista-filmes');
+        lista.innerHTML = ''; // Limpa a busca anterior
+
+        filmes.forEach(filme => {
+                // CORREÇÃO 1: Usando o 'media_type' que o Java exportou
+                const tipoDisplay = filme.media_type === 'tv' ? '📺 Série' : '🎬 Filme';
+
+                // CORREÇÃO 2: Formatando a data de yyyy-mm-dd para dd/mm/yyyy
+                let dataDisplay = 'N/A';
+                if (filme.dataExibicao) {
+                    const [ano, mes, dia] = filme.dataExibicao.split('-');
+                    if (dia && mes && ano) {
+                        dataDisplay = `${dia}/${mes}/${ano}`;
+                    } else {
+                        dataDisplay = filme.dataExibicao;
+                    }
+                }
+
+                // Nome seguro escapando aspas simples
+                const nomeSeguro = filme.tituloExibicao ? filme.tituloExibicao.replace(/'/g, "\\'") : 'Sem Titulo';
+
+                const card = `
+                    <div class="card-filme">
+                        <div>
+                            <img src="${filme.linkPoster}" alt="Poster" onerror="this.src='https://via.placeholder.com/500x750?text=Sem+Poster'">
+                            <span class="badge">${tipoDisplay}</span>
+                            <h3 style="font-size: 1.1em; margin: 10px 0;">${filme.tituloExibicao}</h3>
+                            <p style="font-size: 0.8em; color: #ccc;">Lançamento: ${dataDisplay}</p>
+                        </div>
+
+                        <button onclick="salvarNoDiario(event, ${filme.id}, '${nomeSeguro}', '${filme.media_type}')"
+                                style="margin-top: 10px; background-color: #28a745; font-size: 0.8em; width: 100%;">
+                            + Adicionar ao Diário
+                        </button>
+                    </div>
+                `;
+                lista.innerHTML += card;
+            });
+    }
+
+    // Função real que envia os dados para o back-end
+    async function salvarNoDiario(event, idTmdb, titulo, tipo) {
+        // Estamos usando o usuário ID 1 fixo por enquanto.
+        // No futuro, isso virá do login real.
+        const usuarioId = 1;
+
+        // Montamos o "pacote" com o formato exato que o seu Java espera
+        const payload = {
+            idFilmeTmdb: idTmdb,
+            status: "QUERO_VER" // Status padrão ao adicionar
+        };
+
+        try {
+            const response = await fetch(`/interacoes/usuario/${usuarioId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                // Se o Java retornou 200 OK, salvou no Supabase!
+                alert(`Sucesso! ${titulo} foi adicionado ao seu Diário.`);
+
+                // Pega o botão específico que foi clicado e muda a cor dele
+                const botao = event.target;
+                botao.style.backgroundColor = '#6c757d';
+                botao.innerText = '✔ Adicionado';
+                botao.disabled = true;
+            } else {
+                alert(`Erro ao salvar ${titulo}. Verifique o terminal do Spring Boot.`);
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            alert("Erro de conexão com o servidor.");
+        }
+    }
+</script>
+</body>
+</html>
