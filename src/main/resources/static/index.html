@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinehub - Discovery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cor-primaria: #800080;
+            --cor-primaria: #a333ff; /* Roxo neon mais vibrante da imagem */
             --cor-fundo: #14181c;
             --cor-card: #1b2228;
             --cor-texto: #ffffff;
@@ -29,22 +29,53 @@
             overflow-x: hidden;
         }
 
-        /* HEADER PROFISSIONAL */
+        /* ======= HEADER E BRANDING (ATUALIZADO) ======= */
         .header-top {
-            width: 100%; max-width: 1200px; padding: 20px;
-            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            width: 100%; max-width: 1200px; padding: 40px 20px 20px 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 25px;
         }
-        .brand { font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; color: var(--cor-primaria); margin: 0; }
+
+        .brand {
+            text-decoration: none;
+            transition: var(--transicao);
+            display: flex;
+            align-items: center;
+        }
+        .brand:hover { transform: scale(1.03); }
+
+        .brand-text {
+            font-size: rem; /* Tamanho imponente */
+            font-weight: 900; /* Super Negrito para CINE */
+            letter-spacing: 4px; /* Espaçamento tecnológico */
+            text-transform: uppercase;
+            margin: 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand-text span {
+    font-weight: 800; /* HUB grosso como solicitado */
+    margin-left: 3px;
+    background: linear-gradient(135deg, #fff 10%, var(--cor-primaria) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+        /* BUSCA INTEGRADA */
         .search-container { width: 100%; max-width: 600px; display: flex; gap: 8px; }
         .search-container input {
             background: #232a31; border: 1px solid var(--cor-borda); border-radius: 20px;
-            padding: 10px 20px; color: white; flex-grow: 1; font-size: 0.95rem; font-family: 'Inter', sans-serif;
+            padding: 12px 25px; color: white; flex-grow: 1; font-size: 0.95rem; font-family: 'Inter', sans-serif;
+            transition: var(--transicao);
         }
-        .search-container input:focus { outline: none; border-color: var(--cor-primaria); }
+        .search-container input:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 15px rgba(163, 51, 255, 0.2); }
         .btn-busca {
             background: var(--cor-primaria); border: none; border-radius: 20px;
-            padding: 0 20px; color: white; font-weight: 700; cursor: pointer;
+            padding: 0 25px; color: white; font-weight: 700; cursor: pointer;
+            transition: var(--transicao);
         }
+        .btn-busca:hover { filter: brightness(1.2); }
 
         /* ======= SEÇÕES ESTILO TMDB ======= */
         #home-view { width: 100%; max-width: 1300px; position: relative; }
@@ -92,7 +123,7 @@
         .poster-container { position: relative; width: 100%; pointer-events: none; }
         .poster-container img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-top-left-radius: 8px; border-top-right-radius: 8px; display: block; background-color: #232a31; }
 
-        /* NOTA INTEGRADA NO CARD - ATUALIZADA COM CONIC GRADIENT */
+        /* NOTA INTEGRADA NO CARD */
         .nota-donut {
             position: absolute; bottom: -18px; left: 10px; width: 36px; height: 36px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -114,7 +145,7 @@
         .info-titulo { font-size: 0.9rem; font-weight: 700; margin: 0 0 4px 0; color: #fff; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; pointer-events: none; }
         .info-data { font-size: 0.8rem; color: var(--cor-texto-sec); margin: 0; pointer-events: none; }
 
-        /* ======== CARD "VER TODOS" NO FINAL DO CARROSSEL ======== */
+        /* ======== CARD "VER TODOS" ======== */
         .card-ver-todos {
             flex: 0 0 150px; display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; position: relative; border-radius: 8px; background-color: rgba(255,255,255,0.02);
@@ -151,7 +182,9 @@
 <body>
 
 <div class="header-top">
-    <h1 class="brand">🎬 CINEHUB</h1>
+    <a href="index.html" class="brand">
+        <h1 class="brand-text">CINE<span>HUB</span></h1>
+    </a>
     <div class="search-container">
         <input type="text" id="input-busca" placeholder="Buscar filmes, séries ou atores...">
         <button class="btn-busca" onclick="executarBusca()">Pesquisar</button>
@@ -314,12 +347,17 @@
             const response = await fetch(`/api/tmdb/lista?cat=${cat}&tipo=${tipo}`);
             let filmes = await response.json();
 
-            // Pega apenas os 20 primeiros para o carrossel
-            const filmesExibidos = filmes.slice(0, 20);
+            if (cat === 'upcoming') {
+                filmes.sort((a, b) => {
+                    if (!a.dataExibicao) return 1;
+                    if (!b.dataExibicao) return -1;
+                    return new Date(a.dataExibicao) - new Date(b.dataExibicao);
+                });
+            }
 
+            const filmesExibidos = filmes.slice(0, 20);
             let html = gerarHTMLCards(filmesExibidos);
 
-            // Adiciona o card Ver Todos
             html += `
                 <div class="card-ver-todos" onclick="window.location.href='lista_completa.html?cat=${cat}&tipo=${tipo}'">
                     <span class="seta-ver-todos">→</span>

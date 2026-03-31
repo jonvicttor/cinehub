@@ -19,10 +19,13 @@ public class TmdbController {
         return tmdbService.buscarFilmes(titulo);
     }
 
-    // NOVA ROTA: Carrega as listas prontas (Populares, Awards, etc)
+    // >>> LÓGICA DE PAGINAÇÃO: Adicionado parâmetro 'page' <<<
     @GetMapping("/lista")
-    public List<FilmeDTO> buscarLista(@RequestParam String cat, @RequestParam(defaultValue = "movie") String tipo) {
-        return tmdbService.buscarLista(cat, tipo);
+    public List<FilmeDTO> buscarLista(
+            @RequestParam String cat,
+            @RequestParam(defaultValue = "movie") String tipo,
+            @RequestParam(defaultValue = "1") int page) {
+        return tmdbService.buscarLista(cat, tipo, page);
     }
 
     @GetMapping("/{id}")

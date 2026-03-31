@@ -27,21 +27,19 @@ public class TmdbService {
         return realizarChamadaLista(url, null);
     }
 
-    public List<FilmeDTO> buscarLista(String categoria, String tipoMidia) {
+    // >>> LÓGICA DE PAGINAÇÃO: Adicionado 'int page' no método <<<
+    public List<FilmeDTO> buscarLista(String categoria, String tipoMidia, int page) {
         String url;
 
         if ("awards".equals(categoria)) {
             int minVotes = "tv".equals(tipoMidia) ? 1000 : 5000;
-            url = apiUrl + "/discover/" + tipoMidia + "?sort_by=vote_average.desc&vote_count.gte=" + minVotes + "&language=pt-BR";
+            url = apiUrl + "/discover/" + tipoMidia + "?sort_by=vote_average.desc&vote_count.gte=" + minVotes + "&language=pt-BR&page=" + page;
         } else if ("upcoming".equals(categoria)) {
-            // >>> NOVA LÓGICA: Exige 20 resultados do futuro direto do TMDB <<<
             String dataHoje = java.time.LocalDate.now().toString();
             String dataParam = "tv".equals(tipoMidia) ? "first_air_date.gte" : "primary_release_date.gte";
-
-            // Usamos o /discover/ com a data de hoje, e ordenamos por popularidade para ter os melhores primeiro
-            url = apiUrl + "/discover/" + tipoMidia + "?" + dataParam + "=" + dataHoje + "&sort_by=popularity.desc&language=pt-BR";
+            url = apiUrl + "/discover/" + tipoMidia + "?" + dataParam + "=" + dataHoje + "&sort_by=popularity.desc&language=pt-BR&page=" + page;
         } else {
-            url = apiUrl + "/" + tipoMidia + "/" + categoria + "?language=pt-BR&region=BR";
+            url = apiUrl + "/" + tipoMidia + "/" + categoria + "?language=pt-BR&region=BR&page=" + page;
         }
 
         return realizarChamadaLista(url, tipoMidia);
@@ -75,7 +73,6 @@ public class TmdbService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
         try {
-            // >>> AQUI ADICIONEI O ,videos PARA ELE MANDAR OS TRAILERS <<<
             String urlMovie = apiUrl + "/movie/" + id + "?language=pt-BR&append_to_response=credits,videos";
             ResponseEntity<FilmeDTO> response = restTemplate.exchange(urlMovie, HttpMethod.GET, entity, FilmeDTO.class);
             if (response.getBody() != null) {
@@ -85,7 +82,6 @@ public class TmdbService {
         } catch (Exception e) {}
 
         try {
-            // >>> AQUI ADICIONEI O ,videos PARA ELE MANDAR OS TRAILERS <<<
             String urlTv = apiUrl + "/tv/" + id + "?language=pt-BR&append_to_response=credits,videos";
             ResponseEntity<FilmeDTO> responseTv = restTemplate.exchange(urlTv, HttpMethod.GET, entity, FilmeDTO.class);
             if (responseTv.getBody() != null) {

@@ -4,168 +4,330 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library - Cinehub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cor-primaria: #800080;
+            --cor-primaria: #00e054; /* Verde Letterboxd */
             --cor-fundo: #14181c;
-            --cor-card: #1b2228;
             --cor-texto: #ffffff;
             --cor-texto-sec: #8c9baf;
-            --cor-sucesso: #21d07a;
+            --cor-sucesso: #00e054;
             --cor-alerta: #d2d531;
             --cor-perigo: #db2360;
-            --cor-ouro: #ffc107;
-            --cor-borda: rgba(255, 255, 255, 0.1);
-            --transicao: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --cor-ouro: #00e054;
+            --cor-borda: #445566;
+            --transicao: all 0.2s ease-in-out;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--cor-fundo); color: var(--cor-texto);
-            font-family: 'Inter', sans-serif; margin: 0; padding: 0 0 90px 0;
+            font-family: 'Inter', sans-serif; margin: 0;
+            padding: 0 0 120px 0;
             display: flex; flex-direction: column; align-items: center;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
 
-        /* HEADER */
-        .header-perfil { text-align: center; margin: 35px 0 25px; }
-        h1 { margin: 0 0 5px; font-weight: 900; font-size: 1.8rem; letter-spacing: -1px; text-transform: uppercase; color: #fff; }
-        .subtitulo { color: var(--cor-texto-sec); font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px; }
-
-        /* DASHBOARD GLASS */
-        #dashboard {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-            width: 95%; max-width: 1100px; padding: 20px;
-            background: rgba(27, 34, 40, 0.5); backdrop-filter: blur(10px);
-            border-radius: 16px; border: 1px solid var(--cor-borda); margin-bottom: 30px;
+        /* ======= HEADER TOP MINIMALISTA ======= */
+        .header-top {
+            width: 100%; max-width: 1000px; padding: 20px 20px 10px 20px;
+            display: flex; justify-content: center;
         }
-        .stat-card { text-align: center; position: relative; }
-        .stat-card:not(:last-child)::after {
-            content: ''; position: absolute; right: -5px; top: 20%; height: 60%;
-            width: 1px; background: rgba(255,255,255,0.1);
-        }
-        .stat-value { display: block; font-size: 1.5rem; font-weight: 900; color: #fff; line-height: 1.2; }
-        .stat-label { font-size: 0.65rem; color: var(--cor-texto-sec); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .brand { text-decoration: none; transition: var(--transicao); display: flex; align-items: center; }
+        .brand:hover { transform: scale(1.03); }
+        .brand-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin: 0; color: #fff; }
+        .brand-text span { font-weight: 300; color: var(--cor-texto-sec); margin-left: 2px; }
 
-        /* GRID */
-        #lista-library {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
-            padding: 10px 25px 40px; width: 100%; max-width: 1200px;
+        /* ======= PROFILE HEADER ======= */
+        .profile-container {
+            width: 100%; max-width: 1000px; padding: 30px 20px 15px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 20px;
         }
-        @media (min-width: 768px) { #lista-library { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; } }
 
-        /* CARD LIBRARY PREMIUM */
+        .profile-left { display: flex; align-items: center; gap: 20px; }
+
+        .profile-avatar {
+            width: 80px; height: 80px; border-radius: 50%;
+            background-color: #232a31; overflow: hidden;
+            border: 2px solid var(--cor-borda);
+        }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .profile-info h1 { margin: 0; font-weight: 800; font-size: 1.6rem; letter-spacing: 0.5px; color: #fff; text-transform: uppercase;}
+        .profile-info p { margin: 5px 0 0 0; color: var(--cor-texto-sec); font-size: 0.85rem; }
+
+        .profile-stats { display: flex; gap: 20px; text-align: center; }
+        .stat-item { display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--cor-borda); padding-right: 20px; }
+        .stat-item:last-child { border-right: none; padding-right: 0; }
+        .stat-val { font-size: 1.4rem; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 3px; }
+        .stat-name { font-size: 0.65rem; color: var(--cor-texto-sec); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+
+        #stat-ingles { color: var(--cor-sucesso); }
+
+        /* ======= PROFILE MENU (HORIZONTAL) ======= */
+        .profile-menu {
+            width: 100%; max-width: 1000px; padding: 0 20px;
+            margin-bottom: 30px;
+        }
+        .profile-menu-inner {
+            display: flex; gap: 20px; overflow-x: auto; scrollbar-width: none;
+            border-top: 1px solid var(--cor-borda); border-bottom: 1px solid var(--cor-borda);
+            padding: 12px 10px;
+        }
+        .profile-menu-inner::-webkit-scrollbar { display: none; }
+        .profile-menu a {
+            color: var(--cor-texto-sec); text-decoration: none; font-size: 0.8rem;
+            font-weight: 500; white-space: nowrap; transition: var(--transicao); text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .profile-menu a:hover, .profile-menu a.active { color: #fff; }
+        .profile-menu a.active { font-weight: 700; border-bottom: 2px solid var(--cor-primaria); padding-bottom: 10px; margin-bottom: -12px; }
+
+        /* ======= LAYOUT DUAS COLUNAS ======= */
+        .content-wrapper {
+            width: 100%; max-width: 1000px; padding: 0 20px;
+            display: flex; gap: 40px; align-items: flex-start;
+        }
+        .main-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+        .sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 40px; }
+
+        @media (max-width: 800px) {
+            .content-wrapper { flex-direction: column; }
+            .sidebar { width: 100%; }
+        }
+
+        /* ======= SEÇÕES INTERNAS ======= */
+        .section-header {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            border-bottom: 1px solid var(--cor-borda); padding-bottom: 5px; margin-bottom: 15px;
+        }
+        .section-title { font-size: 0.75rem; font-weight: 600; color: var(--cor-texto-sec); text-transform: uppercase; letter-spacing: 1px; margin: 0; }
+        .section-link { font-size: 0.7rem; color: var(--cor-texto-sec); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; transition: var(--transicao); }
+        .section-link:hover { color: #fff; }
+
+        /* ======= GRID DE PÔSTERES ======= */
+        .poster-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px 12px; width: 100%;
+        }
+        @media (max-width: 500px) { .poster-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        /* ======= CARD LIBRARY (SEM FUNDO) ======= */
         .card-library {
             display: flex; flex-direction: column; cursor: pointer; position: relative;
-            border-radius: 10px; background-color: var(--cor-card);
-            border: 1px solid rgba(255, 255, 255, 0.05); transition: var(--transicao);
-            overflow: visible;
+            background: transparent; border: none; transition: var(--transicao);
         }
 
-        .card-library:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: var(--cor-primaria);
-            box-shadow: 0 12px 30px rgba(128, 0, 128, 0.4);
+        .poster-container {
+            position: relative; width: 100%; border-radius: 4px; overflow: hidden;
+            border: 2px solid transparent; transition: var(--transicao);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
+        .poster-container img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; background-color: #232a31; }
 
-        .poster-container { position: relative; width: 100%; }
-        .poster-container img {
-            width: 100%; aspect-ratio: 2/3; object-fit: cover;
-            border-top-left-radius: 10px; border-top-right-radius: 10px; display: block;
-        }
+        .card-library:hover .poster-container { border-color: var(--cor-primaria); }
 
         .status-pill {
-            position: absolute; top: 8px; right: 8px;
-            padding: 3px 8px; border-radius: 4px; font-size: 0.55rem;
-            font-weight: 900; letter-spacing: 0.5px; color: #fff;
-            text-transform: uppercase; z-index: 5;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.1);
+            position: absolute; top: 4px; right: 4px;
+            padding: 2px 4px; border-radius: 3px; font-size: 0.45rem;
+            font-weight: 800; color: #fff; background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* NOTA OFICIAL (TMDB) NO PÔSTER */
         .nota-donut {
-            position: absolute; bottom: -18px; left: 10px; width: 36px; height: 36px;
-            background-color: #081c22; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 0.7rem; font-weight: 800; border: 3px solid; box-shadow: 0 0 0 2px #081c22;
+            position: absolute; bottom: 4px; left: 4px; width: 22px; height: 22px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.5rem; font-weight: 800; background: rgba(0,0,0,0.8);
+            border: 2px solid var(--cor-anel);
         }
-        .nota-donut span { font-size: 0.4rem; position: absolute; top: 10px; right: 4px; }
+        .simbolo-porcento { font-size: 0.3rem; }
 
-        /* INFO CONTAINER */
-        .info-container { padding: 25px 12px 15px 12px; flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
-        .info-titulo { font-size: 0.9rem; font-weight: 700; margin: 0; color: #fff; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .info-container { padding: 6px 0 0 0; display: flex; flex-direction: column; align-items: center; }
+        .info-titulo { display: none; }
+        .info-data { display: none; }
+        .review-snippet { display: none; }
 
-        /* ESTRELAS PESSOAIS - DESIGN MEIA ESTRELA REAL */
-        .estrelas-pessoais { color: var(--cor-ouro); font-size: 1.1rem; display: flex; align-items: center; gap: 2px; margin-top: 2px; }
+        .estrelas-pessoais { color: var(--cor-ouro); font-size: 0.75rem; display: flex; align-items: center; gap: 1px; }
         .estrela-wrapper { position: relative; display: inline-block; line-height: 1; }
-        .estrela-fundo { color: rgba(255,255,255,0.15); }
+        .estrela-fundo { color: rgba(255,255,255,0.1); }
         .estrela-cheia { position: absolute; top: 0; left: 0; overflow: hidden; white-space: nowrap; color: var(--cor-ouro); }
-        .meia { width: 50%; } /* Define o corte de 50% */
+        .meia { width: 50%; }
 
-        /* REVIEW SNIPPET */
-        .review-snippet {
-            font-size: 0.75rem; color: var(--cor-texto-sec); font-style: italic;
-            margin-top: 5px; line-height: 1.3; display: -webkit-box;
-            -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+        /* ======= NOVO: LISTA DE REVIEWS (ESTILO HORIZONTAL) ======= */
+        .review-list { display: flex; flex-direction: column; gap: 20px; }
+        .review-item {
+            display: flex; gap: 15px; padding-bottom: 20px; border-bottom: 1px solid var(--cor-borda);
+            cursor: pointer; transition: var(--transicao);
         }
+        .review-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .review-item:hover .review-poster { border-color: var(--cor-primaria); }
 
-        .info-data { font-size: 0.75rem; color: var(--cor-texto-sec); font-weight: 500; margin-top: auto; padding-top: 8px; }
+        .review-poster {
+            width: 75px; flex-shrink: 0; border-radius: 4px; overflow: hidden;
+            border: 2px solid transparent; transition: var(--transicao);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .review-poster img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; background-color: #232a31; }
 
-        /* NAV E MODAL */
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; max-width: 600px; background: rgba(27, 34, 40, 0.9); backdrop-filter: blur(12px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--cor-borda); z-index: 1000; border-top-left-radius: 20px; border-top-right-radius: 20px; }
-        @media (min-width: 600px) { .nav-bottom { bottom: 20px; border-radius: 20px; border: 1px solid var(--cor-borda); } }
+        .review-content { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; justify-content: flex-start; padding-top: 2px;}
+        .review-header { display: flex; align-items: baseline; gap: 8px; }
+        .review-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0; font-family: 'Georgia', serif; /* Fonte serifada dá aquele toque clássico de crítica */ }
+        .review-year { font-size: 0.85rem; color: var(--cor-texto-sec); font-weight: 400; }
+
+        .review-meta { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--cor-texto-sec); }
+        .review-text { font-size: 0.85rem; color: #9ab; line-height: 1.6; margin: 4px 0 0 0; }
+
+        /* ======= SIDEBAR ELEMENTS ======= */
+        .sidebar-box { background: transparent; margin-bottom: 30px;}
+        .sidebar-title { font-size: 0.7rem; font-weight: 700; color: var(--cor-texto-sec); text-transform: uppercase; margin: 0 0 10px 0; letter-spacing: 0.5px; border-bottom: 1px solid var(--cor-borda); padding-bottom: 5px;}
+
+        .mini-poster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .mini-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 3px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: var(--transicao); }
+        .mini-poster:hover { border-color: var(--cor-primaria); }
+
+        .diary-list { list-style: none; padding: 0; margin: 0; }
+        .diary-item { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; font-size: 0.8rem; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 8px; cursor: pointer; transition: var(--transicao); }
+        .diary-item:hover { color: var(--cor-primaria); }
+        .diary-date { font-weight: 700; color: var(--cor-texto-sec); font-size: 0.7rem; width: 45px; flex-shrink: 0;}
+        .diary-title { font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; }
+        .diary-stars { color: var(--cor-ouro); font-size: 0.6rem; flex-shrink: 0;}
+
+        /* ======= NAV BOTTOM ======= */
+        .nav-bottom {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 500px;
+            background: rgba(21, 25, 30, 0.85); backdrop-filter: blur(20px);
+            border: 1px solid var(--cor-borda); border-radius: 40px;
+            display: flex; justify-content: space-around; padding: 15px 10px;
+            z-index: 1000; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
         .nav-bottom a { color: var(--cor-texto-sec); text-decoration: none; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: var(--transicao); }
-        .nav-bottom a.active { color: var(--cor-primaria); }
-        .nav-icon { font-size: 1.2rem; }
+        .nav-bottom a.active { color: var(--cor-texto); }
+        .nav-icon { font-size: 1.3rem; }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal-content { background: var(--cor-card); width: 90%; max-width: 400px; padding: 30px; border-radius: 16px; border: 1px solid var(--cor-borda); animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto;}
+        /* ======= MODAL ======= */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--cor-card); width: 90%; max-width: 400px; padding: 30px; border-radius: 12px; border: 1px solid var(--cor-borda); animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto;}
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .close-btn { float: right; font-size: 1.5rem; cursor: pointer; color: var(--cor-texto-sec); line-height: 1; transition: var(--transicao); }
         .close-btn:hover { color: #fff; }
-
-        .modal-form label { font-size: 0.75rem; font-weight: 600; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; letter-spacing: 0.5px; margin-top: 15px;}
-        .modal-form select, .modal-form input, .modal-form textarea { background: #232a31; border: 1px solid #344150; color: white; padding: 10px 14px; border-radius: 6px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.95rem; }
-        .modal-form select:focus, .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); background: #2c3440; }
-
+        .modal-form label { font-size: 0.75rem; font-weight: 700; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; letter-spacing: 0.5px; margin-top: 15px;}
+        .modal-form select, .modal-form input, .modal-form textarea { background: rgba(255,255,255,0.05); border: 1px solid var(--cor-borda); color: white; padding: 12px 14px; border-radius: 6px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.95rem; }
+        .modal-form select:focus, .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); }
         .botoes-acao { display: flex; flex-direction: column; gap: 10px; margin-top: 25px; }
-        .btn-salvar { background: var(--cor-sucesso); border: none; color: #000; padding: 16px; border-radius: 8px; font-weight: 800; width: 100%; cursor: pointer; transition: var(--transicao); letter-spacing: 0.5px; }
-        .btn-salvar:hover { background: #00ff5f; transform: translateY(-2px); }
-        .btn-remover { background: transparent; border: 1px solid var(--cor-perigo); color: var(--cor-perigo); padding: 12px; border-radius: 8px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); }
-        .btn-remover:hover { background: rgba(255, 77, 77, 0.1); }
+        .btn-salvar { background: var(--cor-sucesso); border: none; color: #000; padding: 16px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; transition: var(--transicao); }
+        .btn-salvar:hover { filter: brightness(1.2); }
+        .btn-remover { background: transparent; border: 1px solid var(--cor-perigo); color: var(--cor-perigo); padding: 14px; border-radius: 6px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); }
+        .btn-remover:hover { background: rgba(219, 35, 96, 0.1); }
     </style>
 </head>
 <body>
 
-<div class="header-perfil">
-    <h1 id="titulo-pagina">LIBRARY</h1>
-    <p class="subtitulo" id="subtitulo-pagina">Sua coleção particular</p>
+<div class="header-top">
+    <a href="index.html" class="brand">
+        <h1 class="brand-text">CINE<span>HUB</span></h1>
+    </a>
 </div>
 
-<div id="dashboard">
-    <div class="stat-card">
-        <span class="stat-value" id="stat-total">0</span>
-        <span class="stat-label">Vistos</span>
+<div class="profile-container">
+    <div class="profile-left">
+        <div class="profile-avatar">
+            <img src="https://ui-avatars.com/api/?name=User&background=232a31&color=fff&size=100" id="avatar-img" alt="Avatar">
+        </div>
+        <div class="profile-info">
+            <h1 id="titulo-pagina">LIBRARY</h1>
+            <p id="subtitulo-pagina">Sua coleção particular</p>
+        </div>
     </div>
-    <div class="stat-card">
-        <span class="stat-value" id="stat-ingles" style="color: var(--cor-sucesso)">0%</span>
-        <span class="stat-label">Originais</span>
-    </div>
-    <div class="stat-card">
-        <span class="stat-value" id="stat-nota">0.0</span>
-        <span class="stat-label">Média</span>
-    </div>
-    <div class="stat-card">
-        <span class="stat-value" id="stat-tag">-</span>
-        <span class="stat-label">Top Tag</span>
+
+    <div class="profile-stats" id="dashboard">
+        <div class="stat-item">
+            <span class="stat-val" id="stat-total">0</span>
+            <span class="stat-name">Films</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val" id="stat-ingles">0%</span>
+            <span class="stat-name">Originals</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val" id="stat-nota">0.0</span>
+            <span class="stat-name">Avg Rating</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val" id="stat-tag" style="font-size: 1rem;">-</span>
+            <span class="stat-name">Top Tag</span>
+        </div>
     </div>
 </div>
 
-<div id="lista-library">
-    <p style="text-align: center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1;">Organizando sua galeria...</p>
+<div class="profile-menu">
+    <div class="profile-menu-inner">
+        <a href="#" class="active">Profile</a>
+        <a href="#">Activity</a>
+        <a href="#">Films</a>
+        <a href="#">Diary</a>
+        <a href="#">Reviews</a>
+        <a href="#">Watchlist</a>
+        <a href="#">Tags</a>
+        <a href="#">Stats</a>
+    </div>
+</div>
+
+<div class="content-wrapper">
+    <div class="main-column">
+
+        <div class="section-block">
+            <div class="section-header">
+                <h2 class="section-title">Favorite Films</h2>
+            </div>
+            <div class="poster-grid" id="lista-favoritos">
+                <p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Analisando seus favoritos...</p>
+            </div>
+        </div>
+
+        <div class="section-block">
+            <div class="section-header">
+                <h2 class="section-title">Recent Activity</h2>
+                <a href="#" class="section-link">All</a>
+            </div>
+            <div class="poster-grid" id="lista-library">
+                <p style="text-align: center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1;">Organizando sua galeria...</p>
+            </div>
+        </div>
+
+        <div class="section-block">
+            <div class="section-header">
+                <h2 class="section-title">Recent Reviews</h2>
+                <a href="#" class="section-link">More</a>
+            </div>
+            <div class="review-list" id="lista-reviews">
+                <p style="text-align: center; width: 100%; color: var(--cor-texto-sec);">Buscando suas críticas...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-box">
+            <h3 class="sidebar-title">Stats for 2026</h3>
+            <p style="font-size: 0.75rem; color: var(--cor-texto-sec); margin: 0; line-height: 1.4;">
+                Seu gráfico de atividade será exibido aqui em breve. Continue assistindo!
+            </p>
+        </div>
+
+        <div class="sidebar-box">
+            <h3 class="sidebar-title">Watchlist <span id="contador-watchlist" style="float:right; font-weight: 400; color: #fff;">0</span></h3>
+            <div class="mini-poster-grid" id="lista-watchlist">
+            </div>
+        </div>
+
+        <div class="sidebar-box">
+            <h3 class="sidebar-title">Diary <span id="contador-diary" style="float:right; font-weight: 400; color: #fff;">0</span></h3>
+            <ul class="diary-list" id="lista-diary">
+            </ul>
+        </div>
+    </div>
 </div>
 
 <nav class="nav-bottom">
@@ -179,7 +341,7 @@
 <div id="modal-edicao" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="fecharModal()">&times;</span>
-        <h2 id="modal-titulo" style="margin: 0 0 5px 0; color: #fff; font-size: 1.3rem; font-weight: 800; line-height: 1.2;">Título</h2>
+        <h2 id="modal-titulo" style="margin: 0 0 15px 0; color: #fff; font-size: 1.3rem; font-weight: 800; line-height: 1.2;">Título</h2>
         <div class="modal-form">
             <input type="hidden" id="modal-id-tmdb">
             <label>STATUS</label>
@@ -214,12 +376,17 @@
     const dadosUser = JSON.parse(localStorage.getItem('usuarioLogado'));
     if (dadosUser && dadosUser.corTema) { document.documentElement.style.setProperty('--cor-primaria', dadosUser.corTema); }
 
-    const dadosUsuario = JSON.parse(localStorage.getItem('usuarioLogado'));
     const urlParams = new URLSearchParams(window.location.search);
     const amigoId = urlParams.get('amigoId');
-    const isVisita = amigoId !== null && amigoId !== dadosUsuario.id.toString();
+    const isVisita = amigoId !== null && amigoId !== dadosUser.id.toString();
 
-    if (!dadosUsuario) window.location.href = 'login.html';
+    if (!dadosUser) window.location.href = 'login.html';
+
+    if(dadosUser && dadosUser.nome) {
+        document.getElementById('avatar-img').src = `https://ui-avatars.com/api/?name=${dadosUser.nome}&background=232a31&color=fff&size=100`;
+        document.getElementById('titulo-pagina').innerText = dadosUser.nome.split(' ')[0].toUpperCase();
+        document.getElementById('subtitulo-pagina').innerText = `@${dadosUser.nickname || dadosUser.nome.split(' ')[0].toLowerCase()}`;
+    }
 
     window.onload = async () => {
         if (isVisita) await ajustarParaVisita();
@@ -231,15 +398,15 @@
             const res = await fetch(`/usuarios/${amigoId}`);
             if (res.ok) {
                 const amigo = await res.json();
-                document.getElementById('titulo-pagina').innerText = `${amigo.nome.split(' ')[0]}'s LIBRARY`;
-                document.getElementById('subtitulo-pagina').innerText = `@${amigo.nickname} - Visitando`;
+                document.getElementById('titulo-pagina').innerText = amigo.nome.split(' ')[0].toUpperCase();
+                document.getElementById('subtitulo-pagina').innerText = `@${amigo.nickname || 'usuario'}`;
+                document.getElementById('avatar-img').src = `https://ui-avatars.com/api/?name=${amigo.nome}&background=232a31&color=fff&size=100`;
             }
         } catch(e) { console.error(e); }
     }
 
-    // --- FUNÇÃO PARA GERAR AS ESTRELAS COM MEIA ESTRELA REAL VIA CSS ---
     function gerarEstrelasHtml(nota) {
-        if (!nota || nota === 0) return '<span style="color: var(--cor-texto-sec); font-size: 0.75rem;">Sem nota</span>';
+        if (!nota || nota === 0) return '';
         let html = '<div class="estrelas-pessoais">';
         for (let i = 1; i <= 5; i++) {
             html += `
@@ -254,58 +421,155 @@
         return html;
     }
 
+    function gerarCardHTML(i, f, mostrarNotaDonut = true) {
+        const valorTmdb = f.notaTmdb || f.vote_average || f.voteAverage || 0;
+        const notaStr = valorTmdb > 0 ? (valorTmdb * 10).toFixed(0) : 'NR';
+        let corAnel = 'var(--cor-sucesso)';
+        if (valorTmdb < 7) corAnel = 'var(--cor-alerta)';
+        if (valorTmdb < 5 && valorTmdb > 0) corAnel = 'var(--cor-perigo)';
+        if (valorTmdb === 0) corAnel = '#666';
+
+        let conteudoNota = notaStr === 'NR' ? 'NR' : `<span>${notaStr}<span class="simbolo-porcento">%</span></span>`;
+        const estrelasHtml = gerarEstrelasHtml(i.nota);
+
+        const badgeDonut = mostrarNotaDonut ? `
+            <div class="nota-donut" style="border-color: ${corAnel};">
+                ${conteudoNota}
+            </div>
+        ` : '';
+
+        const statusBadge = i.status === 'QUERO_VER' ? '' : `<div class="status-pill">${i.status.replace('_', ' ')}</div>`;
+
+        return `
+            <div class="card-library" onclick="abrirModal(${i.idFilmeTmdb}, '${(f.tituloExibicao||'').replace(/'/g, "\\'")}', '${i.status}', '${i.nota||""}', '${(i.review||"").replace(/'/g, "\\'")}', '${(i.tags||"").replace(/'/g, "\\'")}', '${i.idiomaAudio||""}')">
+                ${statusBadge}
+                <div class="poster-container">
+                    <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" onerror="this.src='https://via.placeholder.com/500x750'">
+                    ${badgeDonut}
+                </div>
+                <div class="info-container">
+                    ${estrelasHtml}
+                </div>
+            </div>
+        `;
+    }
+
     async function carregarLibrary() {
-        const targetId = isVisita ? amigoId : dadosUsuario.id;
-        const lista = document.getElementById('lista-library');
+        const targetId = isVisita ? amigoId : dadosUser.id;
+        const divRecentes = document.getElementById('lista-library');
+        const divFavoritos = document.getElementById('lista-favoritos');
+        const divWatchlist = document.getElementById('lista-watchlist');
+        const divDiary = document.getElementById('lista-diary');
+        const divReviews = document.getElementById('lista-reviews');
 
         try {
             const res = await fetch(`/interacoes/usuario/${targetId}`);
-            const interacoes = await res.json();
-            renderizarDashboard(interacoes);
+            const interacoesOriginais = await res.json();
 
-            if (interacoes.length === 0) {
-                lista.innerHTML = `<p style="text-align:center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1;">Biblioteca vazia.</p>`;
+            renderizarDashboard(interacoesOriginais);
+
+            if (interacoesOriginais.length === 0) {
+                divRecentes.innerHTML = `<p style="text-align:center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1;">Sua atividade recente aparecerá aqui.</p>`;
+                divFavoritos.innerHTML = `<p style="text-align:center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1;">Avalie filmes para ver seus favoritos.</p>`;
+                divReviews.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Você ainda não escreveu nenhuma review.</p>`;
                 return;
             }
-            lista.innerHTML = '';
 
-            for (const i of interacoes) {
+            const interacoes = [...interacoesOriginais].reverse();
+
+            // 1. FAVORITOS AUTOMÁTICOS
+            const favInteracoes = [...interacoes].filter(i => i.status === 'JA_VI' && i.nota != null).sort((a,b) => b.nota - a.nota).slice(0, 4);
+            divFavoritos.innerHTML = '';
+            if(favInteracoes.length > 0) {
+                for (const i of favInteracoes) {
+                    const resF = await fetch(`/api/tmdb/${i.idFilmeTmdb}`);
+                    const f = await resF.json();
+                    divFavoritos.innerHTML += gerarCardHTML(i, f, false);
+                }
+            } else {
+                divFavoritos.innerHTML = `<p style="text-align:center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1;">Dê 5 estrelas aos filmes para que eles apareçam aqui.</p>`;
+            }
+
+            // 2. ATIVIDADE RECENTE
+            const recentesInteracoes = interacoes.slice(0, 8);
+            divRecentes.innerHTML = '';
+            for (const i of recentesInteracoes) {
+                const resF = await fetch(`/api/tmdb/${i.idFilmeTmdb}`);
+                const f = await resF.json();
+                divRecentes.innerHTML += gerarCardHTML(i, f, true);
+            }
+
+            // 3. RECENT REVIEWS (A nova seção!)
+            const reviewsInteracoes = interacoes.filter(i => i.review && i.review.trim() !== '').slice(0, 3);
+            divReviews.innerHTML = '';
+            if (reviewsInteracoes.length > 0) {
+                for (const i of reviewsInteracoes) {
+                    const resF = await fetch(`/api/tmdb/${i.idFilmeTmdb}`);
+                    const f = await resF.json();
+
+                    const estrelasHtml = gerarEstrelasHtml(i.nota);
+                    const ano = f.dataExibicao ? f.dataExibicao.split('-')[0] : '';
+
+                    divReviews.innerHTML += `
+                        <div class="review-item" onclick="abrirModal(${i.idFilmeTmdb}, '${(f.tituloExibicao||'').replace(/'/g, "\\'")}', '${i.status}', '${i.nota||""}', '${(i.review||"").replace(/'/g, "\\'")}', '${(i.tags||"").replace(/'/g, "\\'")}', '${i.idiomaAudio||""}')">
+                            <div class="review-poster">
+                                <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" onerror="this.src='https://via.placeholder.com/500x750'">
+                            </div>
+                            <div class="review-content">
+                                <div class="review-header">
+                                    <h3 class="review-title">${f.tituloExibicao}</h3>
+                                    <span class="review-year">${ano}</span>
+                                </div>
+                                <div class="review-meta">
+                                    ${estrelasHtml}
+                                    <span style="margin-left: 5px;">Watched</span>
+                                </div>
+                                <p class="review-text">${i.review}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                divReviews.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Você ainda não escreveu nenhuma review.</p>`;
+            }
+
+            // 4. WATCHLIST (Sidebar)
+            const watchlistInteracoes = interacoesOriginais.filter(i => i.status === 'QUERO_VER');
+            document.getElementById('contador-watchlist').innerText = watchlistInteracoes.length;
+            divWatchlist.innerHTML = '';
+            for (const i of watchlistInteracoes.reverse().slice(0, 4)) {
+                const resF = await fetch(`/api/tmdb/${i.idFilmeTmdb}`);
+                const f = await resF.json();
+                divWatchlist.innerHTML += `
+                    <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" class="mini-poster"
+                         onclick="abrirModal(${i.idFilmeTmdb}, '${(f.tituloExibicao||'').replace(/'/g, "\\'")}', '${i.status}', '${i.nota||""}', '${(i.review||"").replace(/'/g, "\\'")}', '${(i.tags||"").replace(/'/g, "\\'")}', '${i.idiomaAudio||""}')">
+                `;
+            }
+
+            // 5. DIARY (Sidebar)
+            const diaryInteracoes = interacoes.filter(i => i.status === 'JA_VI').slice(0, 5);
+            document.getElementById('contador-diary').innerText = interacoesOriginais.filter(i => i.status === 'JA_VI').length;
+            divDiary.innerHTML = '';
+
+            for (const i of diaryInteracoes) {
                 const resF = await fetch(`/api/tmdb/${i.idFilmeTmdb}`);
                 const f = await resF.json();
 
-                // 1. NOTA OFICIAL DO SITE (TMDB) -> LER notaTmdb DO JAVA
-                const valorTmdb = f.notaTmdb || f.vote_average || f.voteAverage || 0;
-                const notaStr = valorTmdb > 0 ? (valorTmdb * 10).toFixed(0) : 'NR';
+                let estrelasTexto = '';
+                if(i.nota) {
+                    for(let x=1; x<=Math.floor(i.nota); x++) estrelasTexto += '★';
+                    if(i.nota % 1 !== 0) estrelasTexto += '½';
+                }
 
-                let corAnel = 'var(--cor-sucesso)';
-                if (valorTmdb < 7) corAnel = 'var(--cor-alerta)';
-                if (valorTmdb < 5 && valorTmdb > 0) corAnel = 'var(--cor-perigo)';
-                if (valorTmdb === 0) corAnel = '#666';
-
-                // 2. SUA AVALIAÇÃO PESSOAL (ESTRELAS)
-                const estrelasHtml = gerarEstrelasHtml(i.nota);
-
-                // 3. SUA REVIEW (Snippet)
-                const reviewTexto = i.review ? `"${i.review}"` : "";
-
-                lista.innerHTML += `
-                    <div class="card-library" onclick="abrirModal(${i.idFilmeTmdb}, '${f.tituloExibicao.replace(/'/g, "\\'")}', '${i.status}', '${i.nota||""}', '${(i.review||"").replace(/'/g, "\\'")}', '${(i.tags||"").replace(/'/g, "\\'")}', '${i.idiomaAudio||""}')">
-                        <div class="status-pill">${i.status.replace('_', ' ')}</div>
-                        <div class="poster-container">
-                            <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" onerror="this.src='https://via.placeholder.com/500x750'">
-                            <div class="nota-donut" style="border-color: ${corAnel};">
-                                ${notaStr === 'NR' ? 'NR' : notaStr + '<span>%</span>'}
-                            </div>
-                        </div>
-                        <div class="info-container">
-                            <h3 class="info-titulo">${f.tituloExibicao}</h3>
-                            ${estrelasHtml}
-                            <div class="review-snippet">${reviewTexto}</div>
-                            <p class="info-data">${f.dataExibicao ? f.dataExibicao.split('-')[0] : 'N/A'}</p>
-                        </div>
-                    </div>
+                divDiary.innerHTML += `
+                    <li class="diary-item" onclick="abrirModal(${i.idFilmeTmdb}, '${(f.tituloExibicao||'').replace(/'/g, "\\'")}', '${i.status}', '${i.nota||""}', '${(i.review||"").replace(/'/g, "\\'")}', '${(i.tags||"").replace(/'/g, "\\'")}', '${i.idiomaAudio||""}')">
+                        <span class="diary-date">Recente</span>
+                        <span class="diary-title">${f.tituloExibicao}</span>
+                        <span class="diary-stars">${estrelasTexto}</span>
+                    </li>
                 `;
             }
+
         } catch (e) { console.error(e); }
     }
 
@@ -323,7 +587,9 @@
             if (i.tags) i.tags.split(',').forEach(tag => { const t = tag.trim(); tagsMap[t] = (tagsMap[t] || 0) + 1; });
         });
         const topTag = Object.keys(tagsMap).reduce((a, b) => tagsMap[a] > tagsMap[b] ? a : b, '-');
-        document.getElementById('stat-tag').innerText = topTag.length > 8 ? topTag.substring(0, 8) + '..' : topTag;
+
+        const maxTagLength = 10;
+        document.getElementById('stat-tag').innerText = topTag.length > maxTagLength ? topTag.substring(0, maxTagLength) + '..' : topTag;
     }
 
     function abrirModal(id, titulo, status, nota, review, tags, idioma) {
@@ -350,13 +616,13 @@
             tags: document.getElementById('modal-tags').value,
             review: document.getElementById('modal-review').value
         };
-        await fetch(`/interacoes/usuario/${dadosUsuario.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        await fetch(`/interacoes/usuario/${dadosUser.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         fecharModal(); carregarLibrary();
     }
 
     async function removerDoDiario() {
         if (!confirm("Remover da biblioteca?")) return;
-        await fetch(`/interacoes/usuario/${dadosUsuario.id}/filme/${document.getElementById('modal-id-tmdb').value}`, { method: 'DELETE' });
+        await fetch(`/interacoes/usuario/${dadosUser.id}/filme/${document.getElementById('modal-id-tmdb').value}`, { method: 'DELETE' });
         fecharModal(); carregarLibrary();
     }
 </script>
