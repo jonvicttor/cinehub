@@ -4,149 +4,424 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Cinehub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cor-primaria: #800080; /* Valor padrão */
-            --cor-fundo: #1a1a1a;
-            --cor-card: #2a2a2a;
+            --cor-primaria: #a333ff;
+            --cor-fundo: #14181c;
+            --cor-card: #1b2228;
             --cor-texto: #ffffff;
+            --cor-texto-sec: #8c9baf;
+            --cor-borda: rgba(255, 255, 255, 0.1);
+            --cor-perigo: #db2360;
+            --transicao: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            margin: 0;
+            background-color: var(--cor-fundo); color: var(--cor-texto);
+            font-family: 'Inter', sans-serif; margin: 0; padding: 0 0 100px 0;
+            display: flex; flex-direction: column; align-items: center;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .nav-bar {
-            margin-bottom: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            background-color: var(--cor-card);
-            padding: 10px;
-            border-radius: 30px;
-            width: 95%;
-            max-width: 500px;
+        /* ======= HEADER ======= */
+        .header-top { width: 100%; max-width: 1200px; padding: 40px 20px 20px 20px; display: flex; flex-direction: column; align-items: center; gap: 25px; }
+        .brand { text-decoration: none; transition: var(--transicao); display: flex; align-items: center; }
+        .brand:hover { transform: scale(1.03); filter: brightness(1.2); }
+        .brand-text { font-size: 2.2rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; margin: 0; color: #fff; display: flex; align-items: center; }
+        .brand-text span { font-weight: 800; margin-left: 3px; background: linear-gradient(135deg, #fff 10%, var(--cor-primaria) 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: var(--transicao); }
+
+        /* ======= CONTEINER PRINCIPAL ======= */
+        .perfil-wrapper { width: 100%; max-width: 600px; padding: 20px; display: flex; flex-direction: column; gap: 30px; }
+
+        /* ======= CABEÇALHO DO PERFIL ======= */
+        .perfil-header {
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            background: var(--cor-card); padding: 30px; border-radius: 20px; border: 1px solid var(--cor-borda);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden;
         }
 
-        .nav-bar a { padding: 10px 15px; color: white; text-decoration: none; border-radius: 20px; font-weight: bold; font-size: 0.85em; }
-        .nav-bar a.active { background-color: var(--cor-primaria); }
-
-        .perfil-container {
-            background-color: var(--cor-card);
-            width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            border: 1px solid #444;
+        /* MUDANÇA: Avatar clicável com ícone de câmera */
+        .perfil-avatar {
+            width: 120px; height: 120px; border-radius: 50%; background-color: #232a31; z-index: 2;
+            overflow: hidden; border: 4px solid var(--cor-primaria); transition: var(--transicao);
+            box-shadow: 0 0 25px rgba(163, 51, 255, 0.3); position: relative; cursor: pointer;
         }
+        .perfil-avatar img { width: 100%; height: 100%; object-fit: cover; transition: var(--transicao); }
 
-        .foto-grande {
-            width: 100px;
-            height: 100px;
-            background-color: var(--cor-primaria);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3em;
-            font-weight: bold;
-            box-shadow: 0 0 20px var(--cor-primaria);
+        /* Overlay da câmera */
+        .avatar-overlay {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center;
+            justify-content: center; font-size: 2rem; color: #fff; opacity: 0; transition: var(--transicao); z-index: 3;
         }
+        .perfil-avatar:hover .avatar-overlay { opacity: 1; }
+        .perfil-avatar:hover img { transform: scale(1.1); filter: blur(2px); }
 
-        .label-custom { display: block; margin-top: 25px; font-size: 0.9em; color: #aaa; margin-bottom: 10px; }
+        .perfil-info { text-align: center; z-index: 2; }
+        .perfil-info h1 { margin: 0; font-weight: 800; font-size: 1.8rem; color: #fff; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .perfil-info p.nick { margin: 2px 0 10px 0; color: var(--cor-texto-sec); font-size: 1rem; font-weight: 500;}
+        .perfil-info p.bio { margin: 0; color: #ddd; font-size: 0.9rem; font-style: italic; max-width: 400px; line-height: 1.4;}
 
-        input[type="color"] {
-            -webkit-appearance: none;
-            border: none;
-            width: 100%;
-            height: 50px;
-            cursor: pointer;
-            background: none;
+        /* Botoes de Ação Rápida do Perfil */
+        .header-acoes { display: flex; gap: 10px; margin-top: 15px; z-index: 2;}
+        .btn-acao-header {
+            background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--cor-borda);
+            padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: var(--transicao);
         }
+        .btn-acao-header:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+        .btn-acao-header.destaque { background: var(--cor-primaria); color: #000; border: none; }
+        .btn-acao-header.destaque:hover { filter: brightness(1.2); }
 
+        /* ======= ESTATÍSTICAS RÁPIDAS ======= */
+        .stats-dashboard {
+            display: flex; justify-content: space-around; width: 100%; z-index: 2; margin-top: 10px;
+            background: rgba(0,0,0,0.2); padding: 15px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .stat-item { display: flex; flex-direction: column; align-items: center; }
+        .stat-val { font-size: 1.3rem; font-weight: 800; color: #fff; line-height: 1; }
+        .stat-name { font-size: 0.65rem; color: var(--cor-texto-sec); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-top: 4px;}
+
+        /* ======= BLOCOS DE CONFIGURAÇÃO ======= */
+        .config-box {
+            background: var(--cor-card); padding: 25px; border-radius: 20px; border: 1px solid var(--cor-borda);
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        .config-box h2 { margin: 0; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px;}
+        .config-box p { margin: 0; font-size: 0.85rem; color: var(--cor-texto-sec); line-height: 1.5;}
+
+        /* Bolinhas de cores predefinidas */
+        .color-swatches { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; }
+        .swatch { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.1); transition: var(--transicao); }
+        .swatch:hover { transform: scale(1.15); }
+        .swatch.active { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 15px currentColor; }
+
+        .custom-color-container { display: flex; align-items: center; gap: 15px; margin-top: 10px; background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);}
+        .custom-color-container label { font-size: 0.85rem; font-weight: 600; color: #fff; flex-grow: 1;}
+        input[type="color"] { -webkit-appearance: none; border: none; width: 40px; height: 40px; cursor: pointer; background: none; padding: 0; }
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 10px; }
+        input[type="color"]::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; }
 
-        .btn-salvar-tema {
-            margin-top: 30px;
-            width: 100%;
-            padding: 15px;
-            background-color: var(--cor-primaria);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 1em;
-            cursor: pointer;
-        }
+        .btn-salvar { background: var(--cor-primaria); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1px; width: 100%; margin-top: 10px; }
+        .btn-salvar:hover { filter: brightness(1.2); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transform: translateY(-3px); }
+
+        /* Danger Zone */
+        .danger-zone { border: 1px dashed rgba(219, 35, 96, 0.4); background: rgba(219, 35, 96, 0.05); }
+        .danger-zone h2 { color: var(--cor-perigo); }
+        .btn-logout { background: transparent; color: var(--cor-perigo); border: 1px solid rgba(219, 35, 96, 0.3); padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: var(--transicao); width: 100%; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-logout:hover { background: rgba(219, 35, 96, 0.1); border-color: var(--cor-perigo); }
+
+        /* ======= NAV BOTTOM ======= */
+        .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: rgba(27, 34, 40, 0.9); backdrop-filter: blur(12px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--cor-borda); z-index: 1000; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        @media (min-width: 600px) { .nav-bottom { bottom: 20px; border-radius: 20px; border: 1px solid var(--cor-borda); } }
+        .nav-bottom a { color: var(--cor-texto-sec); text-decoration: none; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: var(--transicao); }
+        .nav-bottom a.active { color: var(--cor-primaria); }
+        .nav-icon { font-size: 1.2rem; }
+
+        /* ======= MODAL EDICAO DE PERFIL ======= */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--cor-card); width: 90%; max-width: 400px; padding: 30px; border-radius: 12px; border: 1px solid var(--cor-borda); animation: slideUp 0.3s ease; max-height: 95vh; overflow-y: auto;}
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-btn { float: right; font-size: 1.5rem; cursor: pointer; color: var(--cor-texto-sec); line-height: 1; }
+        .close-btn:hover { color: #fff; }
+
+        .modal-form label { font-size: 0.75rem; font-weight: 700; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; letter-spacing: 0.5px; margin-top: 15px;}
+        .modal-form input, .modal-form textarea { background: rgba(255,255,255,0.05); border: 1px solid var(--cor-borda); color: white; padding: 12px 14px; border-radius: 6px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.95rem; }
+        .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); }
+        .btn-salvar-modal { background: var(--cor-primaria); border: none; color: #000; padding: 14px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; transition: var(--transicao); margin-top: 20px; text-transform: uppercase; font-size: 0.9rem;}
+        .btn-salvar-modal:hover { filter: brightness(1.2); }
     </style>
 </head>
 <body>
 
-<div class="nav-bar">
-    <a href="index.html">🔍 Buscar</a>
-    <a href="library.html">📖 Diário</a>
-    <a href="perfil.html" class="active">⚙️ Perfil</a>
+<div class="header-top">
+    <a href="index.html" class="brand"><h1 class="brand-text">CINE<span>HUB</span></h1></a>
 </div>
 
-<div class="perfil-container">
-    <div class="foto-grande" id="perfil-letra">J</div>
-    <h2 id="perfil-nome">Carregando...</h2>
-    <p id="perfil-nick" style="color: #aaa;">@nickname</p>
+<input type="file" id="input-foto-oculto" accept="image/*" style="display: none;" onchange="processarNovaFoto(this)">
 
-    <span class="label-custom">🎨 Personalize a Cor do seu Cinehub</span>
-    <input type="color" id="color-picker" value="#800080">
+<div class="perfil-wrapper">
+    <div class="perfil-header">
+        <div class="perfil-avatar" onclick="clicarNoUploadFoto()" title="Alterar Foto de Perfil">
+            <div class="avatar-overlay">📷</div>
+            <img src="https://ui-avatars.com/api/?name=User&background=232a31&color=fff&size=150" id="avatar-img" alt="Avatar">
+        </div>
+        <div class="perfil-info">
+            <h1 id="perfil-nome">Carregando...</h1>
+            <p class="nick" id="perfil-nick">@nickname</p>
+            <p class="bio" id="perfil-bio">"Cinéfilo de carteirinha. Explorando novos universos!"</p>
+        </div>
 
-    <button class="btn-salvar-tema" onclick="salvarCor()">Aplicar Novo Estilo</button>
+        <div class="stats-dashboard">
+            <div class="stat-item">
+                <span class="stat-val" id="stat-filmes">-</span>
+                <span class="stat-name">Vistos</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val" id="stat-agenda">-</span>
+                <span class="stat-name">Na Agenda</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val" id="stat-seguindo">-</span>
+                <span class="stat-name">Seguindo</span>
+            </div>
+        </div>
+
+        <div class="header-acoes">
+            <button class="btn-acao-header destaque" onclick="copiarLinkPerfil()" id="btn-share">🔗 Compartilhar</button>
+            <button class="btn-acao-header" onclick="abrirModalEdicao()">✏️ Editar Perfil</button>
+        </div>
+    </div>
+
+    <div class="config-box">
+        <h2>🎨 Tema e Aparência</h2>
+        <p>Personalize o Cinehub com a sua cor favorita. Essa mudança será aplicada em todas as telas.</p>
+
+        <div class="color-swatches" id="swatches-container">
+            <div class="swatch" style="background-color: #a333ff; color: #a333ff;" onclick="selecionarCor('#a333ff', this)" title="Roxo Cinehub"></div>
+            <div class="swatch" style="background-color: #00e054; color: #00e054;" onclick="selecionarCor('#00e054', this)" title="Verde Letterboxd"></div>
+            <div class="swatch" style="background-color: #e50914; color: #e50914;" onclick="selecionarCor('#e50914', this)" title="Vermelho Netflix"></div>
+            <div class="swatch" style="background-color: #0078ff; color: #0078ff;" onclick="selecionarCor('#0078ff', this)" title="Azul Prime"></div>
+            <div class="swatch" style="background-color: #f5c518; color: #f5c518;" onclick="selecionarCor('#f5c518', this)" title="Dourado IMDb"></div>
+            <div class="swatch" style="background-color: #ff007f; color: #ff007f;" onclick="selecionarCor('#ff007f', this)" title="Rosa Neon"></div>
+        </div>
+
+        <div class="custom-color-container">
+            <label for="color-picker">Ou escolha uma cor customizada:</label>
+            <input type="color" id="color-picker" value="#a333ff" onchange="selecionarCor(this.value, null)">
+        </div>
+
+        <button class="btn-salvar" onclick="salvarCor()">Aplicar Tema Visual</button>
+    </div>
+
+    <div class="config-box danger-zone">
+        <h2>⚠️ Danger Zone</h2>
+        <p>Encerrar a sessão no seu dispositivo atual.</p>
+        <button class="btn-logout" onclick="fazerLogout()">Sair da Conta</button>
+    </div>
+</div>
+
+<nav class="nav-bottom">
+    <a href="index.html"><span class="nav-icon">🔍</span>Home</a>
+    <a href="library.html"><span class="nav-icon">📖</span>Library</a>
+    <a href="calendario.html"><span class="nav-icon">📅</span>Agenda</a>
+    <a href="comunidade.html"><span class="nav-icon">👥</span>Social</a>
+    <a href="perfil.html" class="active"><span class="nav-icon">⚙️</span>Perfil</a>
+</nav>
+
+<div id="modal-edicao" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="fecharModal()">&times;</span>
+        <h2 style="margin: 0 0 15px 0; color: #fff;">Editar Perfil</h2>
+        <div class="modal-form">
+            <label>NOME DE EXIBIÇÃO</label>
+            <input type="text" id="edit-nome" placeholder="Seu nome">
+
+            <label>USERNAME (@)</label>
+            <input type="text" id="edit-nick" placeholder="Seu_nick_legal">
+
+            <label>BIO / FRASE (Opcional)</label>
+            <textarea id="edit-bio" rows="3" placeholder="Fale um pouco sobre seu gosto por filmes..."></textarea>
+
+            <button class="btn-salvar-modal" onclick="salvarEdicaoPerfil()">SALVAR ALTERAÇÕES</button>
+        </div>
+    </div>
 </div>
 
 <script>
     const dadosUsuario = JSON.parse(localStorage.getItem('usuarioLogado'));
     if (!dadosUsuario) window.location.href = 'login.html';
 
-    // Aplica o tema salvo ao carregar
-    if (dadosUsuario.corTema) {
-        document.documentElement.style.setProperty('--cor-primaria', dadosUsuario.corTema);
-        document.getElementById('color-picker').value = dadosUsuario.corTema;
+    let corSelecionada = '#a333ff';
+    const uiAvatarPadrão = `https://ui-avatars.com/api/?name=${dadosUsuario.nome}&background=232a31&color=fff&size=150`;
+
+    window.onload = async function() {
+        // Tema
+        if (dadosUsuario.corTema) {
+            corSelecionada = dadosUsuario.corTema;
+            document.documentElement.style.setProperty('--cor-primaria', corSelecionada);
+            document.getElementById('color-picker').value = corSelecionada;
+            marcarSwatchAtivo(corSelecionada);
+        }
+
+        // Povoar Informações
+        document.getElementById('perfil-nome').innerText = dadosUsuario.nome;
+        const nickStr = dadosUsuario.nickname || dadosUsuario.nome.split(' ')[0].toLowerCase();
+        document.getElementById('perfil-nick').innerText = `@${nickStr}`;
+
+        // MUDANÇA: Usa foto real se houver, se não usa UI-Avatar
+        document.getElementById('avatar-img').src = dadosUsuario.fotoUrl || uiAvatarPadrão;
+
+        if(dadosUsuario.bio) document.getElementById('perfil-bio').innerText = dadosUsuario.bio;
+
+        // Povoar Modal de Edição com dados atuais
+        document.getElementById('edit-nome').value = dadosUsuario.nome;
+        document.getElementById('edit-nick').value = nickStr;
+        document.getElementById('edit-bio').value = dadosUsuario.bio || '';
+
+        // Buscar Estatísticas do Servidor (Calcula vistos, agenda e seguindo)
+        try {
+            const resFilmes = await fetch(`/interacoes/usuario/${dadosUsuario.id}`);
+            if(resFilmes.ok) {
+                const interacoes = await resFilmes.json();
+                document.getElementById('stat-filmes').innerText = interacoes.filter(i => i.status === 'JA_VI').length;
+                document.getElementById('stat-agenda').innerText = interacoes.filter(i => i.status === 'QUERO_VER').length;
+            }
+            const resSeguindo = await fetch(`/usuarios/${dadosUsuario.id}/seguindo`);
+            if(resSeguindo.ok) {
+                const seguindo = await resSeguindo.json();
+                document.getElementById('stat-seguindo').innerText = seguindo.length;
+            }
+        } catch(e) { console.error("Erro ao buscar estatísticas"); }
+    };
+
+    // ==========================================
+    // LÓGICA DO UPLOAD DE FOTO (NOVO)
+    // ==========================================
+    function clicarNoUploadFoto() {
+        // Clica no input escondido programaticamente
+        document.getElementById('input-foto-oculto').click();
     }
 
-    // Preenche dados do perfil
-    document.getElementById('perfil-nome').innerText = dadosUsuario.nome;
-    document.getElementById('perfil-nick').innerText = `@${dadosUsuario.nickname}`;
-    document.getElementById('perfil-letra').innerText = dadosUsuario.nome.charAt(0);
+    function processarNovaFoto(input) {
+        if (input.files && input.files[0]) {
+            const arquivo = input.files[0];
 
-    async function salvarCor() {
-        const novaCor = document.getElementById('color-picker').value;
+            // 1. Live Preview Instantâneo (Front-end)
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Atualiza a imagem na tela na hora
+                document.getElementById('avatar-img').src = e.target.result;
+            };
+            reader.readAsDataURL(arquivo);
 
-        try {
-            const res = await fetch(`/usuarios/${dadosUsuario.id}/tema`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cor: novaCor })
-            });
+            // 2. Preparar para enviar pro Back-end
+            const formData = new FormData();
+            formData.append('fotoPerfil', arquivo);
 
-            if (res.ok) {
-                // Atualiza o CSS na hora
-                document.documentElement.style.setProperty('--cor-primaria', novaCor);
+            // Animação/Feedback visual de carregamento
+            document.querySelector('.avatar-overlay').innerText = "⏳";
 
-                // Atualiza o localStorage para as outras páginas saberem da mudança
-                dadosUsuario.corTema = novaCor;
+            // ⚠️ MUDANÇA (COMENTADO PARA SIMULAÇÃO): Chamar sua API para salvar o arquivo real
+            /*
+            fetch(`/usuarios/${dadosUsuario.id}/upload-foto`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(dadosAPI => {
+                // O back-end retorna a URL final onde salvou a imagem (ex: Amazon S3, Cloudinary, ou pasta local)
+                const urlFinalDaFoto = dadosAPI.novaUrl;
+
+                // Salva essa URL no localStorage para as outras páginas usarem
+                dadosUsuario.fotoUrl = urlFinalDaFoto;
                 localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
 
-                alert("Visual atualizado com sucesso! 🚀");
-                location.reload(); // Recarrega para aplicar em tudo
+                document.querySelector('.avatar-overlay').innerText = "✅";
+                setTimeout(() => { document.querySelector('.avatar-overlay').innerText = "📷"; }, 2000);
+            })
+            .catch(e => {
+                console.error("Erro no upload:", e);
+                alert("Erro ao enviar a foto pro servidor.");
+                document.querySelector('.avatar-overlay').innerText = "❌";
+                document.getElementById('avatar-img').src = uiAvatarPadrão; // Volta pro padrão se deu erro
+            });
+            */
+
+            // --- SIMULAÇÃO PARA FRONT-END ---
+            // Como não temos a API backend rodando agora, vamos simular que salvou
+            setTimeout(() => {
+                // Usamos a Base64 gerada pelo FileReader como se fosse a URL final (apenas para teste)
+                dadosUsuario.fotoUrl = document.getElementById('avatar-img').src;
+                localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+                document.querySelector('.avatar-overlay').innerText = "📷";
+                alert("Live Preview ativado! No sistema real, a imagem seria enviada para o servidor aqui.");
+            }, 1500);
+        }
+    }
+
+    // === TEMA (Estilos Dinâmicos) ===
+    function selecionarCor(cor, elementoSwatch) {
+        corSelecionada = cor;
+        document.documentElement.style.setProperty('--cor-primaria', cor);
+        document.getElementById('color-picker').value = cor;
+        marcarSwatchAtivo(cor);
+    }
+
+    function marcarSwatchAtivo(cor) {
+        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.swatch').forEach(s => {
+            if(s.style.backgroundColor === cor || rgb2hex(s.style.backgroundColor) === cor.toLowerCase()) s.classList.add('active');
+        });
+    }
+    const rgb2hex = (rgb) => `#${rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/).slice(1).map(n => parseInt(n, 10).toString(16).padStart(2, '0')).join('')}`;
+
+    async function salvarCor() {
+        const btn = document.querySelector('.btn-salvar');
+        btn.innerText = "Salvando..."; btn.style.opacity = "0.7";
+        try {
+            const res = await fetch(`/usuarios/${dadosUsuario.id}/tema`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cor: corSelecionada }) });
+            if (res.ok) {
+                dadosUsuario.corTema = corSelecionada;
+                localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+                btn.innerText = "✔ Tema Aplicado!"; btn.style.opacity = "1";
+                setTimeout(() => { btn.innerText = "APLICAR TEMA VISUAL"; }, 2000);
             }
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            dadosUsuario.corTema = corSelecionada; localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+            btn.innerText = "✔ Tema Local"; btn.style.opacity = "1";
+        }
+    }
+
+    // === AÇÕES DE PERFIL ===
+    function copiarLinkPerfil() {
+        // Cria link tipo cinehub.com/library.html?amigoId=123
+        const link = `${window.location.origin}/library.html?amigoId=${dadosUsuario.id}`;
+        navigator.clipboard.writeText(link).then(() => {
+            const btn = document.getElementById('btn-share');
+            btn.innerText = "✔ Link Copiado!";
+            setTimeout(() => { btn.innerText = "🔗 Compartilhar"; }, 3000);
+        });
+    }
+
+    function abrirModalEdicao() { document.getElementById('modal-edicao').style.display = 'flex'; }
+    function fecharModal() { document.getElementById('modal-edicao').style.display = 'none'; }
+
+    async function salvarEdicaoPerfil() {
+        const novoNome = document.getElementById('edit-nome').value.trim();
+        const novoNick = document.getElementById('edit-nick').value.trim().replace('@','');
+        const novaBio = document.getElementById('edit-bio').value.trim();
+
+        if(!novoNome) { alert("O nome não pode ficar vazio."); return; }
+
+        // Atualiza UI instantaneamente
+        document.getElementById('perfil-nome').innerText = novoNome;
+        document.getElementById('perfil-nick').innerText = `@${novoNick}`;
+        document.getElementById('perfil-bio').innerText = novaBio;
+
+        // Se o cara mudou o nome e NÃO tem foto real, atualiza as iniciais do UI-Avatar
+        if(!dadosUsuario.fotoUrl) {
+            document.getElementById('avatar-img').src = `https://ui-avatars.com/api/?name=${novoNome}&background=232a31&color=fff&size=150`;
+        }
+
+        // Salva no LocalStorage
+        dadosUsuario.nome = novoNome;
+        dadosUsuario.nickname = novoNick;
+        dadosUsuario.bio = novaBio;
+        localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+
+        fecharModal();
+
+        // ⚠️ Aqui seria a chamada PUT para o seu backend salvar o NOME, NICK e BIO real.
+        /* fetch(`/usuarios/${dadosUsuario.id}`, { method: 'PUT', body: JSON.stringify({ nome: novoNome, nickname: novoNick, bio: novaBio }) }); */
+    }
+
+    function fazerLogout() {
+        if(confirm("Tem certeza que deseja sair?")) {
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = 'login.html';
+        }
     }
 </script>
 </body>

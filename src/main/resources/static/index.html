@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cor-primaria: #a333ff; /* Roxo neon mais vibrante da imagem */
+            --cor-primaria: #a333ff;
             --cor-fundo: #14181c;
             --cor-card: #1b2228;
             --cor-texto: #ffffff;
@@ -29,52 +29,21 @@
             overflow-x: hidden;
         }
 
-        /* ======= HEADER E BRANDING (ATUALIZADO) ======= */
+        /* ======= HEADER E BRANDING ======= */
         .header-top {
             width: 100%; max-width: 1200px; padding: 40px 20px 20px 20px;
             display: flex; flex-direction: column; align-items: center; gap: 25px;
         }
-
-        .brand {
-            text-decoration: none;
-            transition: var(--transicao);
-            display: flex;
-            align-items: center;
-        }
+        .brand { text-decoration: none; transition: var(--transicao); display: flex; align-items: center; }
         .brand:hover { transform: scale(1.03); }
-
-        .brand-text {
-            font-size: rem; /* Tamanho imponente */
-            font-weight: 900; /* Super Negrito para CINE */
-            letter-spacing: 4px; /* Espaçamento tecnológico */
-            text-transform: uppercase;
-            margin: 0;
-            color: #fff;
-            display: flex;
-            align-items: center;
-        }
-
-        .brand-text span {
-    font-weight: 800; /* HUB grosso como solicitado */
-    margin-left: 3px;
-    background: linear-gradient(135deg, #fff 10%, var(--cor-primaria) 80%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+        .brand-text { font-size: 2.2rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; margin: 0; color: #fff; display: flex; align-items: center; }
+        .brand-text span { font-weight: 800; margin-left: 3px; background: linear-gradient(135deg, #fff 10%, var(--cor-primaria) 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         /* BUSCA INTEGRADA */
         .search-container { width: 100%; max-width: 600px; display: flex; gap: 8px; }
-        .search-container input {
-            background: #232a31; border: 1px solid var(--cor-borda); border-radius: 20px;
-            padding: 12px 25px; color: white; flex-grow: 1; font-size: 0.95rem; font-family: 'Inter', sans-serif;
-            transition: var(--transicao);
-        }
+        .search-container input { background: #232a31; border: 1px solid var(--cor-borda); border-radius: 20px; padding: 12px 25px; color: white; flex-grow: 1; font-size: 0.95rem; font-family: 'Inter', sans-serif; transition: var(--transicao); }
         .search-container input:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 15px rgba(163, 51, 255, 0.2); }
-        .btn-busca {
-            background: var(--cor-primaria); border: none; border-radius: 20px;
-            padding: 0 25px; color: white; font-weight: 700; cursor: pointer;
-            transition: var(--transicao);
-        }
+        .btn-busca { background: var(--cor-primaria); border: none; border-radius: 20px; padding: 0 25px; color: white; font-weight: 700; cursor: pointer; transition: var(--transicao); }
         .btn-busca:hover { filter: brightness(1.2); }
 
         /* ======= SEÇÕES ESTILO TMDB ======= */
@@ -88,76 +57,39 @@
 
         /* ======= CARROSSEL E SETAS ======= */
         .carrossel-wrapper { position: relative; width: 100%; }
-        .carrossel {
-            display: flex; gap: 20px; overflow-x: auto;
-            padding: 15px 25px 35px 25px;
-            scrollbar-width: none; scroll-behavior: smooth; cursor: grab;
-        }
+        .carrossel { display: flex; gap: 20px; overflow-x: auto; padding: 15px 25px 35px 25px; scrollbar-width: none; scroll-behavior: smooth; cursor: grab; }
         .carrossel:active { cursor: grabbing; scroll-behavior: auto; }
         .carrossel::-webkit-scrollbar { display: none; }
-
-        .seta-carrossel {
-            position: absolute; top: 40%; transform: translateY(-50%);
-            width: 45px; height: 45px; background: rgba(0, 0, 0, 0.7);
-            color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%;
-            font-size: 1.5rem; cursor: pointer; z-index: 10;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: var(--transicao); box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        @media (min-width: 768px) {
-            .carrossel-wrapper:hover .seta-carrossel { opacity: 1; border-color: rgba(255,255,255,0.5); }
-        }
+        .seta-carrossel { position: absolute; top: 40%; transform: translateY(-50%); width: 45px; height: 45px; background: rgba(0, 0, 0, 0.7); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; opacity: 0; transition: var(--transicao); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        @media (min-width: 768px) { .carrossel-wrapper:hover .seta-carrossel { opacity: 1; border-color: rgba(255,255,255,0.5); } }
         @media (max-width: 767px) { .seta-carrossel { display: none; } }
         .seta-carrossel:hover { background: var(--cor-primaria); transform: translateY(-50%) scale(1.1); border-color: var(--cor-primaria); opacity: 1; }
-        .seta-esq { left: 10px; }
-        .seta-dir { right: 10px; }
+        .seta-esq { left: 10px; } .seta-dir { right: 10px; }
 
         /* ======= CARD TMDB COMPLETO ======= */
-        .card-tmdb {
-            flex: 0 0 150px; display: flex; flex-direction: column; cursor: pointer; position: relative;
-            border-radius: 8px; background-color: var(--cor-card);
-            border: 1px solid rgba(255, 255, 255, 0.05); transition: var(--transicao); overflow: visible;
-        }
-        .card-tmdb:hover { transform: translateY(-8px) scale(1.02); border-color: var(--cor-primaria); box-shadow: 0 12px 30px rgba(128, 0, 128, 0.5); }
-
+        .card-tmdb { flex: 0 0 150px; display: flex; flex-direction: column; cursor: pointer; position: relative; border-radius: 8px; background-color: var(--cor-card); border: 1px solid rgba(255, 255, 255, 0.05); transition: var(--transicao); overflow: visible; }
+        .card-tmdb:hover { transform: translateY(-8px) scale(1.02); border-color: var(--cor-primaria); box-shadow: 0 12px 30px rgba(163, 51, 255, 0.3); }
         .poster-container { position: relative; width: 100%; pointer-events: none; }
         .poster-container img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-top-left-radius: 8px; border-top-right-radius: 8px; display: block; background-color: #232a31; }
 
-        /* NOTA INTEGRADA NO CARD */
-        .nota-donut {
-            position: absolute; bottom: -18px; left: 10px; width: 36px; height: 36px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 0.7rem; font-weight: 800; box-shadow: 0 0 0 2px #081c22;
-            background: conic-gradient(
-                var(--cor-anel) var(--progresso, 0%),
-                rgba(255,255,255,0.1) var(--progresso, 0%)
-            );
-        }
-        .nota-donut::after {
-            content: ""; position: absolute; inset: 3px;
-            background-color: #081c22; border-radius: 50%;
-        }
+        .btn-adicionar-card { pointer-events: auto; position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 900; cursor: pointer; transition: var(--transicao); z-index: 5; opacity: 0; }
+        .card-tmdb:hover .btn-adicionar-card { opacity: 1; }
+        .btn-adicionar-card:hover { background: var(--cor-primaria); border-color: var(--cor-primaria); transform: scale(1.1); }
+
+        .nota-donut { position: absolute; bottom: -18px; left: 10px; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.7rem; font-weight: 800; box-shadow: 0 0 0 2px #081c22; background: conic-gradient(var(--cor-anel) var(--progresso, 0%), rgba(255,255,255,0.1) var(--progresso, 0%)); }
+        .nota-donut::after { content: ""; position: absolute; inset: 3px; background-color: #081c22; border-radius: 50%; }
         .nota-donut span { z-index: 2; position: relative; font-size: 0.7rem; display: flex;}
         .nota-donut .simbolo-porcento { font-size: 0.4rem; margin-top: 1px;}
 
-        /* INFO CONTAINER */
         .info-container { padding: 25px 10px 12px 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; }
         .info-titulo { font-size: 0.9rem; font-weight: 700; margin: 0 0 4px 0; color: #fff; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; pointer-events: none; }
         .info-data { font-size: 0.8rem; color: var(--cor-texto-sec); margin: 0; pointer-events: none; }
 
-        /* ======== CARD "VER TODOS" ======== */
-        .card-ver-todos {
-            flex: 0 0 150px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; border-radius: 8px; background-color: rgba(255,255,255,0.02);
-            border: 1px dashed var(--cor-texto-sec); transition: var(--transicao); color: var(--cor-texto-sec); gap: 10px;
-        }
-        .card-ver-todos:hover {
-            border-color: #fff; color: #fff; background-color: rgba(255,255,255,0.05); transform: translateY(-5px);
-        }
+        .card-ver-todos { flex: 0 0 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; border-radius: 8px; background-color: rgba(255,255,255,0.02); border: 1px dashed var(--cor-texto-sec); transition: var(--transicao); color: var(--cor-texto-sec); gap: 10px; }
+        .card-ver-todos:hover { border-color: #fff; color: #fff; background-color: rgba(255,255,255,0.05); transform: translateY(-5px); }
         .seta-ver-todos { font-size: 2rem; font-weight: 200; }
         .texto-ver-todos { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* BUSCA VIEW */
         #busca-view { display: none; width: 100%; max-width: 1200px; padding: 20px; }
         .grid-busca { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; padding: 20px 0; }
         .btn-voltar { background: transparent; border: 1px solid var(--cor-texto-sec); color: var(--cor-texto-sec); padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
@@ -172,11 +104,16 @@
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--cor-card); width: 90%; max-width: 400px; padding: 25px; border-radius: 12px; border: 1px solid var(--cor-borda); animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .close-btn { float: right; font-size: 1.5rem; cursor: pointer; color: var(--cor-texto-sec); line-height: 1; }
-        .modal-form label { font-size: 0.75rem; font-weight: 600; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; margin-top: 15px;}
+        .close-btn { float: right; font-size: 1.5rem; cursor: pointer; color: var(--cor-texto-sec); line-height: 1; transition: var(--transicao); }
+        .close-btn:hover { color: #fff; }
+        .modal-form label { font-size: 0.75rem; font-weight: 600; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; margin-top: 15px; letter-spacing: 0.5px;}
         .modal-form select, .modal-form input, .modal-form textarea { background: #232a31; border: 1px solid #344150; color: white; padding: 10px 14px; border-radius: 6px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.95rem; }
         .modal-form select:focus, .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); background: #2c3440; }
-        .btn-salvar-modal { background: var(--cor-sucesso); border: none; color: #000; padding: 14px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; font-size: 0.9rem; margin-top: 20px; }
+        .btn-salvar-modal { background: var(--cor-sucesso); border: none; color: #000; padding: 14px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; font-size: 0.9rem; margin-top: 20px; transition: var(--transicao); text-transform: uppercase; }
+        .btn-salvar-modal:hover { filter: brightness(1.2); }
+
+        /* Estilo Específico Agenda Countdown */
+        #modal-countdown { background: var(--cor-primaria); color: #fff; padding: 12px; border-radius: 8px; text-align: center; font-weight: 800; margin: 15px 0 10px 0; font-size: 0.95rem; border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
@@ -265,17 +202,38 @@
         <h2 id="modal-titulo" style="margin: 0 0 10px 0; color: #fff; font-size: 1.2rem; font-weight: 800; line-height: 1.2;">Título</h2>
         <div class="modal-form">
             <input type="hidden" id="modal-id-tmdb">
-            <label>STATUS</label>
-            <select id="modal-status"><option value="QUERO_VER">Quero Ver</option><option value="JA_VI">Já Vi</option><option value="ASSISTINDO">Assistindo</option><option value="ABANDONEI">Abandonei</option></select>
-            <label>IDIOMA</label>
-            <select id="modal-idioma"><option value="">Selecione...</option><option value="Dublado">🇧🇷 Dublado</option><option value="Legendado">💬 Legendado</option><option value="Original">🇺🇸 Áudio Original</option></select>
-            <label>NOTA PESSOAL (0-5)</label>
-            <input type="number" id="modal-nota" step="0.5" min="0" max="5" placeholder="Para o seu diário...">
+
+            <div id="campos-diario">
+                <label>STATUS</label>
+                <select id="modal-status"><option value="QUERO_VER">Quero Ver</option><option value="JA_VI">Já Vi</option><option value="ASSISTINDO">Assistindo</option><option value="ABANDONEI">Abandonei</option></select>
+                <label>IDIOMA</label>
+                <select id="modal-idioma"><option value="">Selecione...</option><option value="Dublado">🇧🇷 Dublado</option><option value="Legendado">💬 Legendado</option><option value="Original">🇺🇸 Áudio Original</option></select>
+                <label>NOTA PESSOAL (0-5)</label>
+                <input type="number" id="modal-nota" step="0.5" min="0" max="5" placeholder="Para o seu diário...">
+                <label>REVIEW</label>
+                <textarea id="modal-review" rows="3" placeholder="O que achou?"></textarea>
+            </div>
+
+            <div id="campos-agenda" style="display:none;">
+                <div id="modal-countdown"></div>
+                <label>QUAL SEU HYPE?</label>
+                <select id="modal-hype">
+                    <option value="Extremo">🔥 Extremo - Estreia no cinema!</option>
+                    <option value="Alto">⭐ Alto - Não vejo a hora</option>
+                    <option value="Médio">👍 Médio - Verei se puder</option>
+                    <option value="Baixo">📺 Baixo - Espero sair no streaming</option>
+                </select>
+                <label>ONDE PRETENDE ASSISTIR?</label>
+                <select id="modal-local">
+                    <option value="Cinema">🍿 Cinema</option>
+                    <option value="Streaming">📺 Streaming / TV</option>
+                </select>
+            </div>
+
             <label>TAGS</label>
             <input type="text" id="modal-tags" placeholder="Clássico, Plot Twist...">
-            <label>REVIEW</label>
-            <textarea id="modal-review" rows="3"></textarea>
-            <button class="btn-salvar-modal" onclick="salvarNoDiario()">SALVAR NO DIÁRIO</button>
+
+            <button class="btn-salvar-modal" id="btn-acao-modal" onclick="salvarNoDiario()">SALVAR NO DIÁRIO</button>
         </div>
     </div>
 </div>
@@ -286,6 +244,9 @@
     if (!dadosUser) window.location.href = 'login.html';
 
     const placeholderImagem = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750' style='background:%231b2228'%3E%3Ctext fill='%238c9baf' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24'%3ESem Foto%3C/text%3E%3C/svg%3E";
+
+    // Data simulada atual: 31 de Março de 2026 (Os meses no JS vão de 0 a 11, então Março = 2)
+    const HOJE = new Date(2026, 2, 31);
 
     window.onload = function() {
         carregarSecao('popular', 'movie', 'carrossel-pop');
@@ -303,26 +264,12 @@
 
     function ativarDragScroll() {
         const sliders = document.querySelectorAll('.drag-scroll');
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-
+        let isDown = false, startX, scrollLeft;
         sliders.forEach(slider => {
-            slider.addEventListener('mousedown', (e) => {
-                isDown = true;
-                slider.classList.add('active');
-                startX = e.pageX - slider.offsetLeft;
-                scrollLeft = slider.scrollLeft;
-            });
+            slider.addEventListener('mousedown', (e) => { isDown = true; slider.classList.add('active'); startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; });
             slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
             slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
-            slider.addEventListener('mousemove', (e) => {
-                if (!isDown) return;
-                e.preventDefault();
-                const x = e.pageX - slider.offsetLeft;
-                const walk = (x - startX) * 2;
-                slider.scrollLeft = scrollLeft - walk;
-            });
+            slider.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - slider.offsetLeft; const walk = (x - startX) * 2; slider.scrollLeft = scrollLeft - walk; });
         });
     }
 
@@ -346,7 +293,6 @@
         try {
             const response = await fetch(`/api/tmdb/lista?cat=${cat}&tipo=${tipo}`);
             let filmes = await response.json();
-
             if (cat === 'upcoming') {
                 filmes.sort((a, b) => {
                     if (!a.dataExibicao) return 1;
@@ -354,17 +300,9 @@
                     return new Date(a.dataExibicao) - new Date(b.dataExibicao);
                 });
             }
-
             const filmesExibidos = filmes.slice(0, 20);
             let html = gerarHTMLCards(filmesExibidos);
-
-            html += `
-                <div class="card-ver-todos" onclick="window.location.href='lista_completa.html?cat=${cat}&tipo=${tipo}'">
-                    <span class="seta-ver-todos">→</span>
-                    <span class="texto-ver-todos">Ver todos</span>
-                </div>
-            `;
-
+            html += `<div class="card-ver-todos" onclick="window.location.href='lista_completa.html?cat=${cat}&tipo=${tipo}'"><span class="seta-ver-todos">→</span><span class="texto-ver-todos">Ver todos</span></div>`;
             container.innerHTML = html;
         } catch (e) { container.innerHTML = '<p style="color: red;">Erro ao carregar.</p>'; }
     }
@@ -372,14 +310,11 @@
     async function executarBusca() {
         const query = document.getElementById('input-busca').value;
         if (!query) return;
-
         document.getElementById('home-view').style.display = 'none';
         document.getElementById('busca-view').style.display = 'block';
         document.getElementById('titulo-busca').innerText = `Resultados para: "${query}"`;
-
         const grid = document.getElementById('grid-resultados');
         grid.innerHTML = '<p style="color: #8c9baf;">Buscando...</p>';
-
         const response = await fetch(`/api/tmdb/busca?titulo=${query}`);
         const filmes = await response.json();
         grid.innerHTML = gerarHTMLCards(filmes);
@@ -393,22 +328,17 @@
 
     function gerarHTMLCards(filmes) {
         if(filmes.length === 0) return '<p style="color: #8c9baf;">Nenhum título encontrado.</p>';
-
         return filmes.map(filme => {
             let valorNota = filme.notaTmdb || filme.vote_average || filme.voteAverage || 0;
             const porcentagemNum = valorNota > 0 ? (valorNota * 10).toFixed(0) : 0;
-
             let corAnel = 'var(--cor-sucesso)';
             if (valorNota < 7) corAnel = 'var(--cor-alerta)';
             if (valorNota < 5 && valorNota > 0) corAnel = 'var(--cor-perigo)';
             if (valorNota === 0) corAnel = '#666';
-
             let conteudoNota = `<span class="nota-valor">NR</span>`;
-            if (porcentagemNum > 0) {
-                conteudoNota = `<span class="nota-valor">${porcentagemNum}</span><span class="simbolo-porcento">%</span>`;
-            }
-
+            if (porcentagemNum > 0) conteudoNota = `<span class="nota-valor">${porcentagemNum}</span><span class="simbolo-porcento">%</span>`;
             const dataFormatada = formatarData(filme.dataExibicao);
+            const dataPura = filme.dataExibicao || '';
 
             return `
                 <div class="card-tmdb"
@@ -416,6 +346,11 @@
                      onmouseup="if(Math.abs(event.pageX - window.startX) < 5) window.location.href='detalhes.html?id=${filme.id}'">
                     <div class="poster-container">
                         <img src="${filme.linkPoster ? filme.linkPoster : placeholderImagem}" alt="${filme.tituloExibicao}" onerror="this.src='${placeholderImagem}'" draggable="false">
+                        <button class="btn-adicionar-card"
+                                onmousedown="event.stopPropagation();"
+                                onmouseup="event.stopPropagation();"
+                                onclick="event.preventDefault(); event.stopPropagation(); abrirModalAdicao('${filme.id}', '${filme.tituloExibicao.replace(/'/g, "\\'")}', '${dataPura}')"
+                                title="Adicionar">+</button>
                         <div class="nota-donut" style="--cor-anel: ${corAnel}; --progresso: ${porcentagemNum}%">
                             <span>${conteudoNota}</span>
                         </div>
@@ -429,14 +364,40 @@
         }).join('');
     }
 
-    function abrirModalAdicao(idTmdb, titulo) {
+    function abrirModalAdicao(idTmdb, titulo, dataEstreia) {
         document.getElementById('modal-id-tmdb').value = idTmdb;
         document.getElementById('modal-titulo').innerText = titulo;
+
+        // Limpar campos
         document.getElementById('modal-status').value = "QUERO_VER";
         document.getElementById('modal-idioma').value = "";
         document.getElementById('modal-nota').value = "";
         document.getElementById('modal-tags').value = "";
         document.getElementById('modal-review').value = "";
+
+        // Verifica a data para alternar a interface
+        let dataFilme = null;
+        if (dataEstreia && dataEstreia.length > 0) {
+            const p = dataEstreia.split('-');
+            dataFilme = new Date(p[0], p[1] - 1, p[2]);
+        }
+
+        const eFuturo = dataFilme && dataFilme > HOJE;
+
+        if (eFuturo) {
+            document.getElementById('campos-diario').style.display = 'none';
+            document.getElementById('campos-agenda').style.display = 'block';
+            document.getElementById('btn-acao-modal').innerText = "SALVAR NA AGENDA";
+
+            const diffTime = Math.abs(dataFilme - HOJE);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            document.getElementById('modal-countdown').innerHTML = `📅 Faltam ${diffDays} dias para a estreia!`;
+        } else {
+            document.getElementById('campos-diario').style.display = 'block';
+            document.getElementById('campos-agenda').style.display = 'none';
+            document.getElementById('btn-acao-modal').innerText = "SALVAR NO DIÁRIO";
+        }
+
         document.getElementById('modal-adicao').style.display = 'flex';
     }
 
@@ -447,14 +408,28 @@
     }
 
     async function salvarNoDiario() {
+        const isAgenda = document.getElementById('campos-agenda').style.display === 'block';
+        let interactionStatus = "QUERO_VER";
+        let interactionReview = document.getElementById('modal-review').value;
+
+        // Se for na Agenda, força o status e cria a review customizada
+        if(isAgenda) {
+            const hype = document.getElementById('modal-hype').value;
+            const local = document.getElementById('modal-local').value;
+            interactionReview = `[AGENDA] Expectativa: ${hype} | Onde: ${local}`;
+        } else {
+            interactionStatus = document.getElementById('modal-status').value;
+        }
+
         const payload = {
             idFilmeTmdb: document.getElementById('modal-id-tmdb').value,
-            status: document.getElementById('modal-status').value,
+            status: interactionStatus,
             idiomaAudio: document.getElementById('modal-idioma').value,
             nota: document.getElementById('modal-nota').value ? parseFloat(document.getElementById('modal-nota').value) : null,
             tags: document.getElementById('modal-tags').value,
-            review: document.getElementById('modal-review').value
+            review: interactionReview
         };
+
         const response = await fetch(`/interacoes/usuario/${dadosUser.id}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

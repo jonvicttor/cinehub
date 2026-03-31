@@ -3,147 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Cinehub</title>
+    <title>Entrar - Cinehub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cor-primaria: #800080;
-            --cor-fundo: #1a1a1a;
-            --cor-card: #2a2a2a;
+            --cor-primaria: #a333ff; /* Neon Padrão Cinehub */
+            --cor-fundo: #0d1115;
+            --cor-card: rgba(27, 34, 40, 0.5); /* Vidro Fosco */
             --cor-texto: #ffffff;
+            --cor-texto-sec: #8c9baf;
+            --cor-borda: rgba(255, 255, 255, 0.08);
+            --transicao: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+
         body {
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            background-color: var(--cor-fundo); color: var(--cor-texto);
+            font-family: 'Inter', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            /* Fundo Premium Cinehub */
+            background-image: radial-gradient(circle at top right, rgba(163, 51, 255, 0.1), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(163, 51, 255, 0.05), transparent 40%);
+            background-attachment: fixed;
             padding: 20px;
         }
 
-        .login-container {
-            background-color: var(--cor-card);
-            padding: 30px;
-            border-radius: 15px;
-            width: 100%;
-            max-width: 350px;
-            border: 1px solid #444;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            text-align: center;
+        /* BRANDING */
+        .brand { text-decoration: none; margin-bottom: 40px; display: block; animation: fadeInDown 0.8s ease; }
+        .brand-text { font-size: 2.8rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; color: #fff; display: flex; align-items: center; }
+        .brand-text span { font-weight: 800; margin-left: 3px; background: linear-gradient(135deg, #fff 10%, var(--cor-primaria) 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* AUTH CONTAINER (BENTO BOX) */
+        .auth-container {
+            background: var(--cor-card); backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 24px; border: 1px solid var(--cor-borda);
+            width: 100%; max-width: 420px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        h1 { color: var(--cor-primaria); margin-bottom: 25px; }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+        /* PILL TOGGLE (Entrar / Cadastrar) */
+        .auth-toggle {
+            display: flex; background: rgba(0,0,0,0.3); border-radius: 30px;
+            padding: 5px; margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.05);
         }
-
-        input {
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #444;
-            background-color: #1a1a1a;
-            color: white;
-            font-size: 1em;
+        .toggle-btn {
+            flex: 1; background: transparent; border: none; color: var(--cor-texto-sec);
+            padding: 12px; border-radius: 25px; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; transition: var(--transicao); text-transform: uppercase; letter-spacing: 0.5px;
         }
+        .toggle-btn.active { background: var(--cor-primaria); color: #000; box-shadow: 0 4px 15px rgba(163, 51, 255, 0.3); }
 
-        input:focus {
-            outline: none;
-            border-color: var(--cor-primaria);
+        /* FORMS */
+        .auth-form { display: flex; flex-direction: column; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+        .form-group label { font-size: 0.75rem; font-weight: 700; color: var(--cor-texto-sec); letter-spacing: 0.5px; text-transform: uppercase; margin-left: 4px; }
+
+        .form-group input {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--cor-borda);
+            color: white; padding: 14px 18px; border-radius: 12px;
+            font-family: 'Inter', sans-serif; font-size: 0.95rem; transition: var(--transicao);
         }
+        .form-group input:focus { outline: none; border-color: var(--cor-primaria); background: rgba(255,255,255,0.08); box-shadow: 0 0 0 3px rgba(163, 51, 255, 0.15); }
+        .form-group input::placeholder { color: #5a6b82; }
 
-        button {
-            padding: 12px;
-            background-color: var(--cor-primaria);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1em;
-            transition: 0.3s;
+        /* BOTAO PRINCIPAL */
+        .btn-submit {
+            background: var(--cor-primaria); border: none; color: #000;
+            padding: 16px; border-radius: 12px; font-weight: 800; font-size: 1rem;
+            cursor: pointer; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1px;
+            margin-top: 10px; width: 100%;
         }
+        .btn-submit:hover { filter: brightness(1.2); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(163, 51, 255, 0.4); }
+        .btn-submit:active { transform: translateY(0); }
 
-        button:hover { filter: brightness(1.2); }
+        /* ANIMACOES */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .link-cadastro {
-            margin-top: 15px;
-            font-size: 0.85em;
-            color: #ccc;
-        }
-
-        .link-cadastro a {
-            color: var(--cor-primaria);
-            text-decoration: none;
-            font-weight: bold;
+        /* MOBILE AJUSTES */
+        @media (max-width: 480px) {
+            .auth-container { padding: 30px 20px; border-radius: 20px;}
+            .brand-text { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <h1>🎬 Cinehub</h1>
-    <p style="margin-bottom: 20px; font-size: 0.9em; color: #aaa;">Acesse sua conta para gerenciar seu diário</p>
+<a href="#" class="brand">
+    <h1 class="brand-text">CINE<span>HUB</span></h1>
+</a>
 
-    <div class="form-group">
-        <input type="email" id="email" placeholder="Seu e-mail" required>
-        <input type="password" id="senha" placeholder="Sua senha" required>
-        <button onclick="realizarLogin()">Entrar</button>
+<div class="auth-container">
+    <div class="auth-toggle">
+        <button class="toggle-btn active" id="btn-tab-login" onclick="alternarForm('login')">Entrar</button>
+        <button class="toggle-btn" id="btn-tab-cadastro" onclick="alternarForm('cadastro')">Criar Conta</button>
     </div>
 
-    <div class="link-cadastro">
-        Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a>
-    </div>
+    <form id="form-login" class="auth-form fade-in" onsubmit="event.preventDefault(); realizarLogin();">
+        <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="login-email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="login-senha" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-submit" id="btn-submit-login">Acessar Diário</button>
+    </form>
+
+    <form id="form-cadastro" class="auth-form fade-in" style="display: none;" onsubmit="event.preventDefault(); realizarCadastro();">
+        <div class="form-group">
+            <label>Nome Completo</label>
+            <input type="text" id="cad-nome" placeholder="Ex: João Victor" required>
+        </div>
+        <div class="form-group">
+            <label>Nickname (@)</label>
+            <input type="text" id="cad-nick" placeholder="Ex: jones_dev" required>
+        </div>
+        <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="cad-email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="cad-senha" placeholder="Crie uma senha forte" required>
+        </div>
+        <button type="submit" class="btn-submit" id="btn-submit-cad">Cadastrar e Entrar</button>
+    </form>
 </div>
 
 <script>
-    async function realizarLogin() {
-        const email = document.getElementById('email').value;
-        const senha = document.getElementById('senha').value;
-
-        if (!email || !senha) {
-            alert("Por favor, preencha todos os campos.");
-            return;
-        }
-
-        const payload = { email, senha };
-
-        try {
-            const response = await fetch('/usuarios/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (response.ok) {
-                const usuario = await response.json();
-
-                // O SEGREDO: Salva os dados no navegador para usar em outras páginas
-                localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
-
-                alert(`Bem-vindo de volta, ${usuario.nome}!`);
-                window.location.href = 'index.html'; // Redireciona para a busca
-            } else {
-                alert("E-mail ou senha inválidos.");
-            }
-        } catch (error) {
-            console.error("Erro na requisição:", error);
-            alert("Erro ao conectar com o servidor.");
-        }
-    }
-
-    // Verifica se já está logado ao carregar a página
+    // Se já estiver logado, chuta pra Home
     window.onload = function() {
         if (localStorage.getItem('usuarioLogado')) {
             window.location.href = 'index.html';
         }
     };
+
+    // Alternar entre Login e Cadastro
+    function alternarForm(tipo) {
+        const formLogin = document.getElementById('form-login');
+        const formCadastro = document.getElementById('form-cadastro');
+        const btnLogin = document.getElementById('btn-tab-login');
+        const btnCadastro = document.getElementById('btn-tab-cadastro');
+
+        if (tipo === 'login') {
+            formCadastro.style.display = 'none';
+            formLogin.style.display = 'flex';
+            btnCadastro.classList.remove('active');
+            btnLogin.classList.add('active');
+        } else {
+            formLogin.style.display = 'none';
+            formCadastro.style.display = 'flex';
+            btnLogin.classList.remove('active');
+            btnCadastro.classList.add('active');
+        }
+    }
+
+    // Função de Login
+    async function realizarLogin() {
+        const email = document.getElementById('login-email').value.trim();
+        const senha = document.getElementById('login-senha').value.trim();
+        const btn = document.getElementById('btn-submit-login');
+
+        btn.innerText = "Verificando...";
+        btn.disabled = true;
+
+        try {
+            const response = await fetch('/usuarios/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, senha })
+            });
+
+            if (response.ok) {
+                const usuario = await response.json();
+                localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+                window.location.href = 'index.html';
+            } else {
+                alert("E-mail ou senha inválidos. Tente novamente.");
+                btn.innerText = "Acessar Diário";
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            alert("Erro ao conectar com o servidor. Verifique sua conexão.");
+            btn.innerText = "Acessar Diário";
+            btn.disabled = false;
+        }
+    }
+
+    // Função de Cadastro
+    async function realizarCadastro() {
+        const nome = document.getElementById('cad-nome').value.trim();
+        const nickname = document.getElementById('cad-nick').value.trim().replace('@', ''); // Tira o @ se o usuário digitar
+        const email = document.getElementById('cad-email').value.trim();
+        const senha = document.getElementById('cad-senha').value.trim();
+        const btn = document.getElementById('btn-submit-cad');
+
+        btn.innerText = "Criando Conta...";
+        btn.disabled = true;
+
+        try {
+            // ⚠️ ATENÇÃO: Ajuste a URL '/usuarios' abaixo para a rota exata de cadastro do seu Backend
+            const response = await fetch('/usuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, nickname, email, senha })
+            });
+
+            if (response.ok || response.status === 201) {
+                // Como o cadastro deu sucesso, vamos tentar logar o cara automaticamente
+                // ou você pode pegar a resposta que já deve vir com o usuário criado
+                const usuarioCriado = await response.json();
+
+                // Salva no LocalStorage e já manda pra Home!
+                localStorage.setItem('usuarioLogado', JSON.stringify(usuarioCriado));
+                window.location.href = 'index.html';
+            } else {
+                alert("Erro ao criar conta. Esse e-mail ou nickname já podem estar em uso.");
+                btn.innerText = "Cadastrar e Entrar";
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error("Erro na requisição de cadastro:", error);
+            alert("Erro ao conectar com o servidor.");
+            btn.innerText = "Cadastrar e Entrar";
+            btn.disabled = false;
+        }
+    }
 </script>
 
 </body>
