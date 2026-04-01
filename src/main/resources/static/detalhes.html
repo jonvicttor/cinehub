@@ -394,23 +394,41 @@
             interactionStatus = document.getElementById('modal-status').value;
         }
 
+        // ==========================================
+        // O PULO DO GATO: Pegando a data oficial!
+        // ==========================================
+        let dataLancamento = null;
+        if (filmeAtual && filmeAtual.dataExibicao) {
+            dataLancamento = filmeAtual.dataExibicao; // formato YYYY-MM-DD direto do TMDB
+        }
+
         const payload = {
             idFilmeTmdb: document.getElementById('modal-id-tmdb').value,
             status: interactionStatus,
             idiomaAudio: document.getElementById('modal-idioma').value,
             nota: document.getElementById('modal-nota').value ? parseFloat(document.getElementById('modal-nota').value) : null,
             tags: document.getElementById('modal-tags').value,
-            review: interactionReview
+            review: interactionReview,
+            // ENVIAMOS A DATA PARA O BANCO DE DADOS:
+            dataAgendada: dataLancamento
         };
 
-        const response = await fetch(`/interacoes/usuario/${dadosUser.id}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if (response.ok) {
-            alert('Salvo na sua Library!');
-            fecharModal();
+        try {
+            const response = await fetch(`/interacoes/usuario/${dadosUser.id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                alert('Salvo com sucesso!');
+                fecharModal();
+            } else {
+                alert('Ocorreu um erro ao salvar o filme.');
+            }
+        } catch (error) {
+            console.error("Erro ao salvar:", error);
+            alert("Erro de conexão com o servidor.");
         }
     }
 
