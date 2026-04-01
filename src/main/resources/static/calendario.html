@@ -141,8 +141,8 @@
         document.documentElement.style.setProperty('--cor-primaria', dadosUsuario.corTema);
     }
 
-    // A MÁGICA ACONTECE AQUI: Definimos o "HOJE" simulado para 31 de Março de 2026.
-    const HOJE = new Date(2026, 2, 31); // Lembre-se: os meses em JavaScript começam no 0 (0 = Jan, 1 = Fev, 2 = Mar)
+    // "HOJE" simulado para 31 de Março de 2026.
+    const HOJE = new Date(2026, 2, 31);
 
     window.onload = async function() {
         await carregarCalendario();
@@ -150,49 +150,49 @@
 
     async function carregarCalendario() {
         try {
+            // 1. Busca os dados de forma super rápida direto do NOSSO Java
             const resInteracoes = await fetch(`/interacoes/usuario/${dadosUsuario.id}`);
             const interacoes = await resInteracoes.json();
 
-            // Pega todo mundo que está na Watchlist
-            const watchlist = interacoes.filter(i => i.status === 'QUERO_VER');
-
-            if (watchlist.length === 0) {
-                document.getElementById('loader-container').style.display = 'none';
-                document.getElementById('container-calendario').innerHTML = `
-                    <div style="text-align:center; padding: 40px; background: var(--cor-card); border-radius: 20px; border: 1px dashed var(--cor-borda);">
-                        <p style="color: var(--cor-texto-sec);">Sua Watchlist está vazia.</p>
-                        <a href="index.html" style="color: var(--cor-primaria); font-weight: 700; text-decoration: none;">Descobrir filmes</a>
-                    </div>`;
-                return;
-            }
-
-            // Busca os detalhes dos filmes na API
-            const promessas = watchlist.map(item => fetch(`/api/tmdb/${item.idFilmeTmdb}`).then(r => r.json()));
-            let detalhesFilmes = await Promise.all(promessas);
-
-            // MUDANÇA VIP: Filtra SOMENTE filmes que lançam DEPOIS de "HOJE"
-            detalhesFilmes = detalhesFilmes.filter(f => {
-                if (!f.dataExibicao) return false; // Se não tem data, não vai pro calendário
-                const p = f.dataExibicao.split('-');
+            // 2. Filtro Inteligente: Separa SÓ os que são QUERO_VER e que a dataAgendada é maior que HOJE.
+            // Poupando centenas de requisições ao TMDB.
+            const agendaFutura = interacoes.filter(i => {
+                if (i.status !== 'QUERO_VER' || !i.dataAgendada) return false;
+                const p = i.dataAgendada.split('-');
                 const dataFilme = new Date(p[0], p[1] - 1, p[2]);
-                return dataFilme > HOJE; // Só mantém se for futuro
+                return dataFilme > HOJE;
             });
 
-            // Se depois do filtro não sobrar nada, avisa o usuário
-            if (detalhesFilmes.length === 0) {
+            if (agendaFutura.length === 0) {
                 document.getElementById('loader-container').style.display = 'none';
                 document.getElementById('container-calendario').innerHTML = `
                     <div style="text-align:center; padding: 40px; background: var(--cor-card); border-radius: 20px; border: 1px dashed var(--cor-borda);">
                         <h3 style="color: #fff; margin-bottom: 10px;">Nada no horizonte!</h3>
-                        <p style="color: var(--cor-texto-sec); font-size: 0.9rem;">Todos os filmes da sua Watchlist já foram lançados.<br>Eles continuam disponíveis na sua Library.</p>
+                        <p style="color: var(--cor-texto-sec); font-size: 0.9rem;">Sua agenda de lançamentos está vazia no momento.<br>Descubra novos filmes para acompanhar!</p>
+                        <br>
+                        <a href="index.html" style="color: var(--cor-primaria); font-weight: 700; text-decoration: none;">Explorar Filmes</a>
                     </div>`;
                 return;
             }
 
-            // Organiza por data crescente (mais próximo primeiro)
+            // 3. Agora sim, busca no TMDB APENAS a capa e o título desses poucos filmes filtrados
+            const promessas = agendaFutura.map(async (item) => {
+                const res = await fetch(`/api/tmdb/${item.idFilmeTmdb}`);
+                const detalhes = await res.json();
+
+                // Mesclamos os detalhes do TMDB com a data Oficial do nosso Banco
+                return {
+                    ...detalhes,
+                    dataAgendadaOficial: item.dataAgendada
+                };
+            });
+
+            let detalhesFilmes = await Promise.all(promessas);
+
+            // 4. Organiza por data crescente (mais próximo primeiro) usando a nossa data oficial
             detalhesFilmes.sort((a, b) => {
-                const dataA = new Date(a.dataExibicao);
-                const dataB = new Date(b.dataExibicao);
+                const dataA = new Date(a.dataAgendadaOficial);
+                const dataB = new Date(b.dataAgendadaOficial);
                 return dataA - dataB;
             });
 
@@ -210,9 +210,9 @@
         const container = document.getElementById('container-calendario');
         const meses = {};
 
-        // Agrupa por mês e ano
+        // Agrupa por mês e ano usando a dataAgendadaOficial
         filmes.forEach(filme => {
-            const partesData = filme.dataExibicao.split('-');
+            const partesData = filme.dataAgendadaOficial.split('-');
             const dataObj = new Date(partesData[0], partesData[1] - 1, partesData[2]);
 
             const chaveMes = dataObj.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
@@ -229,7 +229,7 @@
             let gridHtml = `<div class="mes-titulo">${mes}</div><div class="grid-estreias">`;
 
             listaFilmes.forEach(f => {
-                const dataFormatada = f.dataExibicao.split('-').reverse().join('/');
+                const dataFormatada = f.dataAgendadaOficial.split('-').reverse().join('/');
                 const linkPoster = f.linkPoster || 'https://via.placeholder.com/500x750?text=Sem+Poster';
 
                 gridHtml += `

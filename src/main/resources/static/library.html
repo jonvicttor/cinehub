@@ -105,6 +105,9 @@
         /* GRID POSTERS */
         .poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; width: 100%; }
 
+        /* NOVO GRID 3x2 PARA FAVORITOS */
+        .poster-grid-favs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
+
         .card-library { display: flex; flex-direction: column; cursor: pointer; position: relative; transition: var(--transicao); }
         .card-library:hover { transform: translateY(-8px); }
 
@@ -195,7 +198,7 @@
             .main-column { gap: 20px; }
             .tab-view { gap: 20px; }
             .bento-box { padding: 20px 15px; border-radius: 16px; }
-            .poster-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .poster-grid, .poster-grid-favs { grid-template-columns: repeat(3, 1fr); gap: 10px; }
         }
 
         /* NAV BOTTOM E MODAL */
@@ -269,7 +272,7 @@
                 <div class="section-header">
                     <h2 class="section-title">Filmes Favoritos</h2>
                 </div>
-                <div class="poster-grid" id="lista-favoritos"><p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Carregando...</p></div>
+                <div class="poster-grid-favs" id="lista-favoritos"><p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Carregando...</p></div>
             </div>
 
             <div class="bento-box">

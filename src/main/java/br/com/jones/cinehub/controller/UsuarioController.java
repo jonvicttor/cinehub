@@ -1,5 +1,6 @@
 package br.com.jones.cinehub.controller;
 
+import br.com.jones.cinehub.model.Favorito;
 import br.com.jones.cinehub.model.Usuario;
 import br.com.jones.cinehub.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,7 +86,6 @@ public class UsuarioController {
         }
     }
 
-    // NOVO: Rota para atualizar os dados gerais do perfil
     @PutMapping("/{id}/perfil")
     public ResponseEntity<Usuario> atualizarPerfil(@PathVariable Long id, @RequestBody Map<String, String> dados) {
         try {
@@ -96,6 +97,24 @@ public class UsuarioController {
 
             Usuario usuarioAtualizado = usuarioService.cadastrarUsuario(usuario);
             return ResponseEntity.ok(usuarioAtualizado);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // ==========================================
+    // NOVAS ROTAS: FAVORITOS
+    // ==========================================
+    @GetMapping("/{id}/favoritos")
+    public ResponseEntity<List<Favorito>> buscarFavoritos(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.listarFavoritos(id));
+    }
+
+    @PostMapping("/{id}/favoritos")
+    public ResponseEntity<Void> atualizarFavoritos(@PathVariable Long id, @RequestBody List<Long> filmesIds) {
+        try {
+            usuarioService.atualizarFavoritos(id, filmesIds);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
