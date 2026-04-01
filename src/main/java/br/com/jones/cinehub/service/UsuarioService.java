@@ -15,12 +15,18 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public Usuario cadastrarUsuario(Usuario usuario) {
-        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+        // Verifica se o e-mail existe e pertence a OUTRA pessoa
+        Optional<Usuario> userEmail = usuarioRepository.findByEmail(usuario.getEmail());
+        if (userEmail.isPresent() && !userEmail.get().getId().equals(usuario.getId())) {
             throw new RuntimeException("Este e-mail já está cadastrado.");
         }
-        if (usuarioRepository.findByNickname(usuario.getNickname()).isPresent()) {
+
+        // Verifica se o nickname existe e pertence a OUTRA pessoa
+        Optional<Usuario> userNick = usuarioRepository.findByNickname(usuario.getNickname());
+        if (userNick.isPresent() && !userNick.get().getId().equals(usuario.getId())) {
             throw new RuntimeException("Este nickname já está em uso.");
         }
+
         return usuarioRepository.save(usuario);
     }
 
