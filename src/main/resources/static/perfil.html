@@ -237,7 +237,6 @@
     const uiAvatarPadrão = `https://ui-avatars.com/api/?name=${dadosUsuario.nome}&background=232a31&color=fff&size=150`;
 
     window.onload = async function() {
-        // Tema
         if (dadosUsuario.corTema) {
             corSelecionada = dadosUsuario.corTema;
             document.documentElement.style.setProperty('--cor-primaria', corSelecionada);
@@ -249,18 +248,14 @@
         document.getElementById('perfil-nome').innerText = dadosUsuario.nome;
         const nickStr = dadosUsuario.nickname || dadosUsuario.nome.split(' ')[0].toLowerCase();
         document.getElementById('perfil-nick').innerText = `@${nickStr}`;
-
-        // MUDANÇA: Usa foto real se houver, se não usa UI-Avatar
         document.getElementById('avatar-img').src = dadosUsuario.fotoUrl || uiAvatarPadrão;
 
         if(dadosUsuario.bio) document.getElementById('perfil-bio').innerText = dadosUsuario.bio;
 
-        // Povoar Modal de Edição com dados atuais
         document.getElementById('edit-nome').value = dadosUsuario.nome;
         document.getElementById('edit-nick').value = nickStr;
         document.getElementById('edit-bio').value = dadosUsuario.bio || '';
 
-        // Buscar Estatísticas do Servidor (Calcula vistos, agenda e seguindo)
         try {
             const resFilmes = await fetch(`/interacoes/usuario/${dadosUsuario.id}`);
             if(resFilmes.ok) {
@@ -276,72 +271,77 @@
         } catch(e) { console.error("Erro ao buscar estatísticas"); }
     };
 
-    // ==========================================
-    // LÓGICA DO UPLOAD DE FOTO (NOVO)
-    // ==========================================
     function clicarNoUploadFoto() {
-        // Clica no input escondido programaticamente
         document.getElementById('input-foto-oculto').click();
     }
 
-    function processarNovaFoto(input) {
-        if (input.files && input.files[0]) {
-            const arquivo = input.files[0];
+    // ==========================================
+    // UPLOAD REAL PARA O SUPABASE STORAGE
+    // ==========================================
+    async function processarNovaFoto(input) {
+        if (!input.files || !input.files[0]) return;
 
-            // 1. Live Preview Instantâneo (Front-end)
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Atualiza a imagem na tela na hora
-                document.getElementById('avatar-img').src = e.target.result;
-            };
-            reader.readAsDataURL(arquivo);
+        const arquivo = input.files[0];
 
-            // 2. Preparar para enviar pro Back-end
-            const formData = new FormData();
-            formData.append('fotoPerfil', arquivo);
+        // Criar um nome único pra foto pra não sobrepor as outras
+        const nomeArquivo = `foto_perfil_${dadosUsuario.id}_${Date.now()}.jpg`;
 
-            // Animação/Feedback visual de carregamento
-            document.querySelector('.avatar-overlay').innerText = "⏳";
+        // 1. Live Preview Instantâneo no HTML
+        const reader = new FileReader();
+        reader.onload = function(e) { document.getElementById('avatar-img').src = e.target.result; };
+        reader.readAsDataURL(arquivo);
 
-            // ⚠️ MUDANÇA (COMENTADO PARA SIMULAÇÃO): Chamar sua API para salvar o arquivo real
-            /*
-            fetch(`/usuarios/${dadosUsuario.id}/upload-foto`, {
+        document.querySelector('.avatar-overlay').innerText = "⏳";
+
+        // ⚠️ SUBSTITUA PELAS SUAS CHAVES DO APPLICATION.PROPERTIES
+        // ⚠️ SUBSTITUA PELAS SUAS CHAVES DO APPLICATION.PROPERTIES
+        const SUPABASE_URL = "https://rlbtqqhuceebtownvsvk.supabase.co"; // <--- AGORA SIM, A URL
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsYnRxcWh1Y2VlYnRvd3J2c3ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTYwMTksImV4cCI6MjA5MDI3MjAxOX0.q-HKe9MjD61dYxk8JshlRkZUOHyqQQN5Gz_Nl5GFHKY";
+
+        // Caminho do balde (bucket) que criamos: "avatars"
+        const endpoint = `${SUPABASE_URL}/storage/v1/object/avatars/${nomeArquivo}`;
+
+        try {
+            // A. Sobe o arquivo pro Supabase Storage
+            const response = await fetch(endpoint, {
                 method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(dadosAPI => {
-                // O back-end retorna a URL final onde salvou a imagem (ex: Amazon S3, Cloudinary, ou pasta local)
-                const urlFinalDaFoto = dadosAPI.novaUrl;
-
-                // Salva essa URL no localStorage para as outras páginas usarem
-                dadosUsuario.fotoUrl = urlFinalDaFoto;
-                localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
-
-                document.querySelector('.avatar-overlay').innerText = "✅";
-                setTimeout(() => { document.querySelector('.avatar-overlay').innerText = "📷"; }, 2000);
-            })
-            .catch(e => {
-                console.error("Erro no upload:", e);
-                alert("Erro ao enviar a foto pro servidor.");
-                document.querySelector('.avatar-overlay').innerText = "❌";
-                document.getElementById('avatar-img').src = uiAvatarPadrão; // Volta pro padrão se deu erro
+                headers: {
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': arquivo.type // Avisa se é jpg, png, etc
+                },
+                body: arquivo
             });
-            */
 
-            // --- SIMULAÇÃO PARA FRONT-END ---
-            // Como não temos a API backend rodando agora, vamos simular que salvou
-            setTimeout(() => {
-                // Usamos a Base64 gerada pelo FileReader como se fosse a URL final (apenas para teste)
-                dadosUsuario.fotoUrl = document.getElementById('avatar-img').src;
-                localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
-                document.querySelector('.avatar-overlay').innerText = "📷";
-                alert("Live Preview ativado! No sistema real, a imagem seria enviada para o servidor aqui.");
-            }, 1500);
+            if (response.ok) {
+                // B. Pega a URL pública que o Supabase gerou
+                const fotoUrl = `${SUPABASE_URL}/storage/v1/object/public/avatars/${nomeArquivo}`;
+
+                // C. Manda o Java salvar essa URL no banco de dados na coluna foto_url
+                const saveRes = await fetch(`/usuarios/${dadosUsuario.id}/perfil`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fotoUrl: fotoUrl })
+                });
+
+                if(saveRes.ok) {
+                    document.querySelector('.avatar-overlay').innerText = "📷";
+                    // Mantém a sessão atualizada pro restante do app
+                    dadosUsuario.fotoUrl = fotoUrl;
+                    localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+                }
+            } else {
+                console.error("Falha ao subir para o Supabase:", await response.text());
+                document.querySelector('.avatar-overlay').innerText = "❌";
+                document.getElementById('avatar-img').src = dadosUsuario.fotoUrl || uiAvatarPadrão;
+            }
+        } catch (e) {
+            console.error("Erro no upload:", e);
+            document.querySelector('.avatar-overlay').innerText = "❌";
+            document.getElementById('avatar-img').src = dadosUsuario.fotoUrl || uiAvatarPadrão;
         }
     }
 
-    // === TEMA (Estilos Dinâmicos) ===
+    // === TEMA E AÇÕES ===
     function selecionarCor(cor, elementoSwatch) {
         corSelecionada = cor;
         document.documentElement.style.setProperty('--cor-primaria', cor);
@@ -374,9 +374,7 @@
         }
     }
 
-    // === AÇÕES DE PERFIL ===
     function copiarLinkPerfil() {
-        // Cria link tipo cinehub.com/library.html?amigoId=123
         const link = `${window.location.origin}/library.html?amigoId=${dadosUsuario.id}`;
         navigator.clipboard.writeText(link).then(() => {
             const btn = document.getElementById('btn-share');
@@ -388,6 +386,9 @@
     function abrirModalEdicao() { document.getElementById('modal-edicao').style.display = 'flex'; }
     function fecharModal() { document.getElementById('modal-edicao').style.display = 'none'; }
 
+    // ==========================================
+    // SALVAMENTO DE DADOS (NOME, NICK E BIO) NO JAVA
+    // ==========================================
     async function salvarEdicaoPerfil() {
         const novoNome = document.getElementById('edit-nome').value.trim();
         const novoNick = document.getElementById('edit-nick').value.trim().replace('@','');
@@ -395,26 +396,47 @@
 
         if(!novoNome) { alert("O nome não pode ficar vazio."); return; }
 
-        // Atualiza UI instantaneamente
-        document.getElementById('perfil-nome').innerText = novoNome;
-        document.getElementById('perfil-nick').innerText = `@${novoNick}`;
-        document.getElementById('perfil-bio').innerText = novaBio;
+        const btn = document.querySelector('.btn-salvar-modal');
+        btn.innerText = "SALVANDO...";
 
-        // Se o cara mudou o nome e NÃO tem foto real, atualiza as iniciais do UI-Avatar
-        if(!dadosUsuario.fotoUrl) {
-            document.getElementById('avatar-img').src = `https://ui-avatars.com/api/?name=${novoNome}&background=232a31&color=fff&size=150`;
+        try {
+            // Requisição PUT para o endpoint que você criou no UsuarioController
+            const res = await fetch(`/usuarios/${dadosUsuario.id}/perfil`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nome: novoNome,
+                    nickname: novoNick,
+                    bio: novaBio
+                })
+            });
+
+            if (res.ok) {
+                // Atualiza a tela
+                document.getElementById('perfil-nome').innerText = novoNome;
+                document.getElementById('perfil-nick').innerText = `@${novoNick}`;
+                document.getElementById('perfil-bio').innerText = novaBio;
+
+                if(!dadosUsuario.fotoUrl) {
+                    document.getElementById('avatar-img').src = `https://ui-avatars.com/api/?name=${novoNome}&background=232a31&color=fff&size=150`;
+                }
+
+                // Atualiza cache local
+                dadosUsuario.nome = novoNome;
+                dadosUsuario.nickname = novoNick;
+                dadosUsuario.bio = novaBio;
+                localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+
+                fecharModal();
+            } else {
+                alert("Erro ao atualizar o perfil. O Nickname pode já estar em uso.");
+            }
+        } catch (e) {
+            console.error("Erro na requisição:", e);
+            alert("Erro de conexão ao salvar perfil.");
+        } finally {
+            btn.innerText = "SALVAR ALTERAÇÕES";
         }
-
-        // Salva no LocalStorage
-        dadosUsuario.nome = novoNome;
-        dadosUsuario.nickname = novoNick;
-        dadosUsuario.bio = novaBio;
-        localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
-
-        fecharModal();
-
-        // ⚠️ Aqui seria a chamada PUT para o seu backend salvar o NOME, NICK e BIO real.
-        /* fetch(`/usuarios/${dadosUsuario.id}`, { method: 'PUT', body: JSON.stringify({ nome: novoNome, nickname: novoNick, bio: novaBio }) }); */
     }
 
     function fazerLogout() {
