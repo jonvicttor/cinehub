@@ -1,0 +1,22 @@
+{
+  "name": "Cinehub - Sua Coleção de Filmes",
+  "short_name": "Cinehub",
+  "description": "Acompanhe seus filmes, crie sua watchlist e interaja com a comunidade.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#14181c",
+  "theme_color": "#a333ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192/a333ff/ffffff?text=CH",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512/a333ff/ffffff?text=CH",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
