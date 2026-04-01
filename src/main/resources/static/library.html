@@ -553,48 +553,92 @@
     }
 
     async function renderizarGrid(arrayFilmes, containerId, msgVazia) {
-        const container = document.getElementById(containerId); container.innerHTML = '';
-        if (arrayFilmes.length === 0) { container.innerHTML = `<p style="text-align:center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1;">${msgVazia}</p>`; return; }
-        for (const i of arrayFilmes) { const f = await getInfoFilme(i.idFilmeTmdb); container.innerHTML += gerarCardHTML(i, f, true); }
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (arrayFilmes.length === 0) {
+            container.innerHTML = `<p style="text-align:center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1;">${msgVazia}</p>`;
+            return;
+        }
+
+        // Criamos um HTML temporário e um Set para garantir IDs únicos na visualização
+        let htmlFinal = '';
+        const idsVistos = new Set();
+
+        for (const i of arrayFilmes) {
+            // Se já renderizamos esse filme nesta lista, pula para o próximo
+            if (idsVistos.has(i.idFilmeTmdb)) continue;
+            idsVistos.add(i.idFilmeTmdb);
+
+            const f = await getInfoFilme(i.idFilmeTmdb);
+            htmlFinal += gerarCardHTML(i, f, true);
+        }
+
+        // Atualiza o DOM uma única vez ao final do processamento
+        container.innerHTML = htmlFinal;
     }
 
     async function renderizarListaReviews(arrayReviews, containerId) {
-        const container = document.getElementById(containerId); container.innerHTML = '';
-        if (arrayReviews.length === 0) { container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Você ainda não escreveu nenhuma review.</p>`; return; }
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (arrayReviews.length === 0) {
+            container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Você ainda não escreveu nenhuma review.</p>`;
+            return;
+        }
+
+        let htmlFinal = '';
         for (const i of arrayReviews) {
-            const f = await getInfoFilme(i.idFilmeTmdb); const estrelasHtml = gerarEstrelasHtml(i.nota); const ano = f.dataExibicao ? f.dataExibicao.split('-')[0] : '';
-            container.innerHTML += `
+            const f = await getInfoFilme(i.idFilmeTmdb);
+            const estrelasHtml = gerarEstrelasHtml(i.nota);
+            const ano = f.dataExibicao ? f.dataExibicao.split('-')[0] : '';
+
+            htmlFinal += `
                 <div class="review-item" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[3]); return false;" title="Ler todas as reviews">
-                    <div class="review-poster" onclick="event.stopPropagation(); window.location.href='detalhes.html?id=${i.idFilmeTmdb}'" title="Ver Detalhes do Filme">
-                        <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" onerror="this.src='https://via.placeholder.com/500x750'">
+                    <div class="review-poster" onclick="event.stopPropagation(); window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
+                        <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}">
                     </div>
                     <div class="review-content">
                         <div class="review-header">
                             <h3 class="review-title">${f.tituloExibicao}</h3>
                             <span class="review-year">${ano}</span>
-                            <span class="btn-editar-review" onclick="event.stopPropagation(); abrirModal(${i.idFilmeTmdb}, '${escapeJS(f.tituloExibicao)}', '${i.status}', '${i.nota||""}', '${escapeJS(i.review)}', '${escapeJS(i.tags)}', '${i.idiomaAudio||""}')" title="Editar Review">✏️ Editar</span>
+                            <span class="btn-editar-review" onclick="event.stopPropagation(); abrirModal(${i.idFilmeTmdb}, '${escapeJS(f.tituloExibicao)}', '${i.status}', '${i.nota||""}', '${escapeJS(i.review)}', '${escapeJS(i.tags)}', '${i.idiomaAudio||""}')">✏️ Editar</span>
                         </div>
                         <div class="review-meta">${estrelasHtml}<span style="margin-left: 5px;">Watched</span></div>
                         <p class="review-text">"${i.review}"</p>
                     </div>
                 </div>`;
         }
+        container.innerHTML = htmlFinal;
     }
 
+    // MUDANÇA: Carregar favoritos direto da API
     async function renderizarProfile() {
         const targetId = isVisita ? amigoId : dadosUser.id;
-        const favsIds = JSON.parse(localStorage.getItem(`cinehub_favs_${targetId}`)) || [];
-        const divFavs = document.getElementById('lista-favoritos'); divFavs.innerHTML = '';
+        const divFavs = document.getElementById('lista-favoritos');
 
-        if (favsIds.length === 0) divFavs.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.85rem; grid-column: 1/-1; padding: 20px 0;">Você ainda não escolheu nenhum filme favorito. Edite um filme na sua library para adicioná-lo aos favoritos.</p>`;
-        else {
-            for (let idx = 0; idx < favsIds.length; idx++) {
-                const tmdbId = favsIds[idx];
-                const interacao = interacoesGlobais.find(x => x.idFilmeTmdb == tmdbId) || { idFilmeTmdb: tmdbId, status: 'JA_VI' };
-                const f = await getInfoFilme(tmdbId);
-                divFavs.innerHTML += gerarCardHTML(interacao, f, false, true, idx);
+        try {
+            // Buscamos os favoritos no Banco de Dados
+            const res = await fetch(`/usuarios/${targetId}/favoritos`);
+            const favoritosDoBanco = await res.json();
+
+            if (favoritosDoBanco.length === 0) {
+                divFavs.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.85rem; grid-column: 1/-1; padding: 20px 0;">Você ainda não escolheu nenhum filme favorito. Edite um filme na sua library para adicioná-lo aos favoritos.</p>`;
+            } else {
+                let htmlFavs = '';
+                for (let idx = 0; idx < favoritosDoBanco.length; idx++) {
+                    const fav = favoritosDoBanco[idx];
+                    // Procuramos se temos a interação completa desse filme para pegar a nota/review
+                    const interacao = interacoesGlobais.find(x => x.idFilmeTmdb == fav.filmeTmdbId) || { idFilmeTmdb: fav.filmeTmdbId, status: 'JA_VI' };
+                    const f = await getInfoFilme(fav.filmeTmdbId);
+                    htmlFavs += gerarCardHTML(interacao, f, false, true, idx);
+                }
+                divFavs.innerHTML = htmlFavs;
             }
+        } catch (e) {
+            console.error("Erro ao carregar favoritos:", e);
         }
+
         await renderizarGrid(interacoesGlobais.slice(0, 6), 'lista-recentes', 'Sua atividade recente aparecerá aqui.');
         await renderizarListaReviews(interacoesGlobais.filter(i => i.review && i.review.trim() !== '').slice(0, 3), 'lista-reviews-recentes');
     }
@@ -685,9 +729,28 @@
         });
     }
 
-    function removerFavorito(index, event) {
-        event.stopPropagation(); let favs = JSON.parse(localStorage.getItem(`cinehub_favs_${dadosUser.id}`)) || [];
-        favs.splice(index, 1); localStorage.setItem(`cinehub_favs_${dadosUser.id}`, JSON.stringify(favs)); renderizarProfile();
+    // MUDANÇA: Remover favorito direto pela lixeirinha do card
+    async function removerFavorito(index, event) {
+        event.stopPropagation();
+        const targetId = dadosUser.id;
+
+        try {
+            const res = await fetch(`/usuarios/${targetId}/favoritos`);
+            let favsAtuais = await res.json();
+            let listaIds = favsAtuais.map(f => f.filmeTmdbId);
+
+            listaIds.splice(index, 1);
+
+            await fetch(`/usuarios/${targetId}/favoritos`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(listaIds)
+            });
+
+            await renderizarProfile();
+        } catch(e) {
+            console.error("Erro ao remover favorito:", e);
+        }
     }
 
     async function renderizarSidebarFixa(dadosOriginais) {
@@ -720,25 +783,79 @@
         document.getElementById('stat-tag').innerText = topTag.length > 12 ? topTag.substring(0, 12) + '..' : topTag;
     }
 
-    function abrirModal(id, titulo, status, nota, review, tags, idioma) {
-        filmeModalAtual = id; document.getElementById('modal-id-tmdb').value = id; document.getElementById('modal-titulo').innerText = titulo;
-        document.getElementById('modal-status').value = status; document.getElementById('modal-idioma').value = idioma; document.getElementById('modal-nota').value = nota; document.getElementById('modal-tags').value = tags; document.getElementById('modal-review').value = review;
+    // MUDANÇA: Modal assíncrono para verificar se já é favorito no backend
+    async function abrirModal(id, titulo, status, nota, review, tags, idioma) {
+        filmeModalAtual = id;
+        document.getElementById('modal-id-tmdb').value = id;
+        document.getElementById('modal-titulo').innerText = titulo;
+        document.getElementById('modal-status').value = status;
+        document.getElementById('modal-idioma').value = idioma;
+        document.getElementById('modal-nota').value = nota;
+        document.getElementById('modal-tags').value = tags;
+        document.getElementById('modal-review').value = review;
 
-        let favs = JSON.parse(localStorage.getItem(`cinehub_favs_${dadosUser.id}`)) || []; isFavoritoModal = favs.includes(id.toString()) || favs.includes(id);
+        isFavoritoModal = false;
+        try {
+            // Busca a lista atual de favoritos para saber se o botão deve mostrar "Adicionar" ou "Remover"
+            const res = await fetch(`/usuarios/${dadosUser.id}/favoritos`);
+            if (res.ok) {
+                const favs = await res.json();
+                isFavoritoModal = favs.some(f => f.filmeTmdbId == id);
+            }
+        } catch(e) {
+            console.error("Erro ao verificar favoritos", e);
+        }
+
         const btnFav = document.getElementById('btn-fav-modal');
-        if (isFavoritoModal) { btnFav.classList.add('ativo'); btnFav.innerText = '♥ REMOVER DOS FAVORITOS'; }
-        else { btnFav.classList.remove('ativo'); btnFav.innerText = '🤍 ADICIONAR AOS FAVORITOS (TOP 6)'; }
+        if (isFavoritoModal) {
+            btnFav.classList.add('ativo');
+            btnFav.innerText = '♥ REMOVER DOS FAVORITOS';
+        } else {
+            btnFav.classList.remove('ativo');
+            btnFav.innerText = '🤍 ADICIONAR AOS FAVORITOS (TOP 6)';
+        }
 
-        document.getElementById('botoes-modal').style.display = isVisita ? 'none' : 'flex'; document.querySelectorAll('.modal-form input, .modal-form select, .modal-form textarea').forEach(el => el.disabled = isVisita); document.getElementById('modal-edicao').style.display = 'flex';
+        document.getElementById('botoes-modal').style.display = isVisita ? 'none' : 'flex';
+        document.querySelectorAll('.modal-form input, .modal-form select, .modal-form textarea').forEach(el => el.disabled = isVisita);
+        document.getElementById('modal-edicao').style.display = 'flex';
     }
 
     function fecharModal() { document.getElementById('modal-edicao').style.display = 'none'; }
 
-    function toggleFavoritoModal() {
-        isFavoritoModal = !isFavoritoModal; const btnFav = document.getElementById('btn-fav-modal'); const strId = filmeModalAtual.toString(); let favs = JSON.parse(localStorage.getItem(`cinehub_favs_${dadosUser.id}`)) || [];
-        if (isFavoritoModal) { btnFav.classList.add('ativo'); btnFav.innerText = '♥ REMOVER DOS FAVORITOS'; if (!favs.includes(strId)) { favs.unshift(strId); if (favs.length > 6) favs = favs.slice(0, 6); } }
-        else { btnFav.classList.remove('ativo'); btnFav.innerText = '🤍 ADICIONAR AOS FAVORITOS (TOP 6)'; favs = favs.filter(id => id !== strId && id !== Number(strId)); }
-        localStorage.setItem(`cinehub_favs_${dadosUser.id}`, JSON.stringify(favs)); if(abaAtiva === 'profile') renderizarProfile();
+    // MUDANÇA: Salvar favorito no Banco de Dados (Top 6)
+    async function toggleFavoritoModal() {
+        const idFilme = filmeModalAtual.toString();
+        const targetId = dadosUser.id;
+
+        try {
+            // Primeiro, pegamos a lista atual do Banco
+            const res = await fetch(`/usuarios/${targetId}/favoritos`);
+            let favsAtuais = await res.json();
+            let listaIds = favsAtuais.map(f => f.filmeTmdbId);
+
+            if (listaIds.includes(Number(idFilme))) {
+                // Remover
+                listaIds = listaIds.filter(id => id !== Number(idFilme));
+            } else {
+                // Adicionar no topo (limite de 6)
+                listaIds.unshift(Number(idFilme));
+                if (listaIds.length > 6) listaIds = listaIds.slice(0, 6);
+            }
+
+            // MANDAMOS PARA O JAVA SALVAR NO SUPABASE
+            const saveRes = await fetch(`/usuarios/${targetId}/favoritos`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(listaIds)
+            });
+
+            if(saveRes.ok) {
+                fecharModal();
+                await renderizarProfile(); // Recarrega a tela
+            }
+        } catch (e) {
+            console.error("Erro ao processar favorito:", e);
+        }
     }
 
     async function salvarEdicao() {
@@ -746,10 +863,34 @@
         await fetch(`/interacoes/usuario/${dadosUser.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); fecharModal(); await carregarLibrary();
     }
 
+    // MUDANÇA: Garante que, ao remover o filme do diário, ele também saia dos favoritos do banco
     async function removerDoDiario() {
         if (!confirm("Remover da biblioteca?")) return;
-        let favs = JSON.parse(localStorage.getItem(`cinehub_favs_${dadosUser.id}`)) || []; favs = favs.filter(id => id !== filmeModalAtual.toString() && id !== Number(filmeModalAtual)); localStorage.setItem(`cinehub_favs_${dadosUser.id}`, JSON.stringify(favs));
-        await fetch(`/interacoes/usuario/${dadosUser.id}/filme/${document.getElementById('modal-id-tmdb').value}`, { method: 'DELETE' }); fecharModal(); await carregarLibrary();
+
+        const targetId = dadosUser.id;
+
+        try {
+            const resFav = await fetch(`/usuarios/${targetId}/favoritos`);
+            let favsAtuais = await resFav.json();
+            let listaIds = favsAtuais.map(f => f.filmeTmdbId);
+
+            // Se o filme estiver nos favoritos, remove ele de lá também
+            if(listaIds.includes(Number(filmeModalAtual))) {
+                listaIds = listaIds.filter(id => id !== Number(filmeModalAtual));
+                await fetch(`/usuarios/${targetId}/favoritos`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(listaIds)
+                });
+            }
+        } catch(e) {
+            console.error("Erro ao sincronizar remoção de favoritos", e);
+        }
+
+        // Apaga a interação principal
+        await fetch(`/interacoes/usuario/${dadosUser.id}/filme/${document.getElementById('modal-id-tmdb').value}`, { method: 'DELETE' });
+        fecharModal();
+        await carregarLibrary();
     }
 </script>
 </body>

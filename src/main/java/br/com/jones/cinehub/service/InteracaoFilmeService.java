@@ -26,12 +26,16 @@ public class InteracaoFilmeService {
 
         return interacaoFilmeRepository.findByUsuarioAndIdFilmeTmdb(usuario, interacao.getIdFilmeTmdb())
                 .map(existente -> {
+                    // Atualiza os campos mantendo o ID original (evita duplicatas)
                     existente.setStatus(interacao.getStatus());
                     existente.setNota(interacao.getNota());
                     existente.setReview(interacao.getReview());
-                    // ATUALIZAÇÃO: Novos campos incluídos no Upsert
                     existente.setTags(interacao.getTags());
                     existente.setIdiomaAudio(interacao.getIdiomaAudio());
+
+                    // NOVO: Agora atualizamos a data oficial da agenda
+                    existente.setDataAgendada(interacao.getDataAgendada());
+
                     return interacaoFilmeRepository.save(existente);
                 })
                 .orElseGet(() -> interacaoFilmeRepository.save(interacao));

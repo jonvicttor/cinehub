@@ -37,7 +37,6 @@ public class UsuarioController {
         }
     }
 
-    // NOVO: Rota para buscar um perfil pelo @nickname
     @GetMapping("/busca/{nickname}")
     public ResponseEntity<Usuario> buscarPorNickname(@PathVariable String nickname) {
         try {
@@ -48,7 +47,6 @@ public class UsuarioController {
         }
     }
 
-    // NOVO: Rota para Seguir/Parar de seguir
     @PostMapping("/{id}/seguir/{seguidoId}")
     public ResponseEntity<Void> seguir(@PathVariable Long id, @PathVariable Long seguidoId) {
         try {
@@ -59,7 +57,6 @@ public class UsuarioController {
         }
     }
 
-    // NOVO: Listar quem o usuário segue
     @GetMapping("/{id}/seguindo")
     public ResponseEntity<Set<Usuario>> listarSeguindo(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.listarQuemEuSigo(id));
@@ -75,14 +72,30 @@ public class UsuarioController {
         }
     }
 
-    // Rota para atualizar a cor do tema do usuário
     @PutMapping("/{id}/tema")
     public ResponseEntity<Void> atualizarTema(@PathVariable Long id, @RequestBody Map<String, String> dados) {
         try {
             Usuario usuario = usuarioService.buscarPorId(id);
             usuario.setCorTema(dados.get("cor"));
-            usuarioService.cadastrarUsuario(usuario); // O save do JPA já atualiza se o ID existir
+            usuarioService.cadastrarUsuario(usuario);
             return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // NOVO: Rota para atualizar os dados gerais do perfil
+    @PutMapping("/{id}/perfil")
+    public ResponseEntity<Usuario> atualizarPerfil(@PathVariable Long id, @RequestBody Map<String, String> dados) {
+        try {
+            Usuario usuario = usuarioService.buscarPorId(id);
+            if (dados.containsKey("nome")) usuario.setNome(dados.get("nome"));
+            if (dados.containsKey("nickname")) usuario.setNickname(dados.get("nickname"));
+            if (dados.containsKey("bio")) usuario.setBio(dados.get("bio"));
+            if (dados.containsKey("fotoUrl")) usuario.setFotoUrl(dados.get("fotoUrl"));
+
+            Usuario usuarioAtualizado = usuarioService.cadastrarUsuario(usuario);
+            return ResponseEntity.ok(usuarioAtualizado);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

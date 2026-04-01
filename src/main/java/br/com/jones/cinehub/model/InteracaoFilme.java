@@ -2,10 +2,13 @@ package br.com.jones.cinehub.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "interacoes_filmes")
+@Table(name = "interacoes_filmes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"usuario_id", "id_filme_tmdb"}) // Escudo anti-clones no banco de dados
+})
 public class InteracaoFilme {
 
     @Id
@@ -31,5 +34,9 @@ public class InteracaoFilme {
     // NOVOS CAMPOS: Tags e Registro de Idioma
     private String tags; // Ex: "Plot Twist, Clássico"
     private String idiomaAudio; // Ex: "Dublado", "Legendado", "Original"
+
+    // NOVO CAMPO: Agenda Oficial
+    @Column(name = "data_agendada")
+    private LocalDate dataAgendada;
 
 }

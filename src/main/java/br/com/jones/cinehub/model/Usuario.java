@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "usuarios")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true) // Boa prática para evitar loops em Sets
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Usuario {
 
     @Id
@@ -34,14 +34,19 @@ public class Usuario {
     @Column(name = "cor_tema")
     private String corTema;
 
-    // RELACIONAMENTO SOCIAL: Muitos usuários seguem muitos usuários
+    // NOVOS CAMPOS PARA O PERFIL
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
     @ManyToMany
     @JoinTable(
             name = "seguidores",
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "seguido_id")
     )
-    @JsonIgnore // Evita erro de recursão no JSON
+    @JsonIgnore
     private Set<Usuario> seguindo = new HashSet<>();
-
 }
