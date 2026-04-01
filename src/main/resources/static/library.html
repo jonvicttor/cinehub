@@ -532,6 +532,9 @@
         html += '</div>'; return html;
     }
 
+    // ==========================================
+    // MUDANÇA VIP: Adicionando Lazy Loading e Decoding nas imagens!
+    // ==========================================
     function gerarCardHTML(i, f, mostrarNotaDonut = true, isFavSlot = false, slotIdx = -1) {
         const valorTmdb = f.notaTmdb || f.vote_average || f.voteAverage || 0;
         const notaStr = valorTmdb > 0 ? (valorTmdb * 10).toFixed(0) : 'NR';
@@ -546,11 +549,18 @@
         const statusBadge = i.status === 'QUERO_VER' ? '' : `<div class="status-pill">${i.status.replace('_', ' ')}</div>`;
         let btnRemover = (isFavSlot && !isVisita) ? `<div class="btn-remover-fav" onclick="removerFavorito(${slotIdx}, event)" title="Remover dos favoritos">&times;</div>` : '';
 
+        // loading="lazy" e decoding="async" adicionados na tag img!
         return `
             <div class="card-library" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
                 ${btnRemover} ${statusBadge}
                 <div class="btn-editar-card" onclick="event.stopPropagation(); abrirModal(${i.idFilmeTmdb}, '${escapeJS(f.tituloExibicao)}', '${i.status}', '${i.nota||""}', '${escapeJS(i.review)}', '${escapeJS(i.tags)}', '${i.idiomaAudio||""}')" title="Editar">✏️</div>
-                <div class="poster-container"><img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" onerror="this.src='https://via.placeholder.com/500x750'">${badgeDonut}</div>
+                <div class="poster-container">
+                    <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}"
+                         onerror="this.src='https://via.placeholder.com/500x750'"
+                         loading="lazy"
+                         decoding="async">
+                    ${badgeDonut}
+                </div>
                 <div class="info-container">${estrelasHtml}</div>
             </div>`;
     }
@@ -596,10 +606,11 @@
             const estrelasHtml = gerarEstrelasHtml(i.nota);
             const ano = f.dataExibicao ? f.dataExibicao.split('-')[0] : '';
 
+            // loading="lazy" adicionado na tag img
             htmlFinal += `
                 <div class="review-item" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[3]); return false;" title="Ler todas as reviews">
                     <div class="review-poster" onclick="event.stopPropagation(); window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
-                        <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}">
+                        <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" loading="lazy" decoding="async">
                     </div>
                     <div class="review-content">
                         <div class="review-header">
@@ -661,9 +672,10 @@
             else if(i.status === 'ASSISTINDO') acaoTexto = "Começou a assistir";
             else if(i.status === 'ABANDONEI') acaoTexto = "Abandonou";
 
+            // loading="lazy" adicionado na tag img
             container.innerHTML += `
                 <div class="activity-item" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
-                    <div class="activity-poster"><img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}"></div>
+                    <div class="activity-poster"><img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" loading="lazy" decoding="async"></div>
                     <div class="activity-text">Você <strong>${acaoTexto}</strong><br> ${f.tituloExibicao} <span class="activity-date">Recente</span></div>
                 </div>`;
         }
@@ -762,7 +774,8 @@
         const divWatch = document.getElementById('sidebar-watchlist'); divWatch.innerHTML = '';
         for (const i of filmesFiltradosWatchlist.slice(0, 4)) {
             const f = await getInfoFilme(i.idFilmeTmdb);
-            divWatch.innerHTML += `<img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" class="mini-poster" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">`;
+            // loading="lazy" adicionado na tag img da sidebar
+            divWatch.innerHTML += `<img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" class="mini-poster" loading="lazy" decoding="async" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">`;
         }
 
         const diary = interacoesGlobais.filter(i => i.status === 'JA_VI').slice(0, 5); document.getElementById('contador-diary').innerText = dadosOriginais.filter(i => i.status === 'JA_VI').length;
