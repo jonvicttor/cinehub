@@ -2,142 +2,190 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Meu Perfil - Cinehub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cor-primaria: #a333ff;
-            --cor-fundo: #14181c;
-            --cor-card: #1b2228;
-            --cor-texto: #ffffff;
-            --cor-texto-sec: #8c9baf;
-            --cor-borda: rgba(255, 255, 255, 0.1);
-            --cor-perigo: #db2360;
-            --transicao: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            /* Paleta Gótica "Abismo Minimalista" */
+            --cor-primaria: #8a0303;
+            --cor-fundo: #020202;
+            --cor-card: #0a0a0c;
+            --cor-texto: #dfdfdf;
+            --cor-texto-sec: #6c757d;
+            --cor-borda: #1a1a1a;
+            --cor-perigo: #8a0303;
+            --transicao: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+        /* SCROLLBAR DAS TREVAS */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--cor-fundo); }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; border: 1px solid var(--cor-fundo); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cor-primaria); }
+
         body {
             background-color: var(--cor-fundo); color: var(--cor-texto);
-            font-family: 'Inter', sans-serif; margin: 0; padding: 0 0 100px 0;
+            font-family: 'Inter', sans-serif; margin: 0; padding: 0 0 50px 0;
             display: flex; flex-direction: column; align-items: center;
-            -webkit-font-smoothing: antialiased;
+            -webkit-font-smoothing: antialiased; overflow-x: hidden;
         }
 
-        /* ======= HEADER ======= */
-        .header-top { width: 100%; max-width: 1200px; padding: 40px 20px 20px 20px; display: flex; flex-direction: column; align-items: center; gap: 25px; }
-        .brand { text-decoration: none; transition: var(--transicao); display: flex; align-items: center; }
-        .brand:hover { transform: scale(1.03); filter: brightness(1.2); }
-        .brand-text { font-size: 2.2rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; margin: 0; color: #fff; display: flex; align-items: center; }
-        .brand-text span { font-weight: 800; margin-left: 3px; background: linear-gradient(135deg, #fff 10%, var(--cor-primaria) 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: var(--transicao); }
+        /* ======= TOP NAV (LETTERBOXD STYLE) ======= */
+        .top-nav {
+            width: 100%; position: sticky; top: 0; background-color: rgba(2, 2, 2, 0.98);
+            backdrop-filter: blur(10px); border-bottom: 1px solid var(--cor-borda);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; z-index: 1000;
+        }
+
+        .btn-hamburger { background: transparent; border: none; color: var(--cor-texto); font-size: 1.5rem; cursor: pointer; padding: 0; display: flex; align-items: center; transition: var(--transicao); }
+        .btn-hamburger:hover { color: var(--cor-primaria); transform: scale(1.1); }
+
+        .brand { text-decoration: none; display: flex; align-items: center; position: absolute; left: 50%; transform: translateX(-50%);}
+        .brand-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 6px; text-transform: uppercase; margin: 0; color: #fff; }
+        .brand-text span { color: var(--cor-primaria); }
+
+        .btn-search-nav { background: transparent; border: none; color: var(--cor-texto); font-size: 1.1rem; cursor: pointer; padding: 0; transition: var(--transicao);}
+        .btn-search-nav:hover { color: var(--cor-primaria); transform: scale(1.1); }
+
+        /* ======= MENU LATERAL (DRAWER) ======= */
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1999; opacity: 0; pointer-events: none; transition: var(--transicao); backdrop-filter: blur(4px); }
+        .menu-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #08080a; z-index: 2000; border-right: 1px solid var(--cor-borda); display: flex; flex-direction: column; padding: 30px 20px; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 10px 0 40px rgba(0,0,0,0.9); }
+        .side-menu.open { left: 0; }
+
+        .side-menu-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--cor-borda); padding-bottom: 20px; margin-bottom: 20px; }
+        .side-menu-header h2 { margin: 0; font-size: 1.1rem; font-weight: 900; letter-spacing: 3px; color: #fff; text-transform: uppercase;}
+        .btn-close-menu { background: transparent; border: none; color: var(--cor-texto-sec); font-size: 1.3rem; cursor: pointer; transition: var(--transicao); }
+        .btn-close-menu:hover { color: var(--cor-perigo); transform: rotate(90deg); }
+
+        .menu-links { display: flex; flex-direction: column; gap: 5px; }
+        .menu-links a { color: var(--cor-texto); text-decoration: none; font-size: 1rem; font-weight: 500; padding: 14px 12px; border-radius: 2px; transition: var(--transicao); display: flex; align-items: center; gap: 15px; border: 1px solid transparent; }
+        .menu-links a:hover, .menu-links a.active { background: rgba(255,255,255,0.02); color: #fff; border-color: var(--cor-borda); }
+        .menu-links a.active { border-color: var(--cor-primaria); color: var(--cor-primaria); font-weight: 700;}
+        .menu-icon { font-size: 1.1rem; opacity: 0.6;}
 
         /* ======= CONTEINER PRINCIPAL ======= */
-        .perfil-wrapper { width: 100%; max-width: 600px; padding: 20px; display: flex; flex-direction: column; gap: 30px; }
+        .perfil-wrapper { width: 100%; max-width: 600px; padding: 40px 20px; display: flex; flex-direction: column; gap: 40px; margin: 0 auto;}
 
-        /* ======= CABEÇALHO DO PERFIL ======= */
+        /* ======= CABEÇALHO DO PERFIL (GOTHIC) ======= */
         .perfil-header {
             display: flex; flex-direction: column; align-items: center; gap: 15px;
-            background: var(--cor-card); padding: 30px; border-radius: 20px; border: 1px solid var(--cor-borda);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden;
+            background: var(--cor-card); padding: 40px 30px; border-radius: 4px; border: 1px solid var(--cor-borda);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); position: relative; overflow: hidden;
         }
 
-        /* MUDANÇA: Avatar clicável com ícone de câmera */
+        /* Avatar Clicável com Efeito */
         .perfil-avatar {
-            width: 120px; height: 120px; border-radius: 50%; background-color: #232a31; z-index: 2;
-            overflow: hidden; border: 4px solid var(--cor-primaria); transition: var(--transicao);
-            box-shadow: 0 0 25px rgba(163, 51, 255, 0.3); position: relative; cursor: pointer;
+            width: 100px; height: 100px; border-radius: 50%; background-color: #000; z-index: 2;
+            overflow: hidden; border: 1px solid var(--cor-borda); transition: var(--transicao);
+            box-shadow: 0 0 35px rgba(138, 3, 3, 0.15); position: relative; cursor: pointer;
         }
-        .perfil-avatar img { width: 100%; height: 100%; object-fit: cover; transition: var(--transicao); }
+        .perfil-avatar img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(25%) contrast(110%); transition: var(--transicao); }
 
-        /* Overlay da câmera */
         .avatar-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center;
-            justify-content: center; font-size: 2rem; color: #fff; opacity: 0; transition: var(--transicao); z-index: 3;
+            position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center;
+            justify-content: center; font-size: 1.8rem; color: #fff; opacity: 0; transition: var(--transicao); z-index: 3;
         }
+        .perfil-avatar:hover { border-color: var(--cor-primaria); box-shadow: 0 0 50px rgba(138, 3, 3, 0.4); transform: scale(1.05); }
         .perfil-avatar:hover .avatar-overlay { opacity: 1; }
         .perfil-avatar:hover img { transform: scale(1.1); filter: blur(2px); }
 
         .perfil-info { text-align: center; z-index: 2; }
-        .perfil-info h1 { margin: 0; font-weight: 800; font-size: 1.8rem; color: #fff; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px;}
-        .perfil-info p.nick { margin: 2px 0 10px 0; color: var(--cor-texto-sec); font-size: 1rem; font-weight: 500;}
-        .perfil-info p.bio { margin: 0; color: #ddd; font-size: 0.9rem; font-style: italic; max-width: 400px; line-height: 1.4;}
+        .perfil-info h1 { margin: 0; font-weight: 900; font-size: 1.7rem; color: #fff; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase;}
+        .perfil-info p.nick { margin: 2px 0 10px 0; color: var(--cor-texto-sec); font-size: 0.85rem; font-weight: 500; font-family: 'Georgia', serif;}
+        .perfil-info p.bio { margin: 0; color: #ccc; font-size: 0.9rem; font-style: italic; max-width: 400px; line-height: 1.5;}
 
-        /* Botoes de Ação Rápida do Perfil */
+        /* Botoes de Ação Rápida */
         .header-acoes { display: flex; gap: 10px; margin-top: 15px; z-index: 2;}
         .btn-acao-header {
-            background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--cor-borda);
-            padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: var(--transicao);
+            background: transparent; color: var(--cor-texto-sec); border: 1px solid var(--cor-borda);
+            padding: 10px 18px; border-radius: 2px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: var(--transicao);
+            text-transform: uppercase; letter-spacing: 1px;
         }
-        .btn-acao-header:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
-        .btn-acao-header.destaque { background: var(--cor-primaria); color: #000; border: none; }
-        .btn-acao-header.destaque:hover { filter: brightness(1.2); }
+        .btn-acao-header:hover { background: rgba(255,255,255,0.02); color: #fff; border-color: var(--cor-primaria); }
+        .btn-acao-header.destaque { border-color: var(--cor-primaria); color: var(--cor-primaria); background: rgba(138, 3, 3, 0.05); }
+        .btn-acao-header.destaque:hover { background: var(--cor-primaria); color: #fff; }
 
         /* ======= ESTATÍSTICAS RÁPIDAS ======= */
         .stats-dashboard {
-            display: flex; justify-content: space-around; width: 100%; z-index: 2; margin-top: 10px;
-            background: rgba(0,0,0,0.2); padding: 15px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-around; width: 100%; z-index: 2; margin-top: 15px;
+            background: #000; padding: 20px 10px; border-radius: 2px; border: 1px solid var(--cor-borda);
         }
         .stat-item { display: flex; flex-direction: column; align-items: center; }
-        .stat-val { font-size: 1.3rem; font-weight: 800; color: #fff; line-height: 1; }
-        .stat-name { font-size: 0.65rem; color: var(--cor-texto-sec); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-top: 4px;}
+        .stat-val { font-size: 1.4rem; font-weight: 900; color: #fff; line-height: 1; font-family: 'Georgia', serif;}
+        .stat-name { font-size: 0.65rem; color: var(--cor-texto-sec); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 6px;}
 
         /* ======= BLOCOS DE CONFIGURAÇÃO ======= */
         .config-box {
-            background: var(--cor-card); padding: 25px; border-radius: 20px; border: 1px solid var(--cor-borda);
-            display: flex; flex-direction: column; gap: 20px;
+            background: var(--cor-card); padding: 30px; border-radius: 4px; border: 1px solid var(--cor-borda);
+            display: flex; flex-direction: column; gap: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
-        .config-box h2 { margin: 0; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px;}
-        .config-box p { margin: 0; font-size: 0.85rem; color: var(--cor-texto-sec); line-height: 1.5;}
+        .config-box h2 { margin: 0; font-size: 1.1rem; font-weight: 900; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #fff;}
+        .config-box p { margin: 0; font-size: 0.85rem; color: var(--cor-texto-sec); line-height: 1.6; font-style: italic;}
 
-        /* Bolinhas de cores predefinidas */
-        .color-swatches { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; }
-        .swatch { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.1); transition: var(--transicao); }
-        .swatch:hover { transform: scale(1.15); }
+        /* Swatches Quadrados */
+        .color-swatches { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 5px; }
+        .swatch { width: 35px; height: 35px; border-radius: 2px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: var(--transicao); }
+        .swatch:hover { transform: scale(1.1); border-color: #fff;}
         .swatch.active { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 15px currentColor; }
 
-        .custom-color-container { display: flex; align-items: center; gap: 15px; margin-top: 10px; background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);}
-        .custom-color-container label { font-size: 0.85rem; font-weight: 600; color: #fff; flex-grow: 1;}
+        .custom-color-container { display: flex; align-items: center; gap: 15px; margin-top: 5px; background: #000; padding: 15px; border-radius: 2px; border: 1px solid var(--cor-borda);}
+        .custom-color-container label { font-size: 0.85rem; font-weight: 600; color: var(--cor-texto-sec); flex-grow: 1; text-transform: uppercase; letter-spacing: 1px;}
         input[type="color"] { -webkit-appearance: none; border: none; width: 40px; height: 40px; cursor: pointer; background: none; padding: 0; }
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; }
+        input[type="color"]::-webkit-color-swatch { border: 1px solid rgba(255,255,255,0.2); border-radius: 2px; }
 
-        .btn-salvar { background: var(--cor-primaria); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1px; width: 100%; margin-top: 10px; }
-        .btn-salvar:hover { filter: brightness(1.2); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transform: translateY(-3px); }
+        .btn-salvar { background: var(--cor-texto); color: #000; border: none; padding: 14px; border-radius: 2px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1.5px; width: 100%; margin-top: 10px; }
+        .btn-salvar:hover { background: #fff; box-shadow: 0 5px 15px rgba(255,255,255,0.2); transform: translateY(-2px); }
 
         /* Danger Zone */
-        .danger-zone { border: 1px dashed rgba(219, 35, 96, 0.4); background: rgba(219, 35, 96, 0.05); }
+        .danger-zone { border: 1px solid rgba(138, 3, 3, 0.3); background: rgba(138, 3, 3, 0.05); }
         .danger-zone h2 { color: var(--cor-perigo); }
-        .btn-logout { background: transparent; color: var(--cor-perigo); border: 1px solid rgba(219, 35, 96, 0.3); padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: var(--transicao); width: 100%; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-logout:hover { background: rgba(219, 35, 96, 0.1); border-color: var(--cor-perigo); }
-
-        /* ======= NAV BOTTOM ======= */
-        .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: rgba(27, 34, 40, 0.9); backdrop-filter: blur(12px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--cor-borda); z-index: 1000; border-top-left-radius: 20px; border-top-right-radius: 20px; }
-        @media (min-width: 600px) { .nav-bottom { bottom: 20px; border-radius: 20px; border: 1px solid var(--cor-borda); } }
-        .nav-bottom a { color: var(--cor-texto-sec); text-decoration: none; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: var(--transicao); }
-        .nav-bottom a.active { color: var(--cor-primaria); }
-        .nav-icon { font-size: 1.2rem; }
+        .btn-logout { background: transparent; color: var(--cor-perigo); border: 1px solid var(--cor-borda); padding: 14px; border-radius: 2px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: var(--transicao); width: 100%; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-logout:hover { background: var(--cor-perigo); color: #fff; border-color: var(--cor-perigo); }
 
         /* ======= MODAL EDICAO DE PERFIL ======= */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal-content { background: var(--cor-card); width: 90%; max-width: 400px; padding: 30px; border-radius: 12px; border: 1px solid var(--cor-borda); animation: slideUp 0.3s ease; max-height: 95vh; overflow-y: auto;}
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .close-btn { float: right; font-size: 1.5rem; cursor: pointer; color: var(--cor-texto-sec); line-height: 1; }
-        .close-btn:hover { color: #fff; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(3px); transition: var(--transicao); }
+        .modal-content { background: #050505; width: 90%; max-width: 400px; padding: 30px; border-radius: 4px; border: 1px solid var(--cor-borda); animation: fadeInModal 0.4s cubic-bezier(0.19, 1, 0.22, 1); max-height: 95vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,1);}
+        @keyframes fadeInModal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .close-btn { float: right; font-size: 1.3rem; cursor: pointer; color: var(--cor-texto-sec); transition: var(--transicao); line-height: 1; }
+        .close-btn:hover { color: var(--cor-perigo); transform: rotate(90deg); }
 
-        .modal-form label { font-size: 0.75rem; font-weight: 700; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; letter-spacing: 0.5px; margin-top: 15px;}
-        .modal-form input, .modal-form textarea { background: rgba(255,255,255,0.05); border: 1px solid var(--cor-borda); color: white; padding: 12px 14px; border-radius: 6px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.95rem; }
-        .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); }
-        .btn-salvar-modal { background: var(--cor-primaria); border: none; color: #000; padding: 14px; border-radius: 6px; font-weight: 800; width: 100%; cursor: pointer; transition: var(--transicao); margin-top: 20px; text-transform: uppercase; font-size: 0.9rem;}
-        .btn-salvar-modal:hover { filter: brightness(1.2); }
+        .modal-form label { font-size: 0.65rem; font-weight: 700; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; letter-spacing: 1.5px; margin-top: 18px; text-transform: uppercase;}
+        .modal-form input, .modal-form textarea { background: #000; border: 1px solid var(--cor-borda); color: white; padding: 12px; border-radius: 2px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.9rem; transition: var(--transicao); }
+        .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 10px rgba(138, 3, 3, 0.2); }
+
+        .btn-salvar-modal { background: var(--cor-texto); border: none; color: #000; padding: 14px; border-radius: 2px; font-weight: 800; width: 100%; cursor: pointer; transition: var(--transicao); margin-top: 30px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1.5px;}
+        .btn-salvar-modal:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,255,255,0.2);}
     </style>
 </head>
 <body>
 
-<div class="header-top">
+<header class="top-nav">
+    <button class="btn-hamburger" onclick="toggleMenu()">☰</button>
     <a href="index.html" class="brand"><h1 class="brand-text">CINE<span>HUB</span></h1></a>
-</div>
+    <button class="btn-search-nav" onclick="window.location.href='index.html'">🔍</button>
+</header>
+
+<div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
+<nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+        <h2>CINEHUB</h2>
+        <button class="btn-close-menu" onclick="toggleMenu()">✕</button>
+    </div>
+    <div class="menu-links">
+        <a href="index.html"><span class="menu-icon">🏠</span> Home</a>
+        <a href="library.html"><span class="menu-icon">📖</span> Library</a>
+        <a href="calendario.html"><span class="menu-icon">📅</span> Agenda</a>
+        <a href="comunidade.html"><span class="menu-icon">👥</span> Social</a>
+        <a href="perfil.html" class="active"><span class="menu-icon">⚙️</span> Perfil</a>
+    </div>
+</nav>
 
 <input type="file" id="input-foto-oculto" accept="image/*" style="display: none;" onchange="processarNovaFoto(this)">
 
@@ -145,7 +193,7 @@
     <div class="perfil-header">
         <div class="perfil-avatar" onclick="clicarNoUploadFoto()" title="Alterar Foto de Perfil">
             <div class="avatar-overlay">📷</div>
-            <img src="https://ui-avatars.com/api/?name=User&background=232a31&color=fff&size=150" id="avatar-img" alt="Avatar">
+            <img src="https://ui-avatars.com/api/?name=User&background=111&color=fff&size=150" id="avatar-img" alt="Avatar">
         </div>
         <div class="perfil-info">
             <h1 id="perfil-nome">Carregando...</h1>
@@ -169,51 +217,43 @@
         </div>
 
         <div class="header-acoes">
-            <button class="btn-acao-header destaque" onclick="copiarLinkPerfil()" id="btn-share">🔗 Compartilhar</button>
-            <button class="btn-acao-header" onclick="abrirModalEdicao()">✏️ Editar Perfil</button>
+            <button class="btn-acao-header destaque" onclick="copiarLinkPerfil()" id="btn-share">Copiar Link</button>
+            <button class="btn-acao-header" onclick="abrirModalEdicao()">Editar Perfil</button>
         </div>
     </div>
 
     <div class="config-box">
-        <h2>🎨 Tema e Aparência</h2>
-        <p>Personalize o Cinehub com a sua cor favorita. Essa mudança será aplicada em todas as telas.</p>
+        <h2>Tema e Aparência</h2>
+        <p>Personalize o Cinehub com a sua cor favorita. A escuridão será moldada por essa aura em todas as telas.</p>
 
         <div class="color-swatches" id="swatches-container">
-            <div class="swatch" style="background-color: #a333ff; color: #a333ff;" onclick="selecionarCor('#a333ff', this)" title="Roxo Cinehub"></div>
+            <div class="swatch" style="background-color: #8a0303; color: #8a0303;" onclick="selecionarCor('#8a0303', this)" title="Vermelho Sangue (Gótico)"></div>
+            <div class="swatch" style="background-color: #a333ff; color: #a333ff;" onclick="selecionarCor('#a333ff', this)" title="Roxo Neon"></div>
             <div class="swatch" style="background-color: #00e054; color: #00e054;" onclick="selecionarCor('#00e054', this)" title="Verde Letterboxd"></div>
-            <div class="swatch" style="background-color: #e50914; color: #e50914;" onclick="selecionarCor('#e50914', this)" title="Vermelho Netflix"></div>
-            <div class="swatch" style="background-color: #0078ff; color: #0078ff;" onclick="selecionarCor('#0078ff', this)" title="Azul Prime"></div>
-            <div class="swatch" style="background-color: #f5c518; color: #f5c518;" onclick="selecionarCor('#f5c518', this)" title="Dourado IMDb"></div>
-            <div class="swatch" style="background-color: #ff007f; color: #ff007f;" onclick="selecionarCor('#ff007f', this)" title="Rosa Neon"></div>
+            <div class="swatch" style="background-color: #0078ff; color: #0078ff;" onclick="selecionarCor('#0078ff', this)" title="Azul Profundo"></div>
+            <div class="swatch" style="background-color: #f5c518; color: #f5c518;" onclick="selecionarCor('#f5c518', this)" title="Dourado Clássico"></div>
+            <div class="swatch" style="background-color: #dfdfdf; color: #dfdfdf;" onclick="selecionarCor('#dfdfdf', this)" title="Branco Fantasma"></div>
         </div>
 
         <div class="custom-color-container">
-            <label for="color-picker">Ou escolha uma cor customizada:</label>
-            <input type="color" id="color-picker" value="#a333ff" onchange="selecionarCor(this.value, null)">
+            <label for="color-picker">Ou escolha um tom personalizado:</label>
+            <input type="color" id="color-picker" value="#8a0303" onchange="selecionarCor(this.value, null)">
         </div>
 
         <button class="btn-salvar" onclick="salvarCor()">Aplicar Tema Visual</button>
     </div>
 
     <div class="config-box danger-zone">
-        <h2>⚠️ Danger Zone</h2>
-        <p>Encerrar a sessão no seu dispositivo atual.</p>
+        <h2>Danger Zone</h2>
+        <p>Encerrar a sessão e desaparecer nas sombras.</p>
         <button class="btn-logout" onclick="fazerLogout()">Sair da Conta</button>
     </div>
 </div>
 
-<nav class="nav-bottom">
-    <a href="index.html"><span class="nav-icon">🔍</span>Home</a>
-    <a href="library.html"><span class="nav-icon">📖</span>Library</a>
-    <a href="calendario.html"><span class="nav-icon">📅</span>Agenda</a>
-    <a href="comunidade.html"><span class="nav-icon">👥</span>Social</a>
-    <a href="perfil.html" class="active"><span class="nav-icon">⚙️</span>Perfil</a>
-</nav>
-
 <div id="modal-edicao" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="fecharModal()">&times;</span>
-        <h2 style="margin: 0 0 15px 0; color: #fff;">Editar Perfil</h2>
+        <h2 style="margin: 0 0 15px 0; color: #fff; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 2px;">Editar Perfil</h2>
         <div class="modal-form">
             <label>NOME DE EXIBIÇÃO</label>
             <input type="text" id="edit-nome" placeholder="Seu nome">
@@ -222,19 +262,29 @@
             <input type="text" id="edit-nick" placeholder="Seu_nick_legal">
 
             <label>BIO / FRASE (Opcional)</label>
-            <textarea id="edit-bio" rows="3" placeholder="Fale um pouco sobre seu gosto por filmes..."></textarea>
+            <textarea id="edit-bio" rows="3" placeholder="Escreva seu epitáfio cinéfilo..."></textarea>
 
-            <button class="btn-salvar-modal" onclick="salvarEdicaoPerfil()">SALVAR ALTERAÇÕES</button>
+            <button class="btn-salvar-modal" onclick="salvarEdicaoPerfil()">Salvar Alterações</button>
         </div>
     </div>
 </div>
 
 <script>
+    // ======= CONTROLE DO MENU HAMBÚRGUER =======
+    function toggleMenu() {
+        const menu = document.getElementById('side-menu');
+        const overlay = document.getElementById('menu-overlay');
+        menu.classList.toggle('open');
+        overlay.classList.toggle('open');
+        if(menu.classList.contains('open')) { document.body.style.overflow = 'hidden'; }
+        else { document.body.style.overflow = 'auto'; }
+    }
+
     const dadosUsuario = JSON.parse(localStorage.getItem('usuarioLogado'));
     if (!dadosUsuario) window.location.href = 'login.html';
 
-    let corSelecionada = '#a333ff';
-    const uiAvatarPadrão = `https://ui-avatars.com/api/?name=${dadosUsuario.nome}&background=232a31&color=fff&size=150`;
+    let corSelecionada = '#8a0303';
+    const uiAvatarPadrão = `https://ui-avatars.com/api/?name=${dadosUsuario.nome}&background=111&color=fff&size=150`;
 
     window.onload = async function() {
         if (dadosUsuario.corTema) {
@@ -244,13 +294,12 @@
             marcarSwatchAtivo(corSelecionada);
         }
 
-        // Povoar Informações
         document.getElementById('perfil-nome').innerText = dadosUsuario.nome;
         const nickStr = dadosUsuario.nickname || dadosUsuario.nome.split(' ')[0].toLowerCase();
         document.getElementById('perfil-nick').innerText = `@${nickStr}`;
         document.getElementById('avatar-img').src = dadosUsuario.fotoUrl || uiAvatarPadrão;
 
-        if(dadosUsuario.bio) document.getElementById('perfil-bio').innerText = dadosUsuario.bio;
+        if(dadosUsuario.bio) document.getElementById('perfil-bio').innerText = `"${dadosUsuario.bio}"`;
 
         document.getElementById('edit-nome').value = dadosUsuario.nome;
         document.getElementById('edit-nick').value = nickStr;
@@ -282,11 +331,8 @@
         if (!input.files || !input.files[0]) return;
 
         const arquivo = input.files[0];
-
-        // Criar um nome único pra foto pra não sobrepor as outras
         const nomeArquivo = `foto_perfil_${dadosUsuario.id}_${Date.now()}.jpg`;
 
-        // 1. Live Preview Instantâneo no HTML
         const reader = new FileReader();
         reader.onload = function(e) { document.getElementById('avatar-img').src = e.target.result; };
         reader.readAsDataURL(arquivo);
@@ -294,29 +340,24 @@
         document.querySelector('.avatar-overlay').innerText = "⏳";
 
         // ⚠️ SUBSTITUA PELAS SUAS CHAVES DO APPLICATION.PROPERTIES
-        // ⚠️ SUBSTITUA PELAS SUAS CHAVES DO APPLICATION.PROPERTIES
         const SUPABASE_URL = "https://rlbtqqhuceebtowrvsvk.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsYnRxcWh1Y2VlYnRvd3J2c3ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTYwMTksImV4cCI6MjA5MDI3MjAxOX0.q-HKe9MjD61dYxk8JshlRkZUOHyqQQN5Gz_Nl5GFHKY";
 
-        // Caminho do balde (bucket) que criamos: "avatars"
         const endpoint = `${SUPABASE_URL}/storage/v1/object/avatars/${nomeArquivo}`;
 
         try {
-            // A. Sobe o arquivo pro Supabase Storage
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Content-Type': arquivo.type // Avisa se é jpg, png, etc
+                    'Content-Type': arquivo.type
                 },
                 body: arquivo
             });
 
             if (response.ok) {
-                // B. Pega a URL pública que o Supabase gerou
                 const fotoUrl = `${SUPABASE_URL}/storage/v1/object/public/avatars/${nomeArquivo}`;
 
-                // C. Manda o Java salvar essa URL no banco de dados na coluna foto_url
                 const saveRes = await fetch(`/usuarios/${dadosUsuario.id}/perfil`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -325,7 +366,6 @@
 
                 if(saveRes.ok) {
                     document.querySelector('.avatar-overlay').innerText = "📷";
-                    // Mantém a sessão atualizada pro restante do app
                     dadosUsuario.fotoUrl = fotoUrl;
                     localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
                 }
@@ -341,7 +381,6 @@
         }
     }
 
-    // === TEMA E AÇÕES ===
     function selecionarCor(cor, elementoSwatch) {
         corSelecionada = cor;
         document.documentElement.style.setProperty('--cor-primaria', cor);
@@ -365,12 +404,12 @@
             if (res.ok) {
                 dadosUsuario.corTema = corSelecionada;
                 localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
-                btn.innerText = "✔ Tema Aplicado!"; btn.style.opacity = "1";
+                btn.innerText = "TEMA APLICADO!"; btn.style.opacity = "1";
                 setTimeout(() => { btn.innerText = "APLICAR TEMA VISUAL"; }, 2000);
             }
         } catch (e) {
             dadosUsuario.corTema = corSelecionada; localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
-            btn.innerText = "✔ Tema Local"; btn.style.opacity = "1";
+            btn.innerText = "TEMA LOCAL!"; btn.style.opacity = "1";
         }
     }
 
@@ -378,17 +417,14 @@
         const link = `${window.location.origin}/library.html?amigoId=${dadosUsuario.id}`;
         navigator.clipboard.writeText(link).then(() => {
             const btn = document.getElementById('btn-share');
-            btn.innerText = "✔ Link Copiado!";
-            setTimeout(() => { btn.innerText = "🔗 Compartilhar"; }, 3000);
+            btn.innerText = "Copiado!";
+            setTimeout(() => { btn.innerText = "Copiar Link"; }, 3000);
         });
     }
 
     function abrirModalEdicao() { document.getElementById('modal-edicao').style.display = 'flex'; }
     function fecharModal() { document.getElementById('modal-edicao').style.display = 'none'; }
 
-    // ==========================================
-    // SALVAMENTO DE DADOS (NOME, NICK E BIO) NO JAVA
-    // ==========================================
     async function salvarEdicaoPerfil() {
         const novoNome = document.getElementById('edit-nome').value.trim();
         const novoNick = document.getElementById('edit-nick').value.trim().replace('@','');
@@ -400,7 +436,6 @@
         btn.innerText = "SALVANDO...";
 
         try {
-            // Requisição PUT para o endpoint que você criou no UsuarioController
             const res = await fetch(`/usuarios/${dadosUsuario.id}/perfil`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -412,16 +447,14 @@
             });
 
             if (res.ok) {
-                // Atualiza a tela
                 document.getElementById('perfil-nome').innerText = novoNome;
                 document.getElementById('perfil-nick').innerText = `@${novoNick}`;
-                document.getElementById('perfil-bio').innerText = novaBio;
+                document.getElementById('perfil-bio').innerText = novaBio ? `"${novaBio}"` : '';
 
                 if(!dadosUsuario.fotoUrl) {
-                    document.getElementById('avatar-img').src = `https://ui-avatars.com/api/?name=${novoNome}&background=232a31&color=fff&size=150`;
+                    document.getElementById('avatar-img').src = `https://ui-avatars.com/api/?name=${novoNome}&background=111&color=fff&size=150`;
                 }
 
-                // Atualiza cache local
                 dadosUsuario.nome = novoNome;
                 dadosUsuario.nickname = novoNick;
                 dadosUsuario.bio = novaBio;
@@ -440,7 +473,7 @@
     }
 
     function fazerLogout() {
-        if(confirm("Tem certeza que deseja sair?")) {
+        if(confirm("Tem certeza que deseja sair e voltar para as sombras?")) {
             localStorage.removeItem('usuarioLogado');
             window.location.href = 'login.html';
         }

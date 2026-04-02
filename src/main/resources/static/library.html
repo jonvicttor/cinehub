@@ -49,8 +49,36 @@
         .brand-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 6px; text-transform: uppercase; margin: 0; color: #fff; }
         .brand-text span { color: var(--cor-primaria); }
 
+        .nav-actions { display: flex; gap: 15px; align-items: center; }
         .btn-search-nav { background: transparent; border: none; color: var(--cor-texto); font-size: 1.1rem; cursor: pointer; padding: 0; transition: var(--transicao);}
         .btn-search-nav:hover { color: var(--cor-primaria); transform: scale(1.1); }
+
+        /* SINO DE NOTIFICAÇÃO (CO-WATCH) */
+        .bell-wrapper { position: relative; cursor: pointer; display: flex; align-items: center; transition: var(--transicao);}
+        .bell-wrapper:hover { transform: scale(1.1); }
+        .bell-icon { font-size: 1.1rem; color: var(--cor-texto); }
+        .bell-badge {
+            display: none; position: absolute; top: -5px; right: -8px; background: var(--cor-primaria);
+            color: #fff; font-size: 0.6rem; font-weight: 900; padding: 2px 5px; border-radius: 10px; border: 2px solid var(--cor-fundo);
+        }
+
+        .notificacoes-dropdown {
+            display: none; position: absolute; top: 180%; right: 0; width: 300px;
+            background: #050505; border: 1px solid var(--cor-borda); border-radius: 4px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.9); padding: 15px; z-index: 2000; flex-direction: column; gap: 10px;
+        }
+        .notificacoes-dropdown.open { display: flex; }
+        .notif-titulo { font-size: 0.8rem; font-weight: 900; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--cor-borda); padding-bottom: 10px;}
+        .notif-item { display: flex; flex-direction: column; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .notif-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .notif-texto { font-size: 0.8rem; color: #ccc; line-height: 1.4; }
+        .notif-texto strong { color: #fff; font-weight: 800; }
+        .notif-botoes { display: flex; gap: 10px; }
+        .btn-notif { flex: 1; padding: 6px; border: none; border-radius: 2px; font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: var(--transicao); text-transform: uppercase;}
+        .btn-notif-aceitar { background: var(--cor-sucesso); color: #000; }
+        .btn-notif-aceitar:hover { filter: brightness(1.2); }
+        .btn-notif-recusar { background: transparent; border: 1px solid var(--cor-borda); color: var(--cor-texto-sec); }
+        .btn-notif-recusar:hover { border-color: var(--cor-perigo); color: var(--cor-perigo); }
 
         /* ======= DRAWER ======= */
         .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1999; opacity: 0; pointer-events: none; transition: var(--transicao); backdrop-filter: blur(4px); }
@@ -119,7 +147,13 @@
 
         .status-pill { position: absolute; top: 6px; right: 6px; padding: 3px 6px; border-radius: 2px; font-size: 0.5rem; font-weight: 800; color: #000; background: var(--cor-texto); text-transform: uppercase; letter-spacing: 0.5px; z-index: 5;}
 
-        /* DONUT DE NOTA */
+        /* TAG DA SESSÃO DUPLA */
+        .cowatch-tag {
+            position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            background: #000; border: 1px solid var(--cor-primaria); padding: 3px 8px; border-radius: 2px;
+            font-size: 0.5rem; font-weight: 800; color: #fff; z-index: 5; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 5px 10px rgba(0,0,0,0.8);
+        }
+
         .nota-donut { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.6rem; font-weight: 800; background: #000 !important; border: 2px solid var(--cor-anel); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.8); }
         .simbolo-porcento { font-size: 0.35rem; margin-top: 1px;}
 
@@ -148,8 +182,6 @@
 
         .review-content { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; }
         .review-header { display: flex; align-items: baseline; gap: 10px; }
-
-        /* MUDANÇA VIP: Título clicável com transição */
         .review-title { font-size: 1rem; font-weight: 800; color: #fff; margin: 0; cursor: pointer; transition: var(--transicao);}
         .review-title:hover { color: var(--cor-primaria); }
 
@@ -225,7 +257,21 @@
 <header class="top-nav">
     <button class="btn-hamburger" onclick="toggleMenu()">☰</button>
     <a href="index.html" class="brand"><h1 class="brand-text">CINE<span>HUB</span></h1></a>
-    <button class="btn-search-nav" onclick="window.location.href='index.html'">🔍</button>
+
+    <div class="nav-actions">
+        <div class="bell-wrapper" onclick="toggleNotificacoes(event)" id="btn-bell">
+            <span class="bell-icon">🔔</span>
+            <span class="bell-badge" id="bell-badge">0</span>
+
+            <div class="notificacoes-dropdown" id="notificacoes-box" onclick="event.stopPropagation()">
+                <h4 class="notif-titulo">Convites Pendentes</h4>
+                <div id="lista-notificacoes">
+                    <p style="color: var(--cor-texto-sec); font-size: 0.8rem; margin: 0; font-style: italic;">Nenhum convite no momento.</p>
+                </div>
+            </div>
+        </div>
+        <button class="btn-search-nav" onclick="window.location.href='index.html'">🔍</button>
+    </div>
 </header>
 
 <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
@@ -265,6 +311,7 @@
 <div class="pill-nav-container">
     <div class="pill-menu">
         <a href="#" class="aba-link active" onclick="mudarAba('profile', this); return false;">Visão Geral</a>
+        <a href="#" class="aba-link" onclick="mudarAba('sessao-dupla', this); return false;">Assistir Juntos</a>
         <a href="#" class="aba-link" onclick="mudarAba('films', this); return false;">Todos os Filmes</a>
         <a href="#" class="aba-link" onclick="mudarAba('diary', this); return false;">Diário</a>
         <a href="#" class="aba-link" onclick="mudarAba('reviews', this); return false;">Reviews</a>
@@ -289,7 +336,7 @@
             <div>
                 <div class="section-header">
                     <h2 class="section-title">Adicionados Recentemente</h2>
-                    <a class="section-link" onclick="mudarAba('films', document.querySelectorAll('.aba-link')[1]); return false;">Ver Todos</a>
+                    <a class="section-link" onclick="mudarAba('films', document.querySelectorAll('.aba-link')[2]); return false;">Ver Todos</a>
                 </div>
                 <div class="poster-grid" id="lista-recentes"><p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Carregando...</p></div>
             </div>
@@ -297,9 +344,16 @@
             <div>
                 <div class="section-header">
                     <h2 class="section-title">Últimas Reviews</h2>
-                    <a class="section-link" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[3]); return false;">Ler Mais</a>
+                    <a class="section-link" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[4]); return false;">Ler Mais</a>
                 </div>
                 <div class="review-list" id="lista-reviews-recentes"><p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Carregando...</p></div>
+            </div>
+        </div>
+
+        <div id="view-sessao-dupla" class="tab-view">
+            <div>
+                <div class="section-header"><h2 class="section-title">Assistir Juntos</h2></div>
+                <div class="poster-grid" id="grid-sessao-dupla"></div>
             </div>
         </div>
 
@@ -358,7 +412,7 @@
         <div>
             <div class="section-header">
                 <h3 class="section-title">Watchlist <span id="contador-watchlist" style="margin-left:8px; font-weight: 500; color: var(--cor-texto-sec);">0</span></h3>
-                <a class="section-link" onclick="mudarAba('watchlist', document.querySelectorAll('.aba-link')[4]); return false;">Ver Todos</a>
+                <a class="section-link" onclick="mudarAba('watchlist', document.querySelectorAll('.aba-link')[5]); return false;">Ver Todos</a>
             </div>
             <div class="mini-poster-grid" id="sidebar-watchlist"></div>
         </div>
@@ -366,7 +420,7 @@
         <div>
             <div class="section-header">
                 <h3 class="section-title">Diário <span id="contador-diary" style="margin-left:8px; font-weight: 500; color: var(--cor-texto-sec);">0</span></h3>
-                <a class="section-link" onclick="mudarAba('diary', document.querySelectorAll('.aba-link')[2]); return false;">Ver Todos</a>
+                <a class="section-link" onclick="mudarAba('diary', document.querySelectorAll('.aba-link')[3]); return false;">Ver Todos</a>
             </div>
             <ul class="diary-list" id="sidebar-diary"></ul>
         </div>
@@ -392,6 +446,12 @@
             <input type="number" id="modal-nota" step="0.5" min="0" max="5">
             <label>TAGS</label>
             <input type="text" id="modal-tags" placeholder="Clássico, Terror...">
+
+            <label id="label-convite">CONVIDAR PARA VER JUNTO</label>
+            <select id="modal-convite">
+                <option value="">Apenas eu (Solo)</option>
+            </select>
+
             <label>SUA REVIEW</label>
             <textarea id="modal-review" rows="3"></textarea>
 
@@ -410,12 +470,23 @@
         const overlay = document.getElementById('menu-overlay');
         menu.classList.toggle('open');
         overlay.classList.toggle('open');
-        if(menu.classList.contains('open')) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
+        if(menu.classList.contains('open')) { document.body.style.overflow = 'hidden'; }
+        else { document.body.style.overflow = 'auto'; }
     }
+
+    // Toggle dropdown do Sininho
+    function toggleNotificacoes(event) {
+        event.stopPropagation();
+        document.getElementById('notificacoes-box').classList.toggle('open');
+    }
+
+    // Fecha o sininho se clicar fora
+    document.addEventListener('click', function(e) {
+        const box = document.getElementById('notificacoes-box');
+        if(box && box.classList.contains('open') && !e.target.closest('.bell-wrapper')) {
+            box.classList.remove('open');
+        }
+    });
 
     const dadosUser = JSON.parse(localStorage.getItem('usuarioLogado'));
     if (dadosUser && dadosUser.corTema) { document.documentElement.style.setProperty('--cor-primaria', dadosUser.corTema); }
@@ -427,6 +498,11 @@
     const HOJE = new Date(2026, 2, 31);
 
     if (!dadosUser) window.location.href = 'login.html';
+
+    // Se for visita, esconde o sino
+    if(isVisita) {
+        document.getElementById('btn-bell').style.display = 'none';
+    }
 
     if(dadosUser && dadosUser.nome) {
         document.getElementById('avatar-img').src = dadosUser.fotoUrl || `https://ui-avatars.com/api/?name=${dadosUser.nome}&background=111&color=fff&size=100`;
@@ -440,10 +516,18 @@
     let abaAtiva = 'profile';
     let filmeModalAtual = null;
     let isFavoritoModal = false;
+    let amigosSeguindo = []; // Lista pra popular o dropdown
 
     window.onload = async () => {
-        if (isVisita) await ajustarParaVisita();
+        if (isVisita) {
+            await ajustarParaVisita();
+        } else {
+            // Só carrega isso se estiver na própria conta
+            await carregarAmigosSeguindo();
+            await carregarNotificacoes();
+        }
         await carregarLibrary();
+        if(!isVisita) await carregarSessaoDupla();
     };
 
     async function ajustarParaVisita() {
@@ -477,6 +561,7 @@
         else if (abaAtiva === 'activity') await renderizarActivity();
         else if (abaAtiva === 'tags') renderizarTagsCloud();
         else if (abaAtiva === 'stats') renderizarStatsChart();
+        // A Aba Sessão dupla já está renderizada, só precisa ser exibida!
     }
 
     async function getInfoFilme(idTmdb) {
@@ -484,6 +569,108 @@
         try { const res = await fetch(`/api/tmdb/${idTmdb}`); const filme = await res.json(); cacheTmdb[idTmdb] = filme; return filme; }
         catch (e) { return {}; }
     }
+
+    // ==========================================
+    // LÓGICA DO CO-WATCH (SESSÃO DUPLA)
+    // ==========================================
+    async function carregarAmigosSeguindo() {
+        try {
+            const res = await fetch(`/usuarios/${dadosUser.id}/seguindo`);
+            if(res.ok) {
+                amigosSeguindo = await res.json();
+                const select = document.getElementById('modal-convite');
+                amigosSeguindo.forEach(amigo => {
+                    select.innerHTML += `<option value="${amigo.id}">@${amigo.nickname || amigo.nome}</option>`;
+                });
+            }
+        } catch(e) {}
+    }
+
+    async function carregarNotificacoes() {
+        try {
+            const res = await fetch(`/convites/pendentes/${dadosUser.id}`);
+            if(res.ok) {
+                const pendentes = await res.json();
+                const badge = document.getElementById('bell-badge');
+                const listaHTML = document.getElementById('lista-notificacoes');
+
+                if(pendentes.length > 0) {
+                    badge.style.display = 'block';
+                    badge.innerText = pendentes.length;
+                    listaHTML.innerHTML = ''; // Limpa
+
+                    // Buscar o nome dos filmes pra mostrar bonitinho
+                    for(const convite of pendentes) {
+                        const f = await getInfoFilme(convite.filmeTmdbId);
+                        listaHTML.innerHTML += `
+                            <div class="notif-item">
+                                <div class="notif-texto"><strong>@${convite.remetente.nickname || convite.remetente.nome}</strong> convidou você para assistir: <strong>${f.tituloExibicao}</strong></div>
+                                <div class="notif-botoes">
+                                    <button class="btn-notif btn-notif-aceitar" onclick="responderConvite(${convite.id}, 'ACEITO')">Aceitar</button>
+                                    <button class="btn-notif btn-notif-recusar" onclick="responderConvite(${convite.id}, 'RECUSADO')">Recusar</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    badge.style.display = 'none';
+                    listaHTML.innerHTML = '<p style="color: var(--cor-texto-sec); font-size: 0.8rem; margin: 0; font-style: italic;">As sombras estão silenciosas. Nenhum convite.</p>';
+                }
+            }
+        } catch(e) { console.error("Erro sininho", e); }
+    }
+
+    async function responderConvite(conviteId, resposta) {
+        try {
+            const res = await fetch(`/convites/${conviteId}/responder`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: resposta })
+            });
+            if(res.ok) {
+                await carregarNotificacoes();
+                await carregarSessaoDupla(); // Recarrega a aba se ele aceitou
+            }
+        } catch(e) {}
+    }
+
+    async function carregarSessaoDupla() {
+        const container = document.getElementById('grid-sessao-dupla');
+        if(!container) return;
+
+        try {
+            const res = await fetch(`/convites/aceitos/${dadosUser.id}`);
+            if(res.ok) {
+                const pactos = await res.json();
+                if(pactos.length === 0) {
+                    container.innerHTML = '<p style="color: var(--cor-texto-sec); grid-column: 1/-1; font-style: italic; text-align: center;">Nenhum filme na lista para assistir juntos.</p>';
+                    return;
+                }
+
+                let htmlFinal = '';
+                for(const convite of pactos) {
+                    const f = await getInfoFilme(convite.filmeTmdbId);
+                    // Determina quem é o "amigo" (se eu mandei, é o dest. Se recebi, é o remet)
+                    const amigo = convite.remetente.id === dadosUser.id ? convite.destinatario : convite.remetente;
+                    const amigoNick = amigo.nickname || amigo.nome.split(' ')[0];
+
+                    htmlFinal += `
+                        <div class="card-library" onclick="window.location.href='detalhes.html?id=${f.id || f.idTmdb}'">
+                            <div class="poster-container">
+                                <img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CINEHUB'}" loading="lazy" decoding="async">
+                                <div class="cowatch-tag">🤝 com @${amigoNick}</div>
+                            </div>
+                            <div class="info-container">
+                                <h3 style="font-size:0.8rem; margin:10px 0 0 0; color:#fff; text-align:center;">${f.tituloExibicao}</h3>
+                            </div>
+                        </div>
+                    `;
+                }
+                container.innerHTML = htmlFinal;
+            }
+        } catch(e) {}
+    }
+
 
     async function processarWatchlist(interacoesOriginais) {
         const rawWatchlist = interacoesOriginais.filter(i => i.status === 'QUERO_VER');
@@ -560,7 +747,6 @@
         container.innerHTML = htmlFinal;
     }
 
-    // ======= MUDANÇA VIP: CLIQUE ISOLADO NA REVIEW =======
     async function renderizarListaReviews(arrayReviews, containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -573,7 +759,7 @@
             const ano = f.dataExibicao ? f.dataExibicao.split('-')[0] : '';
 
             htmlFinal += `
-                <div class="review-item" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[3]); return false;">
+                <div class="review-item" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[4]); return false;">
                     <div class="review-poster" onclick="event.stopPropagation(); window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
                         <img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CH'}" loading="lazy" decoding="async">
                     </div>
@@ -721,6 +907,18 @@
         document.getElementById('modal-nota').value = nota;
         document.getElementById('modal-tags').value = tags;
         document.getElementById('modal-review').value = review;
+        document.getElementById('modal-convite').value = ""; // Reseta o campo de convite
+
+        // Se for modo visita, a gente esconde a area do pacto pra ele nao mandar convite da sua conta
+        const labelConvite = document.getElementById('label-convite');
+        const selectConvite = document.getElementById('modal-convite');
+        if(isVisita) {
+            labelConvite.style.display = 'none';
+            selectConvite.style.display = 'none';
+        } else {
+            labelConvite.style.display = 'block';
+            selectConvite.style.display = 'block';
+        }
 
         isFavoritoModal = false;
         try {
@@ -791,10 +989,46 @@
     }
 
     async function salvarEdicao() {
-        const payload = { idFilmeTmdb: document.getElementById('modal-id-tmdb').value, status: document.getElementById('modal-status').value, idiomaAudio: document.getElementById('modal-idioma').value, nota: document.getElementById('modal-nota').value ? parseFloat(document.getElementById('modal-nota').value) : null, tags: document.getElementById('modal-tags').value, review: document.getElementById('modal-review').value };
+        const idFilme = document.getElementById('modal-id-tmdb').value;
+        const amigoConvidadoId = document.getElementById('modal-convite').value;
+
+        const payload = {
+            idFilmeTmdb: idFilme,
+            status: document.getElementById('modal-status').value,
+            idiomaAudio: document.getElementById('modal-idioma').value,
+            nota: document.getElementById('modal-nota').value ? parseFloat(document.getElementById('modal-nota').value) : null,
+            tags: document.getElementById('modal-tags').value,
+            review: document.getElementById('modal-review').value
+        };
+
+        // 1. Salva na biblioteca normalmente
         await fetch(`/interacoes/usuario/${dadosUser.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+
+        // 2. Se tiver escolhido um amigo, dispara a requisição de convite pro Back-end!
+        if(amigoConvidadoId) {
+            try {
+                const resConvite = await fetch('/convites/enviar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        remetenteId: dadosUser.id,
+                        destinatarioId: amigoConvidadoId,
+                        filmeTmdbId: idFilme
+                    })
+                });
+
+                if(!resConvite.ok) {
+                    const msgErro = await resConvite.text();
+                    alert("Aviso do convite: " + msgErro);
+                }
+            } catch(e) {
+                console.error("Erro ao enviar o convite", e);
+            }
+        }
+
         fecharModal();
         await carregarLibrary();
+        if(!isVisita) await carregarSessaoDupla();
     }
 
     async function removerDoDiario() {
