@@ -2,235 +2,246 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Library - Cinehub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cor-primaria: #a333ff;
-            --cor-fundo: #0d1115;
-            --cor-card: rgba(27, 34, 40, 0.5);
-            --cor-texto: #ffffff;
-            --cor-texto-sec: #8c9baf;
-            --cor-sucesso: #21d07a;
-            --cor-alerta: #d2d531;
-            --cor-perigo: #db2360;
-            --cor-ouro: #f5c518;
-            --cor-borda: rgba(255, 255, 255, 0.08);
-            --transicao: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --cor-primaria: #8a0303;
+            --cor-fundo: #020202;
+            --cor-card: #0d0d0f;
+            --cor-texto: #dfdfdf;
+            --cor-texto-sec: #6c757d;
+            --cor-sucesso: #2d8a56;
+            --cor-alerta: #b0a02c;
+            --cor-perigo: #8a0303;
+            --cor-ouro: #c0a062;
+            --cor-borda: #1a1a1a;
+            --transicao: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--cor-fundo); }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; border: 1px solid var(--cor-fundo); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cor-primaria); }
+
         body {
             background-color: var(--cor-fundo); color: var(--cor-texto);
-            font-family: 'Inter', sans-serif; margin: 0; padding: 0 0 120px 0;
+            font-family: 'Inter', sans-serif; margin: 0; padding: 0 0 50px 0;
             display: flex; flex-direction: column; align-items: center;
             -webkit-font-smoothing: antialiased; overflow-x: hidden;
-            background-image: radial-gradient(circle at top right, rgba(163, 51, 255, 0.05), transparent 40%),
-                              radial-gradient(circle at bottom left, rgba(163, 51, 255, 0.05), transparent 40%);
-            background-attachment: fixed;
         }
 
-        /* ======= HEADER E BRANDING ======= */
-        .header-top { width: 100%; max-width: 1200px; padding: 40px 20px 20px 20px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .brand { text-decoration: none; transition: var(--transicao); display: flex; align-items: center; }
-        .brand:hover { transform: scale(1.03); filter: brightness(1.2); }
-        .brand-text { font-size: 2.2rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; margin: 0; color: #fff; display: flex; align-items: center; }
-        .brand-text span { font-weight: 800; margin-left: 3px; background: linear-gradient(135deg, #fff 10%, var(--cor-primaria) 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: var(--transicao); }
-
-        /* ======= PERFIL HERO (BENTO BOX) ======= */
-        .profile-bento {
-            width: 100%; max-width: 1100px; padding: 30px; margin: 0 20px 25px 20px;
-            background: var(--cor-card); backdrop-filter: blur(16px);
-            border-radius: 24px; border: 1px solid var(--cor-borda);
-            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4); transition: var(--transicao);
+        /* ======= TOP NAV ======= */
+        .top-nav {
+            width: 100%; position: sticky; top: 0; background-color: rgba(2, 2, 2, 0.98);
+            backdrop-filter: blur(10px); border-bottom: 1px solid var(--cor-borda);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; z-index: 1000;
         }
-        .profile-bento:hover { border-color: rgba(255,255,255,0.15); box-shadow: 0 15px 50px rgba(0,0,0,0.6); }
 
-        .profile-left { display: flex; align-items: center; gap: 25px; }
-        .profile-avatar { width: 90px; height: 90px; border-radius: 50%; background-color: #232a31; overflow: hidden; border: 3px solid var(--cor-primaria); box-shadow: 0 0 20px rgba(163, 51, 255, 0.3);}
-        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-info h1 { margin: 0; font-weight: 900; font-size: 1.8rem; letter-spacing: -0.5px; color: #fff; text-transform: uppercase; line-height: 1.1;}
-        .profile-info p { margin: 4px 0 0 0; color: var(--cor-texto-sec); font-size: 0.95rem; font-weight: 500;}
+        .btn-hamburger { background: transparent; border: none; color: var(--cor-texto); font-size: 1.5rem; cursor: pointer; padding: 0; display: flex; align-items: center; transition: var(--transicao); }
+        .btn-hamburger:hover { color: var(--cor-primaria); transform: scale(1.1); }
 
-        /* BENTO DASHBOARD STATS */
-        .profile-stats { display: flex; gap: 30px; background: rgba(0,0,0,0.2); padding: 15px 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.03);}
-        .stat-item { display: flex; flex-direction: column; align-items: center; position: relative;}
-        .stat-item:not(:last-child)::after { content: ""; position: absolute; right: -15px; top: 10%; height: 80%; width: 1px; background: var(--cor-borda); }
-        .stat-val { font-size: 1.6rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 5px; }
-        .stat-name { font-size: 0.7rem; color: var(--cor-texto-sec); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-        #stat-ingles { color: var(--cor-primaria); }
+        .brand { text-decoration: none; display: flex; align-items: center; position: absolute; left: 50%; transform: translateX(-50%);}
+        .brand-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 6px; text-transform: uppercase; margin: 0; color: #fff; }
+        .brand-text span { color: var(--cor-primaria); }
 
-        /* ======= MENU EM PÍLULAS (PILL NAV) OTIMIZADO PARA MOBILE ======= */
-        .pill-nav-container { width: 100%; max-width: 1100px; margin-bottom: 30px; }
-        .pill-menu {
-            display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none;
-            padding: 10px 20px; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; width: 100%;
-        }
-        .pill-menu::-webkit-scrollbar { display: none; }
-        .aba-link {
-            flex-shrink: 0;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--cor-borda);
-            color: var(--cor-texto-sec); text-decoration: none; font-size: 0.85rem; font-weight: 600;
-            padding: 10px 22px; border-radius: 30px; white-space: nowrap; transition: var(--transicao);
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .aba-link:hover { background: rgba(255,255,255,0.08); color: #fff; transform: translateY(-2px);}
-        .aba-link.active { background: var(--cor-primaria); color: #000; border-color: var(--cor-primaria); font-weight: 800; box-shadow: 0 5px 15px rgba(163, 51, 255, 0.3);}
+        .btn-search-nav { background: transparent; border: none; color: var(--cor-texto); font-size: 1.1rem; cursor: pointer; padding: 0; transition: var(--transicao);}
+        .btn-search-nav:hover { color: var(--cor-primaria); transform: scale(1.1); }
 
-        /* ======= BENTO BOX GRID LAYOUT ======= */
-        .content-wrapper { width: 100%; max-width: 1100px; padding: 0 20px; display: flex; gap: 30px; align-items: flex-start; }
-        .main-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 30px; }
-        .sidebar { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; gap: 30px; }
+        /* ======= DRAWER ======= */
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1999; opacity: 0; pointer-events: none; transition: var(--transicao); backdrop-filter: blur(4px); }
+        .menu-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #08080a; z-index: 2000; border-right: 1px solid var(--cor-borda); display: flex; flex-direction: column; padding: 30px 20px; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 10px 0 40px rgba(0,0,0,0.9); }
+        .side-menu.open { left: 0; }
+
+        .side-menu-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--cor-borda); padding-bottom: 20px; margin-bottom: 20px; }
+        .side-menu-header h2 { margin: 0; font-size: 1.1rem; font-weight: 900; letter-spacing: 3px; color: #fff; text-transform: uppercase;}
+        .btn-close-menu { background: transparent; border: none; color: var(--cor-texto-sec); font-size: 1.3rem; cursor: pointer; transition: var(--transicao); }
+        .btn-close-menu:hover { color: var(--cor-perigo); transform: rotate(90deg); }
+
+        .menu-links { display: flex; flex-direction: column; gap: 5px; }
+        .menu-links a { color: var(--cor-texto); text-decoration: none; font-size: 1rem; font-weight: 500; padding: 14px 12px; border-radius: 2px; transition: var(--transicao); display: flex; align-items: center; gap: 15px; border: 1px solid transparent; }
+        .menu-links a:hover, .menu-links a.active { background: rgba(255,255,255,0.02); color: #fff; border-color: var(--cor-borda); }
+        .menu-links a.active { border-color: var(--cor-primaria); color: var(--cor-primaria); font-weight: 700;}
+        .menu-icon { font-size: 1.1rem; opacity: 0.6;}
+
+        /* ======= PERFIL HERO ======= */
+        .profile-bento { width: 100%; max-width: 1100px; padding: 40px 20px 20px 20px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 30px; }
+        .profile-left { display: flex; align-items: center; gap: 20px; position: relative; }
+
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background-color: #000; overflow: hidden; border: 1px solid var(--cor-borda); transition: var(--transicao); box-shadow: 0 0 35px rgba(138, 3, 3, 0.15); }
+        .profile-avatar:hover { border-color: var(--cor-primaria); box-shadow: 0 0 50px rgba(138, 3, 3, 0.4); transform: scale(1.05); }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(25%) contrast(110%); }
+
+        .profile-info h1 { margin: 0; font-weight: 900; font-size: 1.7rem; letter-spacing: 1px; color: #fff; text-transform: uppercase;}
+        .profile-info p { margin: 2px 0 0 0; color: var(--cor-texto-sec); font-size: 0.85rem; font-weight: 400; font-style: italic;}
+
+        .profile-stats { display: flex; gap: 25px; }
+        .stat-item { display: flex; flex-direction: column; align-items: flex-start; }
+        .stat-val { font-size: 1.5rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 4px; font-family: 'Georgia', serif;}
+        .stat-name { font-size: 0.6rem; color: var(--cor-texto-sec); text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; }
+
+        /* ======= SUB-MENU ======= */
+        .pill-nav-container { width: 100%; max-width: 1100px; margin-bottom: 30px; border-bottom: 1px solid var(--cor-borda); background: rgba(255,255,255,0.01); }
+        .pill-menu { display: flex; gap: 25px; overflow-x: auto; scrollbar-width: none; padding: 0 20px; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; width: 100%; }
+        .aba-link { flex-shrink: 0; background: transparent; border: none; color: var(--cor-texto-sec); text-decoration: none; font-size: 0.8rem; font-weight: 600; padding: 16px 0; white-space: nowrap; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 2px solid transparent; cursor: pointer; }
+        .aba-link:hover { color: #fff; }
+        .aba-link.active { color: #fff; border-bottom-color: var(--cor-primaria); font-weight: 700; }
+
+        /* ======= CONTAINERS ======= */
+        .content-wrapper { width: 100%; max-width: 1100px; padding: 0 20px; display: flex; gap: 40px; align-items: flex-start; }
+        .main-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 40px; }
+        .sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 40px; }
         @media (max-width: 900px) { .content-wrapper { flex-direction: column; } .sidebar { width: 100%; } }
 
-        .tab-view { display: none; flex-direction: column; gap: 30px; width: 100%; }
+        .tab-view { display: none; flex-direction: column; gap: 40px; width: 100%; }
 
-        .bento-box {
-            background: var(--cor-card); backdrop-filter: blur(12px);
-            border-radius: 20px; border: 1px solid var(--cor-borda);
-            padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: var(--transicao); width: 100%;
-        }
-        .bento-box:hover { border-color: rgba(255,255,255,0.1); box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
-
-        .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
-        .section-title { font-size: 1.1rem; font-weight: 800; color: #fff; margin: 0; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;}
-        .section-title::before { content: ""; display: block; width: 4px; height: 18px; background: var(--cor-primaria); border-radius: 4px;}
-        .section-link { font-size: 0.75rem; color: var(--cor-primaria); text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: var(--transicao); cursor: pointer; background: rgba(163, 51, 255, 0.1); padding: 4px 10px; border-radius: 12px;}
-        .section-link:hover { background: var(--cor-primaria); color: #000; }
+        .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; border-bottom: 1px solid var(--cor-borda); padding-bottom: 10px;}
+        .section-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin: 0; letter-spacing: 1.5px; text-transform: uppercase;}
+        .section-link { font-size: 0.65rem; color: var(--cor-texto-sec); text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: var(--transicao); cursor: pointer;}
+        .section-link:hover { color: var(--cor-primaria); }
 
         /* GRID POSTERS */
-        .poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; width: 100%; }
-
-        /* NOVO GRID 3x2 PARA FAVORITOS */
+        .poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; width: 100%; }
         .poster-grid-favs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
 
         .card-library { display: flex; flex-direction: column; cursor: pointer; position: relative; transition: var(--transicao); }
-        .card-library:hover { transform: translateY(-8px); }
+        .card-library:hover { transform: translateY(-5px); }
 
-        .poster-container { position: relative; width: 100%; border-radius: 8px; overflow: visible; transition: var(--transicao); }
-        .poster-container img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; background-color: #232a31; border-radius: 8px; border: 2px solid transparent; transition: var(--transicao); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .card-library:hover .poster-container img { border-color: var(--cor-primaria); box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
+        .poster-container { position: relative; width: 100%; border-radius: 4px; overflow: visible; }
+        .poster-container img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; background-color: #000; border-radius: 4px; border: 1px solid var(--cor-borda); transition: var(--transicao); }
+        .card-library:hover .poster-container img { border-color: var(--cor-primaria); box-shadow: 0 5px 20px rgba(0,0,0,0.9); filter: contrast(110%);}
 
-        .status-pill { position: absolute; top: 6px; right: 6px; padding: 3px 6px; border-radius: 4px; font-size: 0.5rem; font-weight: 800; color: #fff; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); z-index: 5;}
+        .status-pill { position: absolute; top: 6px; right: 6px; padding: 3px 6px; border-radius: 2px; font-size: 0.5rem; font-weight: 800; color: #000; background: var(--cor-texto); text-transform: uppercase; letter-spacing: 0.5px; z-index: 5;}
 
-        .nota-donut { position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.6rem; font-weight: 800; background: #081c22; border: 2px solid var(--cor-anel); box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 5;}
+        /* DONUT DE NOTA */
+        .nota-donut { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.6rem; font-weight: 800; background: #000 !important; border: 2px solid var(--cor-anel); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.8); }
         .simbolo-porcento { font-size: 0.35rem; margin-top: 1px;}
 
-        .btn-editar-card { position: absolute; top: 6px; left: 6px; width: 26px; height: 26px; background: rgba(0, 0, 0, 0.8); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; z-index: 10; opacity: 0; transition: var(--transicao); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px);}
+        .btn-editar-card { position: absolute; top: 6px; left: 6px; width: 24px; height: 24px; background: rgba(0, 0, 0, 0.9); color: #fff; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; z-index: 10; opacity: 0; transition: var(--transicao); border: 1px solid var(--cor-borda);}
         .card-library:hover .btn-editar-card { opacity: 1; }
-        .btn-editar-card:hover { background: var(--cor-primaria); color: #000; border-color: var(--cor-primaria); transform: scale(1.1); }
+        .btn-editar-card:hover { background: var(--cor-primaria); color: #fff; border-color: var(--cor-primaria); transform: scale(1.1);}
 
-        .btn-remover-fav { position: absolute; top: -10px; right: -10px; width: 24px; height: 24px; background: var(--cor-perigo); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; z-index: 10; opacity: 0; transition: var(--transicao); box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 0.85rem; }
-        .card-library:hover .btn-remover-fav { opacity: 1; transform: scale(1.1);}
+        .btn-remover-fav { position: absolute; top: -8px; right: -8px; width: 20px; height: 20px; background: var(--cor-perigo); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; z-index: 10; opacity: 0; transition: var(--transicao); font-size: 0.7rem; }
+        .card-library:hover .btn-remover-fav { opacity: 1; transform: scale(1.1); }
 
-        .info-container { padding: 18px 0 0 0; display: flex; flex-direction: column; align-items: center; }
-        .estrelas-pessoais { color: var(--cor-ouro); font-size: 0.8rem; display: flex; align-items: center; gap: 1px; }
+        .info-container { padding: 15px 0 0 0; display: flex; flex-direction: column; align-items: center; }
+        .estrelas-pessoais { color: var(--cor-ouro); font-size: 0.75rem; display: flex; align-items: center; gap: 1px; letter-spacing: 1px;}
         .estrela-wrapper { position: relative; display: inline-block; line-height: 1; }
-        .estrela-fundo { color: rgba(255,255,255,0.1); }
+        .estrela-fundo { color: rgba(255,255,255,0.05); }
         .estrela-cheia { position: absolute; top: 0; left: 0; overflow: hidden; white-space: nowrap; color: var(--cor-ouro); }
         .meia { width: 50%; }
 
-        /* REVIEWS SEPARADAS - CLIQUES DIFERENTES */
+        /* REVIEWS */
         .review-list { display: flex; flex-direction: column; gap: 20px; }
-        .review-item { display: flex; gap: 20px; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid transparent; transition: var(--transicao); cursor: pointer; }
-        .review-item:hover { border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02); transform: translateX(5px);}
+        .review-item { display: flex; gap: 15px; padding-bottom: 20px; border-bottom: 1px solid var(--cor-borda); transition: var(--transicao); cursor: pointer; }
+        .review-item:hover { border-color: var(--cor-texto-sec); background: rgba(255,255,255,0.01); padding-left: 5px;}
 
-        .review-poster { width: 75px; flex-shrink: 0; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 2px solid transparent; transition: var(--transicao); position: relative; z-index: 2;}
-        .review-poster:hover { border-color: var(--cor-primaria); transform: scale(1.05); }
+        .review-poster { width: 65px; flex-shrink: 0; border-radius: 4px; overflow: hidden; border: 1px solid var(--cor-borda); cursor: pointer; transition: var(--transicao);}
+        .review-poster:hover { border-color: var(--cor-primaria); filter: brightness(1.2); }
         .review-poster img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block;}
 
-        .review-content { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; justify-content: flex-start; z-index: 1;}
+        .review-content { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; }
         .review-header { display: flex; align-items: baseline; gap: 10px; }
-        .review-title { font-size: 1.1rem; font-weight: 800; color: #fff; margin: 0;}
-        .review-year { font-size: 0.8rem; color: var(--cor-texto-sec); font-weight: 500; }
 
-        .btn-editar-review { margin-left: auto; font-size: 0.75rem; color: #000; font-weight: 700; background: var(--cor-primaria); padding: 4px 10px; border-radius: 12px; cursor: pointer; transition: var(--transicao); opacity: 0;}
+        /* MUDANÇA VIP: Título clicável com transição */
+        .review-title { font-size: 1rem; font-weight: 800; color: #fff; margin: 0; cursor: pointer; transition: var(--transicao);}
+        .review-title:hover { color: var(--cor-primaria); }
+
+        .review-year { font-size: 0.7rem; color: var(--cor-texto-sec); font-weight: 500; font-family: 'Georgia', serif;}
+        .review-meta { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: var(--cor-texto-sec); text-transform: uppercase; letter-spacing: 0.5px;}
+        .review-text { font-size: 0.85rem; color: #ccc; line-height: 1.6; margin: 0; font-style: italic;}
+        .btn-editar-review { margin-left: auto; font-size: 0.7rem; color: var(--cor-texto-sec); font-weight: 700; background: transparent; border: 1px solid var(--cor-borda); padding: 4px 10px; border-radius: 2px; cursor: pointer; transition: var(--transicao); opacity: 0;}
         .review-item:hover .btn-editar-review { opacity: 1; }
-        .review-meta { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--cor-texto-sec); }
-        .review-text { font-size: 0.9rem; color: #ddd; line-height: 1.5; margin: 0; font-style: italic;}
+        .btn-editar-review:hover { color: #fff; border-color: #fff; }
 
-        .diary-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;}
-        .diary-item { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: var(--transicao); border: 1px solid transparent;}
-        .diary-item:hover { border-color: var(--cor-primaria); transform: translateX(5px);}
-        .diary-date { font-weight: 800; color: var(--cor-texto-sec); font-size: 0.75rem; width: 50px; flex-shrink: 0; text-transform: uppercase;}
-        .diary-title { font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; font-size: 0.95rem;}
-        .diary-stars { color: var(--cor-ouro); font-size: 0.7rem; flex-shrink: 0;}
+        /* DIARY LIST */
+        .diary-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0;}
+        .diary-item { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; padding: 12px 0; border-bottom: 1px solid var(--cor-borda); cursor: pointer; transition: var(--transicao);}
+        .diary-item:hover { padding-left: 10px; border-color: var(--cor-primaria); background: rgba(255,255,255,0.01);}
+        .diary-date { font-weight: 800; color: var(--cor-texto-sec); font-size: 0.65rem; width: 45px; flex-shrink: 0; text-transform: uppercase; font-family: 'Georgia', serif;}
+        .diary-title { font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1;}
 
-        .mini-poster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .mini-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); cursor: pointer; transition: var(--transicao); }
-        .mini-poster:hover { transform: scale(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.8); z-index: 2; position: relative;}
+        .mini-poster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .mini-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid var(--cor-borda); cursor: pointer; transition: var(--transicao); }
+        .mini-poster:hover { filter: contrast(110%) brightness(1.1); border-color: #fff; transform: scale(1.05);}
 
-        .activity-list { display: flex; flex-direction: column; gap: 15px; }
-        .activity-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid transparent; cursor: pointer; transition: var(--transicao); }
-        .activity-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateX(5px);}
-        .activity-poster { width: 50px; flex-shrink: 0; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.5);}
-        .activity-poster img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
-        .activity-text { flex-grow: 1; font-size: 0.9rem; color: var(--cor-texto-sec); line-height: 1.4; }
-        .activity-text strong { color: #fff; font-weight: 800;}
-        .activity-date { font-size: 0.7rem; color: var(--cor-primaria); font-weight: 700; margin-top: 4px; display: block; text-transform: uppercase; letter-spacing: 0.5px;}
+        /* MODAL (THE VOID) */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(3px); transition: var(--transicao); }
+        .modal-content { background: #050505; width: 90%; max-width: 400px; padding: 30px; border-radius: 4px; border: 1px solid var(--cor-borda); animation: fadeInModal 0.4s cubic-bezier(0.19, 1, 0.22, 1); max-height: 95vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,1);}
+        @keyframes fadeInModal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .close-btn { float: right; font-size: 1.3rem; cursor: pointer; color: var(--cor-texto-sec); transition: var(--transicao); line-height: 1; }
+        .close-btn:hover { color: var(--cor-perigo); transform: rotate(90deg); }
+        .modal-form label { font-size: 0.65rem; font-weight: 700; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; letter-spacing: 1.5px; margin-top: 18px; text-transform: uppercase;}
+        .modal-form select, .modal-form input, .modal-form textarea { background: #000; border: 1px solid var(--cor-borda); color: white; padding: 12px; border-radius: 2px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.9rem; transition: var(--transicao); }
+        .modal-form select:focus, .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 10px rgba(138, 3, 3, 0.2); }
 
-        .tags-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
-        .tag-badge { background: rgba(0,0,0,0.3); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px; transition: var(--transicao); cursor: pointer; }
-        .tag-count { background: var(--cor-primaria); color: #000; font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 10px;}
-        .tag-badge:hover { border-color: var(--cor-primaria); background: rgba(255,255,255,0.05);}
+        .botoes-acao { display: flex; flex-direction: column; gap: 10px; margin-top: 30px; }
+        .btn-salvar { background: var(--cor-texto); border: none; color: #000; padding: 14px; border-radius: 2px; font-weight: 800; width: 100%; cursor: pointer; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.85rem;}
+        .btn-salvar:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,255,255,0.2);}
+        .btn-remover { background: transparent; border: 1px solid var(--cor-borda); color: var(--cor-texto-sec); padding: 12px; border-radius: 2px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-remover:hover { border-color: var(--cor-perigo); color: var(--cor-perigo); background: rgba(138, 3, 3, 0.05); }
+        .btn-fav-modal { background: transparent; border: 1px solid var(--cor-borda); color: var(--cor-texto-sec); padding: 12px; border-radius: 2px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-fav-modal.ativo { border-color: var(--cor-primaria); color: var(--cor-primaria); background: rgba(138, 3, 3, 0.05); }
 
-        .stats-chart-container { width: 100%; height: 180px; display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; padding: 20px 0; margin-bottom: 10px;}
-        .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; group: hover; cursor: default;}
-        .bar { width: 100%; max-width: 35px; background: rgba(255,255,255,0.1); border-top-left-radius: 6px; border-top-right-radius: 6px; transition: height 1s ease-out, background 0.2s; min-height: 4px;}
-        .bar:hover { background: var(--cor-primaria); box-shadow: 0 0 15px rgba(163, 51, 255, 0.4);}
-        .bar-label { font-size: 0.7rem; color: var(--cor-texto-sec); margin-top: 10px; font-weight: 700; }
-        .bar-tooltip { position: absolute; top: -35px; background: #fff; color: #000; font-size: 0.75rem; font-weight: 800; padding: 6px 10px; border-radius: 6px; opacity: 0; pointer-events: none; transition: var(--transicao); box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
-        .bar-wrapper:hover .bar-tooltip { opacity: 1; top: -45px; }
-
-        /* MUDANÇA VIP: OTIMIZAÇÃO ESPACIAL MOBILE */
         @media (max-width: 600px) {
-            .header-top { padding: 20px 15px 10px 15px; }
-            .profile-bento { margin: 0 15px 20px 15px; padding: 20px; gap: 20px; border-radius: 20px;}
-            .profile-stats { gap: 15px; padding: 12px; border-radius: 12px; }
-            .stat-val { font-size: 1.3rem; }
-            .pill-nav-container { margin-bottom: 20px; padding: 0;}
-            .pill-menu { padding: 10px 20px; }
-            .content-wrapper { padding: 0 15px; gap: 20px; }
-            .main-column { gap: 20px; }
-            .tab-view { gap: 20px; }
-            .bento-box { padding: 20px 15px; border-radius: 16px; }
+            .profile-bento { padding: 30px 20px 10px 20px; align-items: flex-start; flex-direction: column; gap: 20px;}
+            .pill-menu { padding: 0 20px; gap: 15px;}
             .poster-grid, .poster-grid-favs { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .content-wrapper { gap: 30px; }
         }
 
-        /* NAV BOTTOM E MODAL */
-        .nav-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: rgba(27, 34, 40, 0.9); backdrop-filter: blur(12px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--cor-borda); z-index: 1000; border-top-left-radius: 20px; border-top-right-radius: 20px; }
-        @media (min-width: 600px) { .nav-bottom { bottom: 20px; border-radius: 20px; border: 1px solid var(--cor-borda); } }
-        .nav-bottom a { color: var(--cor-texto-sec); text-decoration: none; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: var(--transicao); }
-        .nav-bottom a.active { color: var(--cor-primaria); }
-        .nav-icon { font-size: 1.2rem; }
+        #view-activity, #view-tags, #view-stats { background-color: var(--cor-card); border: 1px solid var(--cor-borda); border-radius: 4px; padding: 20px; }
+        .activity-list, .tags-cloud, .stats-chart-container { display: flex; flex-direction: column; gap: 15px; }
+        .activity-item { display: flex; align-items: center; gap: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--cor-borda); cursor: pointer; transition: var(--transicao); }
+        .activity-item:hover { border-color: var(--cor-texto-sec); background: rgba(255,255,255,0.01); padding-left: 5px; }
+        .activity-poster { width: 50px; flex-shrink: 0; border-radius: 2px; overflow: hidden; border: 1px solid var(--cor-borda);}
+        .activity-poster img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; filter: grayscale(20%); }
+        .activity-text { flex-grow: 1; font-size: 0.85rem; color: var(--cor-texto-sec); line-height: 1.5; }
+        .activity-text strong { color: #fff; font-weight: 700;}
+        .activity-date { font-size: 0.65rem; color: var(--cor-texto-sec); font-family: 'Georgia', serif; display: block; margin-top: 2px; text-transform: uppercase;}
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal-content { background: #1b2228; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; border: 1px solid var(--cor-borda); animation: slideUp 0.3s ease; max-height: 95vh; overflow-y: auto;}
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .close-btn { float: right; font-size: 1.5rem; cursor: pointer; color: var(--cor-texto-sec); line-height: 1; transition: var(--transicao); }
-        .close-btn:hover { color: #fff; }
-        .modal-form label { font-size: 0.75rem; font-weight: 700; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; letter-spacing: 0.5px; margin-top: 15px;}
-        .modal-form select, .modal-form input, .modal-form textarea { background: rgba(255,255,255,0.05); border: 1px solid var(--cor-borda); color: white; padding: 12px 14px; border-radius: 8px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.95rem; }
-        .modal-form select:focus, .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); background: rgba(255,255,255,0.08);}
+        .tags-cloud { flex-direction: row; flex-wrap: wrap; gap: 10px; }
+        .tag-badge { background: transparent; color: var(--cor-texto-sec); padding: 8px 14px; border-radius: 2px; font-size: 0.8rem; font-weight: 600; border: 1px solid var(--cor-borda); display: flex; align-items: center; gap: 8px; transition: var(--transicao); cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .tag-count { color: #fff; font-size: 0.7rem; font-family: 'Georgia', serif; font-weight: 700;}
+        .tag-badge:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.02);}
 
-        .botoes-acao { display: flex; flex-direction: column; gap: 10px; margin-top: 25px; }
-        .btn-salvar { background: var(--cor-sucesso); border: none; color: #000; padding: 14px; border-radius: 10px; font-weight: 800; width: 100%; cursor: pointer; transition: var(--transicao); text-transform: uppercase;}
-        .btn-salvar:hover { filter: brightness(1.2); transform: translateY(-2px);}
-        .btn-remover { background: transparent; border: 1px solid var(--cor-perigo); color: var(--cor-perigo); padding: 12px; border-radius: 10px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); }
-        .btn-remover:hover { background: rgba(219, 35, 96, 0.1); }
-        .btn-fav-modal { background: transparent; border: 1px solid var(--cor-perigo); color: var(--cor-perigo); padding: 12px; border-radius: 10px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); }
-        .btn-fav-modal.ativo { background: var(--cor-perigo); color: #fff; }
+        .stats-chart-container { flex-direction: row; align-items: flex-end; justify-content: space-between; height: 180px; padding: 20px 10px; border: 1px solid var(--cor-borda); background: #000; border-radius: 2px;}
+        .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; cursor: default;}
+        .bar { width: 100%; max-width: 25px; background: rgba(255,255,255,0.05); border-radius: 2px 2px 0 0; transition: height 1s ease-out, background 0.3s; min-height: 4px; border: 1px solid transparent;}
+        .bar:hover { background: var(--cor-primaria); border-color: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(138, 3, 3, 0.4);}
+        .bar-label { font-size: 0.65rem; color: var(--cor-texto-sec); margin-top: 10px; font-family: 'Georgia', serif; font-weight: 700; }
+        .bar-tooltip { position: absolute; top: -35px; background: #fff; color: #000; font-size: 0.7rem; font-weight: 800; padding: 5px 8px; border-radius: 2px; opacity: 0; pointer-events: none; transition: var(--transicao); white-space: nowrap; box-shadow: 0 5px 10px rgba(0,0,0,0.5);}
+        .bar-wrapper:hover .bar-tooltip { opacity: 1; top: -42px; }
     </style>
 </head>
 <body>
 
-<div class="header-top">
+<header class="top-nav">
+    <button class="btn-hamburger" onclick="toggleMenu()">☰</button>
     <a href="index.html" class="brand"><h1 class="brand-text">CINE<span>HUB</span></h1></a>
-</div>
+    <button class="btn-search-nav" onclick="window.location.href='index.html'">🔍</button>
+</header>
+
+<div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
+<nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+        <h2>CINEHUB</h2>
+        <button class="btn-close-menu" onclick="toggleMenu()">✕</button>
+    </div>
+    <div class="menu-links">
+        <a href="index.html"><span class="menu-icon">🏠</span> Home</a>
+        <a href="library.html" class="active"><span class="menu-icon">📖</span> Library</a>
+        <a href="calendario.html"><span class="menu-icon">📅</span> Agenda</a>
+        <a href="comunidade.html"><span class="menu-icon">👥</span> Social</a>
+        <a href="perfil.html"><span class="menu-icon">⚙️</span> Perfil</a>
+    </div>
+</nav>
 
 <div class="profile-bento">
     <div class="profile-left">
@@ -253,14 +264,14 @@
 
 <div class="pill-nav-container">
     <div class="pill-menu">
-        <a href="#" class="aba-link active" onclick="mudarAba('profile', this); return false;">Dashboard</a>
-        <a href="#" class="aba-link" onclick="mudarAba('films', this); return false;">All Films</a>
-        <a href="#" class="aba-link" onclick="mudarAba('diary', this); return false;">Diary</a>
+        <a href="#" class="aba-link active" onclick="mudarAba('profile', this); return false;">Visão Geral</a>
+        <a href="#" class="aba-link" onclick="mudarAba('films', this); return false;">Todos os Filmes</a>
+        <a href="#" class="aba-link" onclick="mudarAba('diary', this); return false;">Diário</a>
         <a href="#" class="aba-link" onclick="mudarAba('reviews', this); return false;">Reviews</a>
         <a href="#" class="aba-link" onclick="mudarAba('watchlist', this); return false;">Watchlist</a>
         <a href="#" class="aba-link" onclick="mudarAba('activity', this); return false;">Timeline</a>
         <a href="#" class="aba-link" onclick="mudarAba('tags', this); return false;">Tags</a>
-        <a href="#" class="aba-link" onclick="mudarAba('stats', this); return false;">Stats</a>
+        <a href="#" class="aba-link" onclick="mudarAba('stats', this); return false;">Estatísticas</a>
     </div>
 </div>
 
@@ -268,14 +279,14 @@
 
     <div class="main-column">
         <div id="view-profile" class="tab-view" style="display: flex;">
-            <div class="bento-box">
+            <div>
                 <div class="section-header">
                     <h2 class="section-title">Filmes Favoritos</h2>
                 </div>
                 <div class="poster-grid-favs" id="lista-favoritos"><p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Carregando...</p></div>
             </div>
 
-            <div class="bento-box">
+            <div>
                 <div class="section-header">
                     <h2 class="section-title">Adicionados Recentemente</h2>
                     <a class="section-link" onclick="mudarAba('films', document.querySelectorAll('.aba-link')[1]); return false;">Ver Todos</a>
@@ -283,7 +294,7 @@
                 <div class="poster-grid" id="lista-recentes"><p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Carregando...</p></div>
             </div>
 
-            <div class="bento-box">
+            <div>
                 <div class="section-header">
                     <h2 class="section-title">Últimas Reviews</h2>
                     <a class="section-link" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[3]); return false;">Ler Mais</a>
@@ -293,93 +304,79 @@
         </div>
 
         <div id="view-films" class="tab-view">
-            <div class="bento-box">
+            <div>
                 <div class="section-header"><h2 class="section-title">Todos os Filmes</h2></div>
                 <div class="poster-grid" id="grid-all-films"></div>
             </div>
         </div>
 
         <div id="view-diary" class="tab-view">
-            <div class="bento-box">
+            <div>
                 <div class="section-header"><h2 class="section-title">Diário (Já Vistos)</h2></div>
                 <div class="poster-grid" id="grid-diary"></div>
             </div>
         </div>
 
         <div id="view-reviews" class="tab-view">
-            <div class="bento-box">
+            <div>
                 <div class="section-header"><h2 class="section-title">Todas as Reviews</h2></div>
                 <div class="review-list" id="list-all-reviews"></div>
             </div>
         </div>
 
         <div id="view-watchlist" class="tab-view">
-            <div class="bento-box">
+            <div>
                 <div class="section-header"><h2 class="section-title">Sua Watchlist</h2></div>
                 <div class="poster-grid" id="grid-watchlist"></div>
             </div>
         </div>
 
         <div id="view-activity" class="tab-view">
-            <div class="bento-box">
+            <div>
                 <div class="section-header"><h2 class="section-title">Linha do Tempo</h2></div>
                 <div class="activity-list" id="list-activity"></div>
             </div>
         </div>
 
         <div id="view-tags" class="tab-view">
-            <div class="bento-box">
+            <div>
                 <div class="section-header"><h2 class="section-title">Explorar por Tags</h2></div>
                 <div class="tags-cloud" id="cloud-tags"></div>
             </div>
         </div>
 
         <div id="view-stats" class="tab-view">
-            <div class="bento-box">
+            <div>
                 <div class="section-header"><h2 class="section-title">Distribuição de Notas</h2></div>
                 <div class="stats-chart-container" id="chart-notas"></div>
-                <p style="font-size: 0.85rem; color: var(--cor-texto-sec); text-align: center; margin: 0; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">Gráfico baseado nas suas avaliações de 0.5 a 5 estrelas.</p>
+                <p style="font-size: 0.75rem; color: var(--cor-texto-sec); text-align: center; margin: 0; padding-top: 15px; font-style: italic;">Baseado nas suas avaliações de 0.5 a 5 estrelas.</p>
             </div>
         </div>
     </div>
 
     <div class="sidebar">
-        <div class="bento-box">
-            <div class="section-header" style="margin-bottom: 15px;">
-                <h3 class="section-title" style="margin:0;">Watchlist <span id="contador-watchlist" style="margin-left:8px; font-weight: 500; color: var(--cor-texto-sec);">0</span></h3>
+        <div>
+            <div class="section-header">
+                <h3 class="section-title">Watchlist <span id="contador-watchlist" style="margin-left:8px; font-weight: 500; color: var(--cor-texto-sec);">0</span></h3>
                 <a class="section-link" onclick="mudarAba('watchlist', document.querySelectorAll('.aba-link')[4]); return false;">Ver Todos</a>
             </div>
             <div class="mini-poster-grid" id="sidebar-watchlist"></div>
         </div>
 
-        <div class="bento-box">
-            <div class="section-header" style="margin-bottom: 15px;">
-                <h3 class="section-title" style="margin:0;">Diário <span id="contador-diary" style="margin-left:8px; font-weight: 500; color: var(--cor-texto-sec);">0</span></h3>
+        <div>
+            <div class="section-header">
+                <h3 class="section-title">Diário <span id="contador-diary" style="margin-left:8px; font-weight: 500; color: var(--cor-texto-sec);">0</span></h3>
                 <a class="section-link" onclick="mudarAba('diary', document.querySelectorAll('.aba-link')[2]); return false;">Ver Todos</a>
             </div>
             <ul class="diary-list" id="sidebar-diary"></ul>
         </div>
-
-        <div class="bento-box" style="text-align: center;">
-            <span style="font-size: 2rem;">🚀</span>
-            <h3 style="margin: 10px 0; font-size: 1rem;">Cinehub Pro</h3>
-            <p style="font-size: 0.8rem; color: var(--cor-texto-sec); margin: 0; line-height: 1.4;">Mais recursos analíticos chegarão em breve na versão premium.</p>
-        </div>
     </div>
 </div>
-
-<nav class="nav-bottom">
-    <a href="index.html"><span class="nav-icon">🔍</span>Home</a>
-    <a href="library.html" class="active"><span class="nav-icon">📖</span>Library</a>
-    <a href="calendario.html"><span class="nav-icon">📅</span>Agenda</a>
-    <a href="comunidade.html"><span class="nav-icon">👥</span>Social</a>
-    <a href="perfil.html"><span class="nav-icon">⚙️</span>Perfil</a>
-</nav>
 
 <div id="modal-edicao" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="fecharModal()">&times;</span>
-        <h2 id="modal-titulo" style="margin: 0 0 15px 0; color: #fff; font-size: 1.3rem; font-weight: 800; line-height: 1.2;">Título</h2>
+        <h2 id="modal-titulo" style="margin: 0 0 15px 0; color: #fff; font-size: 1.1rem; font-weight: 800; line-height: 1.2; text-transform: uppercase;">Título</h2>
         <div class="modal-form">
             <input type="hidden" id="modal-id-tmdb">
             <label>STATUS</label>
@@ -390,24 +387,36 @@
                 <option value="ABANDONEI">Abandonei</option>
             </select>
             <label>IDIOMA</label>
-            <select id="modal-idioma"><option value="">Selecione...</option><option value="Dublado">🇧🇷 Dublado</option><option value="Legendado">💬 Legendado</option><option value="Original">🇺🇸 Áudio Original</option></select>
+            <select id="modal-idioma"><option value="">Selecione...</option><option value="Dublado">Dublado</option><option value="Legendado">Legendado</option><option value="Original">Original</option></select>
             <label>SUA NOTA (0-5)</label>
             <input type="number" id="modal-nota" step="0.5" min="0" max="5">
             <label>TAGS</label>
-            <input type="text" id="modal-tags" placeholder="Ex: Clássico, Terror, Plot Twist">
+            <input type="text" id="modal-tags" placeholder="Clássico, Terror...">
             <label>SUA REVIEW</label>
             <textarea id="modal-review" rows="3"></textarea>
 
             <div class="botoes-acao" id="botoes-modal">
-                <button class="btn-salvar" onclick="salvarEdicao()">ATUALIZAR LIBRARY</button>
-                <button type="button" id="btn-fav-modal" class="btn-fav-modal" onclick="toggleFavoritoModal()">🤍 ADICIONAR AOS FAVORITOS (TOP 6)</button>
-                <button class="btn-remover" onclick="removerDoDiario()">REMOVER DA COLEÇÃO</button>
+                <button class="btn-salvar" onclick="salvarEdicao()">Salvar Alterações</button>
+                <button type="button" id="btn-fav-modal" class="btn-fav-modal" onclick="toggleFavoritoModal()">♥ Adicionar Favorito</button>
+                <button class="btn-remover" onclick="removerDoDiario()">✕ Remover</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    function toggleMenu() {
+        const menu = document.getElementById('side-menu');
+        const overlay = document.getElementById('menu-overlay');
+        menu.classList.toggle('open');
+        overlay.classList.toggle('open');
+        if(menu.classList.contains('open')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }
+
     const dadosUser = JSON.parse(localStorage.getItem('usuarioLogado'));
     if (dadosUser && dadosUser.corTema) { document.documentElement.style.setProperty('--cor-primaria', dadosUser.corTema); }
 
@@ -415,19 +424,18 @@
     const amigoId = urlParams.get('amigoId');
     const isVisita = amigoId !== null && amigoId !== dadosUser.id.toString();
 
-    // MUDANÇA VIP: Definimos a mesma constante HOJE que usamos na Agenda
     const HOJE = new Date(2026, 2, 31);
 
     if (!dadosUser) window.location.href = 'login.html';
 
     if(dadosUser && dadosUser.nome) {
-        document.getElementById('avatar-img').src = dadosUser.fotoUrl || `https://ui-avatars.com/api/?name=${dadosUser.nome}&background=232a31&color=fff&size=100`;
-        document.getElementById('titulo-pagina').innerText = dadosUser.nome.split(' ')[0].toUpperCase();
+        document.getElementById('avatar-img').src = dadosUser.fotoUrl || `https://ui-avatars.com/api/?name=${dadosUser.nome}&background=111&color=fff&size=100`;
+        document.getElementById('titulo-pagina').innerText = dadosUser.nome.split(' ')[0];
         document.getElementById('subtitulo-pagina').innerText = `@${dadosUser.nickname || dadosUser.nome.split(' ')[0].toLowerCase()}`;
     }
 
     let interacoesGlobais = [];
-    let filmesFiltradosWatchlist = []; // Guarda a lista real da Watchlist (só passado)
+    let filmesFiltradosWatchlist = [];
     let cacheTmdb = {};
     let abaAtiva = 'profile';
     let filmeModalAtual = null;
@@ -443,9 +451,9 @@
             const res = await fetch(`/usuarios/${amigoId}`);
             if (res.ok) {
                 const amigo = await res.json();
-                document.getElementById('titulo-pagina').innerText = amigo.nome.split(' ')[0].toUpperCase();
+                document.getElementById('titulo-pagina').innerText = amigo.nome.split(' ')[0];
                 document.getElementById('subtitulo-pagina').innerText = `@${amigo.nickname || 'usuario'}`;
-                document.getElementById('avatar-img').src = `https://ui-avatars.com/api/?name=${amigo.nome}&background=232a31&color=fff&size=100`;
+                document.getElementById('avatar-img').src = `https://ui-avatars.com/api/?name=${amigo.nome}&background=111&color=fff&size=100`;
             }
         } catch(e) { console.error(e); }
     }
@@ -464,7 +472,7 @@
         if (abaAtiva === 'profile') await renderizarProfile();
         else if (abaAtiva === 'films') await renderizarGrid(interacoesGlobais, 'grid-all-films', 'Nenhum filme na biblioteca.');
         else if (abaAtiva === 'diary') await renderizarGrid(interacoesGlobais.filter(i => i.status === 'JA_VI'), 'grid-diary', 'Você ainda não marcou filmes como Vistos.');
-        else if (abaAtiva === 'watchlist') await renderizarGrid(filmesFiltradosWatchlist, 'grid-watchlist', 'Sua watchlist está vazia.'); // Usando a array filtrada
+        else if (abaAtiva === 'watchlist') await renderizarGrid(filmesFiltradosWatchlist, 'grid-watchlist', 'Sua watchlist está vazia.');
         else if (abaAtiva === 'reviews') await renderizarListaReviews(interacoesGlobais.filter(i => i.review && i.review.trim() !== ''), 'list-all-reviews');
         else if (abaAtiva === 'activity') await renderizarActivity();
         else if (abaAtiva === 'tags') renderizarTagsCloud();
@@ -478,28 +486,14 @@
     }
 
     async function processarWatchlist(interacoesOriginais) {
-        // Separa todos que tem status 'QUERO_VER'
         const rawWatchlist = interacoesOriginais.filter(i => i.status === 'QUERO_VER');
-
         filmesFiltradosWatchlist = [];
-
         for (const i of rawWatchlist) {
             const f = await getInfoFilme(i.idFilmeTmdb);
-
-            // Se não tem data de exibição, joga pra Watchlist por padrão
-            if(!f.dataExibicao) {
-                filmesFiltradosWatchlist.push(i);
-                continue;
-            }
-
+            if(!f.dataExibicao) { filmesFiltradosWatchlist.push(i); continue; }
             const p = f.dataExibicao.split('-');
             const dataFilme = new Date(p[0], p[1] - 1, p[2]);
-
-            // Se o filme JÁ LANÇOU (Data é MENOR ou IGUAL a HOJE), fica na Watchlist
-            if (dataFilme <= HOJE) {
-                filmesFiltradosWatchlist.push(i);
-            }
-            // Filmes do Futuro são ignorados (vão só pra aba Agenda.html)
+            if (dataFilme <= HOJE) { filmesFiltradosWatchlist.push(i); }
         }
     }
 
@@ -508,22 +502,15 @@
         try {
             const res = await fetch(`/interacoes/usuario/${targetId}`);
             const dadosOriginais = await res.json();
-
             interacoesGlobais = [...dadosOriginais].reverse();
-
-            // MUDANÇA VIP: Processa a Watchlist antes de renderizar qualquer coisa
             await processarWatchlist(dadosOriginais);
-
             renderizarDashboard(dadosOriginais);
             await renderizarSidebarFixa(dadosOriginais);
             renderizarViewSelecionada();
         } catch (e) { console.error(e); }
     }
 
-    function escapeJS(str) {
-        if (!str) return '';
-        return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, '\\n').replace(/\r/g, '');
-    }
+    function escapeJS(str) { return !str ? '' : str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, '\\n').replace(/\r/g, ''); }
 
     function gerarEstrelasHtml(nota) {
         if (!nota || nota === 0) return '';
@@ -532,33 +519,25 @@
         html += '</div>'; return html;
     }
 
-    // ==========================================
-    // MUDANÇA VIP: Adicionando Lazy Loading e Decoding nas imagens!
-    // ==========================================
     function gerarCardHTML(i, f, mostrarNotaDonut = true, isFavSlot = false, slotIdx = -1) {
         const valorTmdb = f.notaTmdb || f.vote_average || f.voteAverage || 0;
         const notaStr = valorTmdb > 0 ? (valorTmdb * 10).toFixed(0) : 'NR';
-        let corAnel = 'var(--cor-sucesso)';
-        if (valorTmdb < 7) corAnel = 'var(--cor-alerta)';
-        if (valorTmdb < 5 && valorTmdb > 0) corAnel = 'var(--cor-perigo)';
-        if (valorTmdb === 0) corAnel = '#666';
+        let corAnel = 'var(--cor-texto-sec)';
+        if (valorTmdb >= 7) corAnel = 'var(--cor-sucesso)';
+        else if (valorTmdb >= 5) corAnel = 'var(--cor-alerta)';
 
         let conteudoNota = notaStr === 'NR' ? 'NR' : `<span>${notaStr}<span class="simbolo-porcento">%</span></span>`;
         const estrelasHtml = gerarEstrelasHtml(i.nota);
         const badgeDonut = mostrarNotaDonut ? `<div class="nota-donut" style="border-color: ${corAnel};">${conteudoNota}</div>` : '';
         const statusBadge = i.status === 'QUERO_VER' ? '' : `<div class="status-pill">${i.status.replace('_', ' ')}</div>`;
-        let btnRemover = (isFavSlot && !isVisita) ? `<div class="btn-remover-fav" onclick="removerFavorito(${slotIdx}, event)" title="Remover dos favoritos">&times;</div>` : '';
+        let btnRemover = (isFavSlot && !isVisita) ? `<div class="btn-remover-fav" onclick="removerFavorito(${slotIdx}, event)" title="Remover">&times;</div>` : '';
 
-        // loading="lazy" e decoding="async" adicionados na tag img!
         return `
             <div class="card-library" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
                 ${btnRemover} ${statusBadge}
-                <div class="btn-editar-card" onclick="event.stopPropagation(); abrirModal(${i.idFilmeTmdb}, '${escapeJS(f.tituloExibicao)}', '${i.status}', '${i.nota||""}', '${escapeJS(i.review)}', '${escapeJS(i.tags)}', '${i.idiomaAudio||""}')" title="Editar">✏️</div>
+                <div class="btn-editar-card" onclick="event.stopPropagation(); abrirModal(${i.idFilmeTmdb}, '${escapeJS(f.tituloExibicao)}', '${i.status}', '${i.nota||""}', '${escapeJS(i.review)}', '${escapeJS(i.tags)}', '${i.idiomaAudio||""}')">✏️</div>
                 <div class="poster-container">
-                    <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}"
-                         onerror="this.src='https://via.placeholder.com/500x750'"
-                         loading="lazy"
-                         decoding="async">
+                    <img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CINEHUB'}" onerror="this.src='https://via.placeholder.com/500x750?text=CINEHUB'" loading="lazy" decoding="async">
                     ${badgeDonut}
                 </div>
                 <div class="info-container">${estrelasHtml}</div>
@@ -568,37 +547,24 @@
     async function renderizarGrid(arrayFilmes, containerId, msgVazia) {
         const container = document.getElementById(containerId);
         if (!container) return;
+        if (arrayFilmes.length === 0) { container.innerHTML = `<p style="text-align:center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1; font-style: italic;">${msgVazia}</p>`; return; }
 
-        if (arrayFilmes.length === 0) {
-            container.innerHTML = `<p style="text-align:center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1;">${msgVazia}</p>`;
-            return;
-        }
-
-        // Criamos um HTML temporário e um Set para garantir IDs únicos na visualização
         let htmlFinal = '';
         const idsVistos = new Set();
-
         for (const i of arrayFilmes) {
-            // Se já renderizamos esse filme nesta lista, pula para o próximo
             if (idsVistos.has(i.idFilmeTmdb)) continue;
             idsVistos.add(i.idFilmeTmdb);
-
             const f = await getInfoFilme(i.idFilmeTmdb);
             htmlFinal += gerarCardHTML(i, f, true);
         }
-
-        // Atualiza o DOM uma única vez ao final do processamento
         container.innerHTML = htmlFinal;
     }
 
+    // ======= MUDANÇA VIP: CLIQUE ISOLADO NA REVIEW =======
     async function renderizarListaReviews(arrayReviews, containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
-
-        if (arrayReviews.length === 0) {
-            container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Você ainda não escreveu nenhuma review.</p>`;
-            return;
-        }
+        if (arrayReviews.length === 0) { container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem; font-style: italic;">Nenhum registro encontrado.</p>`; return; }
 
         let htmlFinal = '';
         for (const i of arrayReviews) {
@@ -606,19 +572,17 @@
             const estrelasHtml = gerarEstrelasHtml(i.nota);
             const ano = f.dataExibicao ? f.dataExibicao.split('-')[0] : '';
 
-            // loading="lazy" adicionado na tag img
             htmlFinal += `
-                <div class="review-item" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[3]); return false;" title="Ler todas as reviews">
+                <div class="review-item" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[3]); return false;">
                     <div class="review-poster" onclick="event.stopPropagation(); window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
-                        <img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" loading="lazy" decoding="async">
+                        <img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CH'}" loading="lazy" decoding="async">
                     </div>
                     <div class="review-content">
                         <div class="review-header">
-                            <h3 class="review-title">${f.tituloExibicao}</h3>
-                            <span class="review-year">${ano}</span>
+                            <h3 class="review-title" style="cursor: pointer;" onclick="event.stopPropagation(); window.location.href='detalhes.html?id=${i.idFilmeTmdb}'" title="Ver detalhes do filme">${f.tituloExibicao} <span class="review-year">${ano}</span></h3>
                             <span class="btn-editar-review" onclick="event.stopPropagation(); abrirModal(${i.idFilmeTmdb}, '${escapeJS(f.tituloExibicao)}', '${i.status}', '${i.nota||""}', '${escapeJS(i.review)}', '${escapeJS(i.tags)}', '${i.idiomaAudio||""}')">✏️ Editar</span>
                         </div>
-                        <div class="review-meta">${estrelasHtml}<span style="margin-left: 5px;">Watched</span></div>
+                        <div class="review-meta">${estrelasHtml}</div>
                         <p class="review-text">"${i.review}"</p>
                     </div>
                 </div>`;
@@ -626,32 +590,29 @@
         container.innerHTML = htmlFinal;
     }
 
-    // MUDANÇA: Carregar favoritos direto da API
     async function renderizarProfile() {
         const targetId = isVisita ? amigoId : dadosUser.id;
         const divFavs = document.getElementById('lista-favoritos');
-
         try {
-            // Buscamos os favoritos no Banco de Dados
             const res = await fetch(`/usuarios/${targetId}/favoritos`);
-            const favoritosDoBanco = await res.json();
-
-            if (favoritosDoBanco.length === 0) {
-                divFavs.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.85rem; grid-column: 1/-1; padding: 20px 0;">Você ainda não escolheu nenhum filme favorito. Edite um filme na sua library para adicioná-lo aos favoritos.</p>`;
-            } else {
-                let htmlFavs = '';
-                for (let idx = 0; idx < favoritosDoBanco.length; idx++) {
-                    const fav = favoritosDoBanco[idx];
-                    // Procuramos se temos a interação completa desse filme para pegar a nota/review
-                    const interacao = interacoesGlobais.find(x => x.idFilmeTmdb == fav.filmeTmdbId) || { idFilmeTmdb: fav.filmeTmdbId, status: 'JA_VI' };
-                    const f = await getInfoFilme(fav.filmeTmdbId);
-                    htmlFavs += gerarCardHTML(interacao, f, false, true, idx);
+            if (res.ok) {
+                const favoritosDoBanco = await res.json();
+                if (!Array.isArray(favoritosDoBanco) || favoritosDoBanco.length === 0) {
+                    divFavs.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.85rem; grid-column: 1/-1; padding: 10px 0; font-style: italic;">Sem favoritos registrados.</p>`;
+                } else {
+                    let htmlFavs = '';
+                    for (let idx = 0; idx < favoritosDoBanco.length; idx++) {
+                        const fav = favoritosDoBanco[idx];
+                        const interacao = interacoesGlobais.find(x => x.idFilmeTmdb == fav.filmeTmdbId) || { idFilmeTmdb: fav.filmeTmdbId, status: 'JA_VI' };
+                        const f = await getInfoFilme(fav.filmeTmdbId);
+                        htmlFavs += gerarCardHTML(interacao, f, false, true, idx);
+                    }
+                    divFavs.innerHTML = htmlFavs;
                 }
-                divFavs.innerHTML = htmlFavs;
+            } else {
+                divFavs.innerHTML = `<p style="color: var(--cor-perigo); font-size: 0.8rem; grid-column: 1/-1;">Erro de conexão com servidor.</p>`;
             }
-        } catch (e) {
-            console.error("Erro ao carregar favoritos:", e);
-        }
+        } catch (e) { console.error("Erro ao carregar favoritos:", e); }
 
         await renderizarGrid(interacoesGlobais.slice(0, 6), 'lista-recentes', 'Sua atividade recente aparecerá aqui.');
         await renderizarListaReviews(interacoesGlobais.filter(i => i.review && i.review.trim() !== '').slice(0, 3), 'lista-reviews-recentes');
@@ -659,7 +620,7 @@
 
     async function renderizarActivity() {
         const container = document.getElementById('list-activity'); container.innerHTML = '';
-        if (interacoesGlobais.length === 0) { container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Nenhuma atividade registrada.</p>`; return; }
+        if (interacoesGlobais.length === 0) { container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem; font-style: italic;">Nenhuma atividade registrada.</p>`; return; }
 
         for (const i of interacoesGlobais) {
             const f = await getInfoFilme(i.idFilmeTmdb);
@@ -672,10 +633,9 @@
             else if(i.status === 'ASSISTINDO') acaoTexto = "Começou a assistir";
             else if(i.status === 'ABANDONEI') acaoTexto = "Abandonou";
 
-            // loading="lazy" adicionado na tag img
             container.innerHTML += `
                 <div class="activity-item" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
-                    <div class="activity-poster"><img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" loading="lazy" decoding="async"></div>
+                    <div class="activity-poster"><img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CH'}" loading="lazy" decoding="async"></div>
                     <div class="activity-text">Você <strong>${acaoTexto}</strong><br> ${f.tituloExibicao} <span class="activity-date">Recente</span></div>
                 </div>`;
         }
@@ -684,106 +644,59 @@
     function renderizarTagsCloud() {
         const container = document.getElementById('cloud-tags'); container.innerHTML = '';
         const tagsMap = {};
-
         interacoesGlobais.forEach(i => {
-            if (i.tags) {
-                i.tags.split(',').forEach(tag => {
-                    const t = tag.trim();
-                    if(t.length > 0) tagsMap[t] = (tagsMap[t] || 0) + 1;
-                });
-            }
+            if (i.tags) { i.tags.split(',').forEach(tag => { const t = tag.trim(); if(t.length > 0) tagsMap[t] = (tagsMap[t] || 0) + 1; }); }
         });
-
         const sortedTags = Object.keys(tagsMap).sort((a, b) => tagsMap[b] - tagsMap[a]);
-
-        if(sortedTags.length === 0) {
-            container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Você não possui tags. Edite um filme e adicione palavras-chave separadas por vírgula.</p>`;
-            return;
-        }
-
+        if(sortedTags.length === 0) { container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem; font-style: italic;">Você não possui tags.</p>`; return; }
         sortedTags.forEach(tag => {
             const count = tagsMap[tag];
-            container.innerHTML += `
-                <div class="tag-badge" onclick="alert('Filtrar por tag em breve!')">
-                    <span>${tag}</span>
-                    <span class="tag-count">${count}</span>
-                </div>
-            `;
+            container.innerHTML += `<div class="tag-badge" onclick="alert('Filtrar por tag em breve!')"><span>${tag}</span><span class="tag-count">${count}</span></div>`;
         });
     }
 
     function renderizarStatsChart() {
         const container = document.getElementById('chart-notas'); container.innerHTML = '';
-
         const notasMap = { "0.5":0, "1.0":0, "1.5":0, "2.0":0, "2.5":0, "3.0":0, "3.5":0, "4.0":0, "4.5":0, "5.0":0 };
         let maxCount = 0;
-
         interacoesGlobais.forEach(i => {
-            if(i.nota > 0) {
-                const notaFix = i.nota.toFixed(1);
-                if(notasMap[notaFix] !== undefined) {
-                    notasMap[notaFix]++;
-                    if(notasMap[notaFix] > maxCount) maxCount = notasMap[notaFix];
-                }
-            }
+            if(i.nota > 0) { const notaFix = i.nota.toFixed(1); if(notasMap[notaFix] !== undefined) { notasMap[notaFix]++; if(notasMap[notaFix] > maxCount) maxCount = notasMap[notaFix]; } }
         });
-
-        if(maxCount === 0) { container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem; width: 100%; text-align: center;">Dê notas aos filmes para ver o seu gráfico.</p>`; return; }
-
+        if(maxCount === 0) { container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem; width: 100%; text-align: center; font-style: italic;">Gráfico indisponível.</p>`; return; }
         Object.keys(notasMap).forEach(nota => {
             const count = notasMap[nota];
             const heightPct = count > 0 ? Math.max((count / maxCount) * 100, 2) : 0;
             const label = nota.endsWith(".0") ? nota.charAt(0) + "★" : " ";
-
-            container.innerHTML += `
-                <div class="bar-wrapper">
-                    <div class="bar-tooltip">${count} filme(s)</div>
-                    <div class="bar" style="height: ${heightPct}%;"></div>
-                    <div class="bar-label">${label}</div>
-                </div>`;
+            container.innerHTML += `<div class="bar-wrapper"><div class="bar-tooltip">${count}</div><div class="bar" style="height: ${heightPct}%;"></div><div class="bar-label">${label}</div></div>`;
         });
     }
 
-    // MUDANÇA: Remover favorito direto pela lixeirinha do card
     async function removerFavorito(index, event) {
         event.stopPropagation();
         const targetId = dadosUser.id;
-
         try {
             const res = await fetch(`/usuarios/${targetId}/favoritos`);
             let favsAtuais = await res.json();
             let listaIds = favsAtuais.map(f => f.filmeTmdbId);
-
             listaIds.splice(index, 1);
-
-            await fetch(`/usuarios/${targetId}/favoritos`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(listaIds)
-            });
-
-            await renderizarProfile();
-        } catch(e) {
-            console.error("Erro ao remover favorito:", e);
-        }
+            await fetch(`/usuarios/${targetId}/favoritos`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(listaIds) });
+            await carregarLibrary();
+        } catch(e) { console.error("Erro ao remover favorito:", e); }
     }
 
     async function renderizarSidebarFixa(dadosOriginais) {
-        // MUDANÇA VIP: A Sidebar agora usa o array "filmesFiltradosWatchlist" (só do passado)
         document.getElementById('contador-watchlist').innerText = filmesFiltradosWatchlist.length;
         const divWatch = document.getElementById('sidebar-watchlist'); divWatch.innerHTML = '';
         for (const i of filmesFiltradosWatchlist.slice(0, 4)) {
             const f = await getInfoFilme(i.idFilmeTmdb);
-            // loading="lazy" adicionado na tag img da sidebar
-            divWatch.innerHTML += `<img src="${f.linkPoster || 'https://via.placeholder.com/500x750'}" class="mini-poster" loading="lazy" decoding="async" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">`;
+            divWatch.innerHTML += `<img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CH'}" class="mini-poster" loading="lazy" decoding="async" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">`;
         }
-
         const diary = interacoesGlobais.filter(i => i.status === 'JA_VI').slice(0, 5); document.getElementById('contador-diary').innerText = dadosOriginais.filter(i => i.status === 'JA_VI').length;
         const divDiary = document.getElementById('sidebar-diary'); divDiary.innerHTML = '';
         for (const i of diary) {
             const f = await getInfoFilme(i.idFilmeTmdb); let estrelasTexto = '';
             if(i.nota) { for(let x=1; x<=Math.floor(i.nota); x++) estrelasTexto += '★'; if(i.nota % 1 !== 0) estrelasTexto += '½'; }
-            divDiary.innerHTML += `<li class="diary-item" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'"><span class="diary-date">Recent</span><span class="diary-title">${f.tituloExibicao}</span><span class="diary-stars">${estrelasTexto}</span></li>`;
+            divDiary.innerHTML += `<li class="diary-item" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'"><span class="diary-date">Recente</span><span class="diary-title">${f.tituloExibicao}</span><span class="diary-stars">${estrelasTexto}</span></li>`;
         }
     }
 
@@ -799,7 +712,6 @@
         document.getElementById('stat-tag').innerText = topTag.length > 12 ? topTag.substring(0, 12) + '..' : topTag;
     }
 
-    // MUDANÇA: Modal assíncrono para verificar se já é favorito no backend
     async function abrirModal(id, titulo, status, nota, review, tags, idioma) {
         filmeModalAtual = id;
         document.getElementById('modal-id-tmdb').value = id;
@@ -812,23 +724,22 @@
 
         isFavoritoModal = false;
         try {
-            // Busca a lista atual de favoritos para saber se o botão deve mostrar "Adicionar" ou "Remover"
             const res = await fetch(`/usuarios/${dadosUser.id}/favoritos`);
             if (res.ok) {
                 const favs = await res.json();
-                isFavoritoModal = favs.some(f => f.filmeTmdbId == id);
+                if(Array.isArray(favs)) {
+                    isFavoritoModal = favs.some(f => f.filmeTmdbId == id);
+                }
             }
-        } catch(e) {
-            console.error("Erro ao verificar favoritos", e);
-        }
+        } catch(e) { console.error("Erro ao verificar favoritos", e); }
 
         const btnFav = document.getElementById('btn-fav-modal');
         if (isFavoritoModal) {
             btnFav.classList.add('ativo');
-            btnFav.innerText = '♥ REMOVER DOS FAVORITOS';
+            btnFav.innerText = '♥ Remover dos Favoritos';
         } else {
             btnFav.classList.remove('ativo');
-            btnFav.innerText = '🤍 ADICIONAR AOS FAVORITOS (TOP 6)';
+            btnFav.innerText = '🤍 Adicionar aos Favoritos';
         }
 
         document.getElementById('botoes-modal').style.display = isVisita ? 'none' : 'flex';
@@ -838,27 +749,27 @@
 
     function fecharModal() { document.getElementById('modal-edicao').style.display = 'none'; }
 
-    // MUDANÇA: Salvar favorito no Banco de Dados (Top 6)
     async function toggleFavoritoModal() {
         const idFilme = filmeModalAtual.toString();
         const targetId = dadosUser.id;
+        const btnFav = document.getElementById('btn-fav-modal');
 
         try {
-            // Primeiro, pegamos a lista atual do Banco
+            btnFav.innerText = "Processando...";
             const res = await fetch(`/usuarios/${targetId}/favoritos`);
             let favsAtuais = await res.json();
-            let listaIds = favsAtuais.map(f => f.filmeTmdbId);
+
+            if(!Array.isArray(favsAtuais)) favsAtuais = [];
+
+            let listaIds = favsAtuais.map(f => f.filmeTmdbId).filter(id => id != null);
 
             if (listaIds.includes(Number(idFilme))) {
-                // Remover
                 listaIds = listaIds.filter(id => id !== Number(idFilme));
             } else {
-                // Adicionar no topo (limite de 6)
                 listaIds.unshift(Number(idFilme));
                 if (listaIds.length > 6) listaIds = listaIds.slice(0, 6);
             }
 
-            // MANDAMOS PARA O JAVA SALVAR NO SUPABASE
             const saveRes = await fetch(`/usuarios/${targetId}/favoritos`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -867,43 +778,39 @@
 
             if(saveRes.ok) {
                 fecharModal();
-                await renderizarProfile(); // Recarrega a tela
+                await carregarLibrary();
+            } else {
+                alert("Erro ao salvar o favorito no banco de dados.");
+                btnFav.innerText = "♥ Tentar Novamente";
             }
         } catch (e) {
             console.error("Erro ao processar favorito:", e);
+            alert("Erro de conexão com o servidor.");
+            btnFav.innerText = "Erro";
         }
     }
 
     async function salvarEdicao() {
         const payload = { idFilmeTmdb: document.getElementById('modal-id-tmdb').value, status: document.getElementById('modal-status').value, idiomaAudio: document.getElementById('modal-idioma').value, nota: document.getElementById('modal-nota').value ? parseFloat(document.getElementById('modal-nota').value) : null, tags: document.getElementById('modal-tags').value, review: document.getElementById('modal-review').value };
-        await fetch(`/interacoes/usuario/${dadosUser.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); fecharModal(); await carregarLibrary();
+        await fetch(`/interacoes/usuario/${dadosUser.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        fecharModal();
+        await carregarLibrary();
     }
 
-    // MUDANÇA: Garante que, ao remover o filme do diário, ele também saia dos favoritos do banco
     async function removerDoDiario() {
         if (!confirm("Remover da biblioteca?")) return;
-
         const targetId = dadosUser.id;
-
         try {
             const resFav = await fetch(`/usuarios/${targetId}/favoritos`);
             let favsAtuais = await resFav.json();
-            let listaIds = favsAtuais.map(f => f.filmeTmdbId);
-
-            // Se o filme estiver nos favoritos, remove ele de lá também
-            if(listaIds.includes(Number(filmeModalAtual))) {
-                listaIds = listaIds.filter(id => id !== Number(filmeModalAtual));
-                await fetch(`/usuarios/${targetId}/favoritos`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(listaIds)
-                });
+            if(Array.isArray(favsAtuais)) {
+                let listaIds = favsAtuais.map(f => f.filmeTmdbId);
+                if(listaIds.includes(Number(filmeModalAtual))) {
+                    listaIds = listaIds.filter(id => id !== Number(filmeModalAtual));
+                    await fetch(`/usuarios/${targetId}/favoritos`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(listaIds) });
+                }
             }
-        } catch(e) {
-            console.error("Erro ao sincronizar remoção de favoritos", e);
-        }
-
-        // Apaga a interação principal
+        } catch(e) { console.error("Erro ao sincronizar remoção de favoritos", e); }
         await fetch(`/interacoes/usuario/${dadosUser.id}/filme/${document.getElementById('modal-id-tmdb').value}`, { method: 'DELETE' });
         fecharModal();
         await carregarLibrary();
