@@ -15,7 +15,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Paleta Gótica Refinada "Abismo Minimalista" */
             --cor-primaria: #8a0303;
             --cor-fundo: #020202;
             --cor-card: #0d0d0f;
@@ -31,7 +30,6 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* SCROLLBAR DAS TREVAS */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--cor-fundo); }
         ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; border: 1px solid var(--cor-fundo); }
@@ -45,7 +43,7 @@
             overflow-x: hidden;
         }
 
-        /* ======= TOP NAV (LETTERBOXD STYLE) ======= */
+        /* ======= TOP NAV ======= */
         .top-nav {
             width: 100%; position: sticky; top: 0; background-color: rgba(2, 2, 2, 0.98);
             backdrop-filter: blur(10px); border-bottom: 1px solid var(--cor-borda);
@@ -60,7 +58,7 @@
         .brand-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 6px; text-transform: uppercase; margin: 0; color: #fff; }
         .brand-text span { color: var(--cor-primaria); }
 
-        /* ======= MENU LATERAL (DRAWER) ======= */
+        /* ======= MENU LATERAL ======= */
         .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1999; opacity: 0; pointer-events: none; transition: var(--transicao); backdrop-filter: blur(4px); }
         .menu-overlay.open { opacity: 1; pointer-events: auto; }
 
@@ -78,7 +76,7 @@
         .menu-links a.active { border-color: var(--cor-primaria); color: var(--cor-primaria); font-weight: 700;}
         .menu-icon { font-size: 1.1rem; opacity: 0.6;}
 
-        /* BUSCA INTEGRADA (GOTHIC) */
+        /* BUSCA INTEGRADA */
         .search-wrapper { width: 100%; max-width: 1200px; padding: 30px 20px; display: flex; justify-content: center; }
         .search-container { width: 100%; max-width: 700px; display: flex; gap: 8px; position: relative;}
         .search-container input { background: #050505; border: 1px solid var(--cor-borda); border-radius: 2px; padding: 16px 25px; color: white; flex-grow: 1; font-size: 0.95rem; font-family: 'Inter', sans-serif; transition: var(--transicao); }
@@ -86,7 +84,7 @@
         .btn-busca { background: var(--cor-texto); border: none; border-radius: 2px; padding: 0 25px; color: #000; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: var(--transicao); font-size: 0.8rem;}
         .btn-busca:hover { background: var(--cor-primaria); color: #fff; }
 
-        /* ======= SEÇÕES ESTILO TMDB ======= */
+        /* ======= SEÇÕES ======= */
         #home-view { width: 100%; max-width: 1300px; position: relative; }
         .secao-tmdb { margin-bottom: 40px; position: relative; }
         .secao-header { display: flex; align-items: center; gap: 20px; margin-bottom: 15px; padding: 0 25px; border-bottom: 1px solid var(--cor-borda); padding-bottom: 10px; }
@@ -99,7 +97,10 @@
 
         /* ======= CARROSSEL E SETAS ======= */
         .carrossel-wrapper { position: relative; width: 100%; }
-        .carrossel { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 35px 25px; scrollbar-width: none; scroll-behavior: smooth; cursor: grab; }
+
+        /* MUDANÇA VIP: Altura mínima para evitar o "pulo" da tela */
+        .carrossel { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 35px 25px; scrollbar-width: none; scroll-behavior: smooth; cursor: grab; min-height: 330px; align-items: stretch; }
+
         .carrossel:active { cursor: grabbing; scroll-behavior: auto; }
         .carrossel::-webkit-scrollbar { display: none; }
         .seta-carrossel { position: absolute; top: 40%; transform: translateY(-50%); width: 45px; height: 45px; background: rgba(0, 0, 0, 0.9); color: white; border: 1px solid var(--cor-borda); border-radius: 2px; font-size: 1.5rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; opacity: 0; transition: var(--transicao); box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
@@ -107,6 +108,9 @@
         @media (max-width: 767px) { .seta-carrossel { display: none; } }
         .seta-carrossel:hover { background: var(--cor-primaria); border-color: var(--cor-primaria); }
         .seta-esq { left: 10px; } .seta-dir { right: 10px; }
+
+        /* LOADING CENTRALIZADO NO CARROSSEL */
+        .loader-box { width: 100%; display: flex; justify-content: center; align-items: center; height: 260px; color: var(--cor-texto-sec); font-style: italic; font-size: 0.9rem;}
 
         /* ======= CARD TMDB COMPLETO ======= */
         .card-tmdb { flex: 0 0 140px; display: flex; flex-direction: column; cursor: pointer; position: relative; transition: var(--transicao); overflow: visible; }
@@ -126,7 +130,7 @@
         .info-titulo { font-size: 0.85rem; font-weight: 700; margin: 0 0 4px 0; color: #fff; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; pointer-events: none; }
         .info-data { font-size: 0.7rem; color: var(--cor-texto-sec); margin: 0; pointer-events: none; font-family: 'Georgia', serif;}
 
-        .card-ver-todos { flex: 0 0 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; border-radius: 4px; background-color: rgba(255,255,255,0.01); border: 1px dashed var(--cor-texto-sec); transition: var(--transicao); color: var(--cor-texto-sec); gap: 10px; }
+        .card-ver-todos { flex: 0 0 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; border-radius: 4px; background-color: rgba(255,255,255,0.01); border: 1px dashed var(--cor-texto-sec); transition: var(--transicao); color: var(--cor-texto-sec); gap: 10px; height: 210px; margin-top: 1px;}
         .card-ver-todos:hover { border-color: #fff; color: #fff; background-color: rgba(255,255,255,0.03); transform: translateY(-5px); }
         .seta-ver-todos { font-size: 2rem; font-weight: 200; }
         .texto-ver-todos { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
@@ -136,7 +140,7 @@
         .btn-voltar { background: transparent; border: 1px solid var(--cor-borda); color: var(--cor-texto-sec); padding: 10px 20px; border-radius: 2px; font-size: 0.8rem; font-weight: 700; cursor: pointer; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; transition: var(--transicao);}
         .btn-voltar:hover { border-color: #fff; color: #fff; }
 
-        /* MODAL SÓBRIO GÓTICO */
+        /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(3px); transition: var(--transicao); }
         .modal-content { background: #050505; width: 90%; max-width: 400px; padding: 30px; border-radius: 4px; border: 1px solid var(--cor-borda); animation: fadeInModal 0.4s cubic-bezier(0.19, 1, 0.22, 1); max-height: 95vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,1);}
         @keyframes fadeInModal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -157,7 +161,8 @@
 <header class="top-nav">
     <button class="btn-hamburger" onclick="toggleMenu()">☰</button>
     <a href="index.html" class="brand"><h1 class="brand-text">CINE<span>HUB</span></h1></a>
-    <div style="width: 24px;"></div> </header>
+    <div style="width: 24px;"></div>
+</header>
 
 <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
 <nav class="side-menu" id="side-menu">
@@ -284,7 +289,6 @@
 </div>
 
 <script>
-    // ======= CONTROLE DO MENU HAMBÚRGUER =======
     function toggleMenu() {
         const menu = document.getElementById('side-menu');
         const overlay = document.getElementById('menu-overlay');
@@ -303,7 +307,6 @@
 
     const placeholderImagem = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750' style='background:%23000'%3E%3Ctext fill='%236c757d' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24'%3ESem Foto%3C/text%3E%3C/svg%3E";
 
-    // Data simulada atual: 31 de Março de 2026 (Os meses no JS vão de 0 a 11, então Março = 2)
     const HOJE = new Date(2026, 2, 31);
 
     window.onload = function() {
@@ -313,14 +316,6 @@
         carregarSecao('top_rated', 'movie', 'carrossel-awards');
         ativarDragScroll();
     };
-
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then(reg => console.log('[PWA] Service Worker registrado!', reg.scope))
-                .catch(err => console.log('[PWA] Erro ao registrar Service Worker:', err));
-        });
-    }
 
     function rolarCarrossel(idCarrossel, direcao) {
         const carrossel = document.getElementById(idCarrossel);
@@ -355,22 +350,26 @@
 
     async function carregarSecao(cat, tipo, containerId) {
         const container = document.getElementById(containerId);
-        container.innerHTML = '<p style="color: var(--cor-texto-sec); font-style: italic; padding: 20px;">Carregando...</p>';
+        container.innerHTML = '<div class="loader-box">Buscando nas sombras...</div>';
         try {
             const response = await fetch(`/api/tmdb/lista?cat=${cat}&tipo=${tipo}`);
             let filmes = await response.json();
+
             if (cat === 'upcoming') {
-                filmes.sort((a, b) => {
-                    if (!a.dataExibicao) return 1;
-                    if (!b.dataExibicao) return -1;
-                    return new Date(a.dataExibicao) - new Date(b.dataExibicao);
+                filmes = filmes.filter(f => {
+                    if (!f.dataExibicao) return false;
+                    const p = f.dataExibicao.split('-');
+                    const dataFilme = new Date(p[0], p[1] - 1, p[2]);
+                    return dataFilme > HOJE;
                 });
+                filmes.sort((a, b) => new Date(a.dataExibicao) - new Date(b.dataExibicao));
             }
+
             const filmesExibidos = filmes.slice(0, 20);
             let html = gerarHTMLCards(filmesExibidos);
             html += `<div class="card-ver-todos" onclick="window.location.href='lista_completa.html?cat=${cat}&tipo=${tipo}'"><span class="seta-ver-todos">→</span><span class="texto-ver-todos">Ver todos</span></div>`;
             container.innerHTML = html;
-        } catch (e) { container.innerHTML = '<p style="color: var(--cor-perigo);">Erro ao carregar.</p>'; }
+        } catch (e) { container.innerHTML = '<p style="color: var(--cor-perigo); padding: 20px;">Erro ao carregar.</p>'; }
     }
 
     async function executarBusca() {
@@ -380,7 +379,7 @@
         document.getElementById('busca-view').style.display = 'block';
         document.getElementById('titulo-busca').innerText = `Resultados para: "${query}"`;
         const grid = document.getElementById('grid-resultados');
-        grid.innerHTML = '<p style="color: var(--cor-texto-sec); font-style: italic;">Buscando...</p>';
+        grid.innerHTML = '<div class="loader-box" style="grid-column: 1/-1;">Rastreando...</div>';
         const response = await fetch(`/api/tmdb/busca?titulo=${query}`);
         const filmes = await response.json();
         grid.innerHTML = gerarHTMLCards(filmes);
@@ -393,7 +392,7 @@
     }
 
     function gerarHTMLCards(filmes) {
-        if(filmes.length === 0) return '<p style="color: var(--cor-texto-sec); font-style: italic; grid-column: 1/-1;">Nenhum título encontrado.</p>';
+        if(filmes.length === 0) return '<p style="color: var(--cor-texto-sec); font-style: italic; grid-column: 1/-1; padding: 20px;">Nenhum título encontrado.</p>';
         return filmes.map(filme => {
             let valorNota = filme.notaTmdb || filme.vote_average || filme.voteAverage || 0;
             const porcentagemNum = valorNota > 0 ? (valorNota * 10).toFixed(0) : 0;

@@ -7,16 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Paleta Premium Cinehub */
             --cor-primaria: #8a0303;
-            --cor-fundo: #020202;
-            --cor-card: #0d0d0f;
-            --cor-texto: #dfdfdf;
-            --cor-texto-sec: #6c757d;
+            --cor-fundo: #090606;
+            --cor-card: #120d0c;
+            --cor-texto: #e2e2e2;
+            --cor-texto-sec: #8c8c8c;
             --cor-sucesso: #2d8a56;
             --cor-alerta: #b0a02c;
             --cor-perigo: #8a0303;
             --cor-ouro: #c0a062;
-            --cor-borda: #1a1a1a;
+            --cor-borda: rgba(255, 255, 255, 0.08);
             --transicao: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
@@ -24,11 +25,16 @@
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--cor-fundo); }
-        ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; border: 1px solid var(--cor-fundo); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; border: 1px solid var(--cor-fundo); }
         ::-webkit-scrollbar-thumb:hover { background: var(--cor-primaria); }
 
         body {
-            background-color: var(--cor-fundo); color: var(--cor-texto);
+            background-color: var(--cor-fundo);
+            background-image:
+                radial-gradient(circle at 50% -20%, rgba(138, 3, 3, 0.15) 0%, transparent 80vh),
+                repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(0,0,0,0.2) 10px, rgba(0,0,0,0.2) 20px);
+            background-attachment: fixed;
+            color: var(--cor-texto);
             font-family: 'Inter', sans-serif; margin: 0; padding: 0 0 50px 0;
             display: flex; flex-direction: column; align-items: center;
             -webkit-font-smoothing: antialiased; overflow-x: hidden;
@@ -36,8 +42,8 @@
 
         /* ======= TOP NAV ======= */
         .top-nav {
-            width: 100%; position: sticky; top: 0; background-color: rgba(2, 2, 2, 0.98);
-            backdrop-filter: blur(10px); border-bottom: 1px solid var(--cor-borda);
+            width: 100%; position: sticky; top: 0; background-color: rgba(9, 6, 6, 0.85);
+            backdrop-filter: blur(15px); border-bottom: 1px solid var(--cor-borda);
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 20px; z-index: 1000;
         }
@@ -46,25 +52,25 @@
         .btn-hamburger:hover { color: var(--cor-primaria); transform: scale(1.1); }
 
         .brand { text-decoration: none; display: flex; align-items: center; position: absolute; left: 50%; transform: translateX(-50%);}
-        .brand-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 6px; text-transform: uppercase; margin: 0; color: #fff; }
+        .brand-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 6px; text-transform: uppercase; margin: 0; color: #fff; text-shadow: 0 2px 15px rgba(0,0,0,0.8);}
         .brand-text span { color: var(--cor-primaria); }
 
         .nav-actions { display: flex; gap: 15px; align-items: center; }
         .btn-search-nav { background: transparent; border: none; color: var(--cor-texto); font-size: 1.1rem; cursor: pointer; padding: 0; transition: var(--transicao);}
         .btn-search-nav:hover { color: var(--cor-primaria); transform: scale(1.1); }
 
-        /* SINO DE NOTIFICAÇÃO (CO-WATCH) */
+        /* SINO DE NOTIFICAÇÃO */
         .bell-wrapper { position: relative; cursor: pointer; display: flex; align-items: center; transition: var(--transicao);}
         .bell-wrapper:hover { transform: scale(1.1); }
         .bell-icon { font-size: 1.1rem; color: var(--cor-texto); }
         .bell-badge {
             display: none; position: absolute; top: -5px; right: -8px; background: var(--cor-primaria);
-            color: #fff; font-size: 0.6rem; font-weight: 900; padding: 2px 5px; border-radius: 10px; border: 2px solid var(--cor-fundo);
+            color: #fff; font-size: 0.6rem; font-weight: 900; padding: 2px 5px; border-radius: 4px; border: 1px solid var(--cor-fundo); box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
         .notificacoes-dropdown {
             display: none; position: absolute; top: 180%; right: 0; width: 300px;
-            background: #050505; border: 1px solid var(--cor-borda); border-radius: 4px;
+            background: #111; border: 1px solid var(--cor-borda); border-radius: 8px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.9); padding: 15px; z-index: 2000; flex-direction: column; gap: 10px;
         }
         .notificacoes-dropdown.open { display: flex; }
@@ -74,7 +80,7 @@
         .notif-texto { font-size: 0.8rem; color: #ccc; line-height: 1.4; }
         .notif-texto strong { color: #fff; font-weight: 800; }
         .notif-botoes { display: flex; gap: 10px; }
-        .btn-notif { flex: 1; padding: 6px; border: none; border-radius: 2px; font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: var(--transicao); text-transform: uppercase;}
+        .btn-notif { flex: 1; padding: 6px; border: none; border-radius: 4px; font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: var(--transicao); text-transform: uppercase;}
         .btn-notif-aceitar { background: var(--cor-sucesso); color: #000; }
         .btn-notif-aceitar:hover { filter: brightness(1.2); }
         .btn-notif-recusar { background: transparent; border: 1px solid var(--cor-borda); color: var(--cor-texto-sec); }
@@ -84,7 +90,7 @@
         .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1999; opacity: 0; pointer-events: none; transition: var(--transicao); backdrop-filter: blur(4px); }
         .menu-overlay.open { opacity: 1; pointer-events: auto; }
 
-        .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #08080a; z-index: 2000; border-right: 1px solid var(--cor-borda); display: flex; flex-direction: column; padding: 30px 20px; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 10px 0 40px rgba(0,0,0,0.9); }
+        .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #0a0a0c; z-index: 2000; border-right: 1px solid var(--cor-borda); display: flex; flex-direction: column; padding: 30px 20px; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 10px 0 40px rgba(0,0,0,0.9); }
         .side-menu.open { left: 0; }
 
         .side-menu-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--cor-borda); padding-bottom: 20px; margin-bottom: 20px; }
@@ -93,162 +99,289 @@
         .btn-close-menu:hover { color: var(--cor-perigo); transform: rotate(90deg); }
 
         .menu-links { display: flex; flex-direction: column; gap: 5px; }
-        .menu-links a { color: var(--cor-texto); text-decoration: none; font-size: 1rem; font-weight: 500; padding: 14px 12px; border-radius: 2px; transition: var(--transicao); display: flex; align-items: center; gap: 15px; border: 1px solid transparent; }
-        .menu-links a:hover, .menu-links a.active { background: rgba(255,255,255,0.02); color: #fff; border-color: var(--cor-borda); }
+        .menu-links a { color: var(--cor-texto); text-decoration: none; font-size: 1rem; font-weight: 500; padding: 14px 12px; border-radius: 4px; transition: var(--transicao); display: flex; align-items: center; gap: 15px; border: 1px solid transparent; }
+        .menu-links a:hover, .menu-links a.active { background: rgba(255,255,255,0.03); color: #fff; border-color: var(--cor-borda); }
         .menu-links a.active { border-color: var(--cor-primaria); color: var(--cor-primaria); font-weight: 700;}
         .menu-icon { font-size: 1.1rem; opacity: 0.6;}
 
         /* ======= PERFIL HERO ======= */
-        .profile-bento { width: 100%; max-width: 1100px; padding: 40px 20px 20px 20px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 30px; }
+        .profile-bento { width: 100%; max-width: 1100px; padding: 40px 20px 20px 20px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; padding-bottom: 30px;}
         .profile-left { display: flex; align-items: center; gap: 20px; position: relative; }
 
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background-color: #000; overflow: hidden; border: 1px solid var(--cor-borda); transition: var(--transicao); box-shadow: 0 0 35px rgba(138, 3, 3, 0.15); }
-        .profile-avatar:hover { border-color: var(--cor-primaria); box-shadow: 0 0 50px rgba(138, 3, 3, 0.4); transform: scale(1.05); }
-        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(25%) contrast(110%); }
+        .profile-avatar { width: 85px; height: 85px; border-radius: 50%; background-color: #000; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: var(--transicao); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .profile-avatar:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.8); transform: scale(1.05); border-color: rgba(255,255,255,0.3);}
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(10%) contrast(105%); }
 
-        .profile-info h1 { margin: 0; font-weight: 900; font-size: 1.7rem; letter-spacing: 1px; color: #fff; text-transform: uppercase;}
-        .profile-info p { margin: 2px 0 0 0; color: var(--cor-texto-sec); font-size: 0.85rem; font-weight: 400; font-style: italic;}
+        .profile-info h1 { margin: 0; font-weight: 900; font-size: 1.8rem; letter-spacing: 1px; color: #fff; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.8);}
+        .profile-info p { margin: 2px 0 0 0; color: var(--cor-texto-sec); font-size: 0.9rem; font-weight: 400; font-style: italic;}
 
-        .profile-stats { display: flex; gap: 25px; }
+        .profile-stats { display: flex; gap: 30px; }
         .stat-item { display: flex; flex-direction: column; align-items: flex-start; }
-        .stat-val { font-size: 1.5rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 4px; font-family: 'Georgia', serif;}
-        .stat-name { font-size: 0.6rem; color: var(--cor-texto-sec); text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; }
+        .stat-val { font-size: 1.6rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 4px; font-family: 'Georgia', serif; text-shadow: 0 2px 8px rgba(0,0,0,0.5);}
+        .stat-name { font-size: 0.65rem; color: var(--cor-texto-sec); text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; }
 
-        /* ======= SUB-MENU ======= */
-        .pill-nav-container { width: 100%; max-width: 1100px; margin-bottom: 30px; border-bottom: 1px solid var(--cor-borda); background: rgba(255,255,255,0.01); }
-        .pill-menu { display: flex; gap: 25px; overflow-x: auto; scrollbar-width: none; padding: 0 20px; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; width: 100%; }
-        .aba-link { flex-shrink: 0; background: transparent; border: none; color: var(--cor-texto-sec); text-decoration: none; font-size: 0.8rem; font-weight: 600; padding: 16px 0; white-space: nowrap; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 2px solid transparent; cursor: pointer; }
-        .aba-link:hover { color: #fff; }
-        .aba-link.active { color: #fff; border-bottom-color: var(--cor-primaria); font-weight: 700; }
+        /* ======= SUB-MENU CONECTADO ======= */
+        .pill-nav-container { width: 100%; max-width: 1100px; margin-bottom: 40px; background: transparent; display: flex; justify-content: center;}
+
+        .pill-menu {
+            display: inline-flex;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            padding: 4px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .aba-link {
+            flex-shrink: 0; background: transparent; border: none;
+            color: var(--cor-texto-sec); text-decoration: none; font-size: 0.75rem; font-weight: 700;
+            padding: 10px 20px; border-radius: 6px;
+            white-space: nowrap; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1px; cursor: pointer;
+        }
+        .aba-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .aba-link.active {
+            color: #fff; background: var(--cor-primaria);
+            box-shadow: 0 4px 15px rgba(138, 3, 3, 0.3);
+        }
 
         /* ======= CONTAINERS ======= */
         .content-wrapper { width: 100%; max-width: 1100px; padding: 0 20px; display: flex; gap: 40px; align-items: flex-start; }
-        .main-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 40px; }
-        .sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 40px; }
+
+        .main-column { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 40px; margin-top: 0;}
+        .sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 40px; margin-top: 0;}
+
         @media (max-width: 900px) { .content-wrapper { flex-direction: column; } .sidebar { width: 100%; } }
 
         .tab-view { display: none; flex-direction: column; gap: 40px; width: 100%; }
 
-        .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; border-bottom: 1px solid var(--cor-borda); padding-bottom: 10px;}
-        .section-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin: 0; letter-spacing: 1.5px; text-transform: uppercase;}
-        .section-link { font-size: 0.65rem; color: var(--cor-texto-sec); text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: var(--transicao); cursor: pointer;}
-        .section-link:hover { color: var(--cor-primaria); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);}
+        .section-title { font-size: 1rem; font-weight: 800; color: #fff; margin: 0; letter-spacing: 1.5px; text-transform: uppercase; border-left: 4px solid var(--cor-primaria); padding-left: 12px; margin-left: -4px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
+        .section-link { font-size: 0.65rem; color: var(--cor-texto-sec); text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: var(--transicao); cursor: pointer; border: 1px solid transparent; padding: 4px 10px; border-radius: 4px;}
+        .section-link:hover { color: #fff; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);}
 
-        /* GRID POSTERS */
-        .poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; width: 100%; }
+        .glass-widget {
+            background: rgba(192, 160, 98, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(192, 160, 98, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .glass-widget .section-header { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;}
+
+        /* ======= GRID E CARD GÓTICO COM CAIXA ======= */
+        .poster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; width: 100%; }
         .poster-grid-favs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
 
-        .card-library { display: flex; flex-direction: column; cursor: pointer; position: relative; transition: var(--transicao); }
-        .card-library:hover { transform: translateY(-5px); }
-
-        .poster-container { position: relative; width: 100%; border-radius: 4px; overflow: visible; }
-        .poster-container img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; background-color: #000; border-radius: 4px; border: 1px solid var(--cor-borda); transition: var(--transicao); }
-        .card-library:hover .poster-container img { border-color: var(--cor-primaria); box-shadow: 0 5px 20px rgba(0,0,0,0.9); filter: contrast(110%);}
-
-        .status-pill { position: absolute; top: 6px; right: 6px; padding: 3px 6px; border-radius: 2px; font-size: 0.5rem; font-weight: 800; color: #000; background: var(--cor-texto); text-transform: uppercase; letter-spacing: 0.5px; z-index: 5;}
-
-        /* TAG DA SESSÃO DUPLA */
-        .cowatch-tag {
-            position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-            background: #000; border: 1px solid var(--cor-primaria); padding: 3px 8px; border-radius: 2px;
-            font-size: 0.5rem; font-weight: 800; color: #fff; z-index: 5; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 5px 10px rgba(0,0,0,0.8);
+        .card-wrapper {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: var(--transicao);
+            background: rgba(192, 160, 98, 0.08);
+            border: 1px solid rgba(192, 160, 98, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        .nota-donut { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.6rem; font-weight: 800; background: #000 !important; border: 2px solid var(--cor-anel); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-        .simbolo-porcento { font-size: 0.35rem; margin-top: 1px;}
+        .card-wrapper:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            border-color: var(--cor-ouro);
+        }
 
-        .btn-editar-card { position: absolute; top: 6px; left: 6px; width: 24px; height: 24px; background: rgba(0, 0, 0, 0.9); color: #fff; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; z-index: 10; opacity: 0; transition: var(--transicao); border: 1px solid var(--cor-borda);}
-        .card-library:hover .btn-editar-card { opacity: 1; }
+        .poster-container { position: relative; width: 100%; }
+        .poster-container img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; background-color: #111; transition: var(--transicao); }
+        .card-wrapper:hover .poster-container img { filter: contrast(110%);}
+
+        /* Badges Glassmorphism */
+        .status-pill { position: absolute; top: 8px; right: 8px; padding: 4px 8px; border-radius: 4px; font-size: 0.55rem; font-weight: 800; color: #fff; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.15); text-transform: uppercase; letter-spacing: 1px; z-index: 5;}
+
+        .cowatch-tag { position: absolute; bottom: -12px; left: 10px; background: var(--cor-card); border: 1px solid var(--cor-primaria); padding: 4px 10px; border-radius: 4px; font-size: 0.55rem; font-weight: 800; color: #fff; z-index: 5; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+
+        .nota-donut { position: absolute; bottom: -12px; left: 10px; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.65rem; font-weight: 800; background: var(--cor-fundo) !important; border: 2px solid var(--cor-anel); z-index: 5; box-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 0 3px var(--cor-fundo); }
+        .simbolo-porcento { font-size: 0.35rem; margin-top: 1px; color: rgba(255,255,255,0.6);}
+
+        .btn-editar-card { position: absolute; top: 8px; left: 8px; width: 28px; height: 28px; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; z-index: 10; opacity: 0; transition: var(--transicao);}
+        .card-wrapper:hover .btn-editar-card { opacity: 1; }
         .btn-editar-card:hover { background: var(--cor-primaria); color: #fff; border-color: var(--cor-primaria); transform: scale(1.1);}
 
-        .btn-remover-fav { position: absolute; top: -8px; right: -8px; width: 20px; height: 20px; background: var(--cor-perigo); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; z-index: 10; opacity: 0; transition: var(--transicao); font-size: 0.7rem; }
-        .card-library:hover .btn-remover-fav { opacity: 1; transform: scale(1.1); }
+        .btn-remover-fav { position: absolute; top: -6px; right: -6px; width: 24px; height: 24px; background: var(--cor-perigo); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; z-index: 10; opacity: 0; transition: var(--transicao); font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
+        .card-wrapper:hover .btn-remover-fav { opacity: 1; transform: scale(1.1); }
 
-        .info-container { padding: 15px 0 0 0; display: flex; flex-direction: column; align-items: center; }
-        .estrelas-pessoais { color: var(--cor-ouro); font-size: 0.75rem; display: flex; align-items: center; gap: 1px; letter-spacing: 1px;}
+        .info-container { padding: 10px 8px 15px 8px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+        .info-titulo { font-size: 0.85rem; font-weight: 800; margin: 0 0 6px 0; color: #fff; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; pointer-events: none; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+        .info-data { font-size: 0.7rem; color: var(--cor-texto-sec); margin: 0; pointer-events: none; font-weight: 500;}
+
+        .stars-container { display: flex; justify-content: center; width: 100%; padding-top: 12px; }
+
+        .estrelas-pessoais { color: var(--cor-ouro); font-size: 1rem; display: flex; align-items: center; gap: 2px; letter-spacing: 2px;}
         .estrela-wrapper { position: relative; display: inline-block; line-height: 1; }
-        .estrela-fundo { color: rgba(255,255,255,0.05); }
+        .estrela-fundo { color: rgba(255,255,255,0.08); }
         .estrela-cheia { position: absolute; top: 0; left: 0; overflow: hidden; white-space: nowrap; color: var(--cor-ouro); }
         .meia { width: 50%; }
 
-        /* REVIEWS */
-        .review-list { display: flex; flex-direction: column; gap: 20px; }
-        .review-item { display: flex; gap: 15px; padding-bottom: 20px; border-bottom: 1px solid var(--cor-borda); transition: var(--transicao); cursor: pointer; }
-        .review-item:hover { border-color: var(--cor-texto-sec); background: rgba(255,255,255,0.01); padding-left: 5px;}
+        /* ======= REVIEWS ======= */
+        .review-list { display: flex; flex-direction: column; gap: 15px; }
 
-        .review-poster { width: 65px; flex-shrink: 0; border-radius: 4px; overflow: hidden; border: 1px solid var(--cor-borda); cursor: pointer; transition: var(--transicao);}
-        .review-poster:hover { border-color: var(--cor-primaria); filter: brightness(1.2); }
+        .review-item {
+            display: flex; gap: 15px; padding: 15px;
+            background: rgba(192, 160, 98, 0.08);
+            border: 1px solid rgba(192, 160, 98, 0.2);
+            border-radius: 8px;
+            transition: var(--transicao); cursor: pointer;
+            align-items: flex-start;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .review-item:hover {
+            background: rgba(192, 160, 98, 0.12);
+            border-color: var(--cor-ouro);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
+
+        .review-poster { width: 75px; flex-shrink: 0; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: var(--transicao); box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
+        .review-poster:hover { border-color: var(--cor-ouro); filter: contrast(110%); }
         .review-poster img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block;}
 
-        .review-content { display: flex; flex-direction: column; gap: 6px; flex-grow: 1; }
+        .review-content { display: flex; flex-direction: column; gap: 4px; flex-grow: 1; }
         .review-header { display: flex; align-items: baseline; gap: 10px; }
-        .review-title { font-size: 1rem; font-weight: 800; color: #fff; margin: 0; cursor: pointer; transition: var(--transicao);}
+
+        .review-title { font-size: 1.05rem; font-weight: 800; color: #fff; margin: 0; cursor: pointer; transition: var(--transicao); text-shadow: 0 2px 5px rgba(0,0,0,0.8);}
         .review-title:hover { color: var(--cor-primaria); }
 
         .review-year { font-size: 0.7rem; color: var(--cor-texto-sec); font-weight: 500; font-family: 'Georgia', serif;}
-        .review-meta { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: var(--cor-texto-sec); text-transform: uppercase; letter-spacing: 0.5px;}
-        .review-text { font-size: 0.85rem; color: #ccc; line-height: 1.6; margin: 0; font-style: italic;}
-        .btn-editar-review { margin-left: auto; font-size: 0.7rem; color: var(--cor-texto-sec); font-weight: 700; background: transparent; border: 1px solid var(--cor-borda); padding: 4px 10px; border-radius: 2px; cursor: pointer; transition: var(--transicao); opacity: 0;}
+        .review-meta { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: var(--cor-texto-sec); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;}
+
+        .review-text {
+            font-size: 0.9rem;
+            color: #dfdfdf;
+            line-height: 1.6;
+            margin: 8px 0 0 0;
+            font-style: italic;
+            background: transparent;
+            padding: 5px 0 5px 15px;
+            border-left: 3px solid var(--cor-primaria);
+            border-radius: 0;
+        }
+
+        .btn-editar-review { margin-left: auto; font-size: 0.7rem; color: var(--cor-texto-sec); font-weight: 700; background: transparent; border: 1px solid rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 4px; cursor: pointer; transition: var(--transicao); opacity: 0;}
         .review-item:hover .btn-editar-review { opacity: 1; }
-        .btn-editar-review:hover { color: #fff; border-color: #fff; }
+        .btn-editar-review:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.05);}
 
         /* DIARY LIST */
         .diary-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0;}
-        .diary-item { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; padding: 12px 0; border-bottom: 1px solid var(--cor-borda); cursor: pointer; transition: var(--transicao);}
-        .diary-item:hover { padding-left: 10px; border-color: var(--cor-primaria); background: rgba(255,255,255,0.01);}
+        .diary-item { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: var(--transicao); border-radius: 4px;}
+        .diary-item:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.2);}
+        .diary-item:last-child { border-bottom: none; }
         .diary-date { font-weight: 800; color: var(--cor-texto-sec); font-size: 0.65rem; width: 45px; flex-shrink: 0; text-transform: uppercase; font-family: 'Georgia', serif;}
         .diary-title { font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1;}
 
-        .mini-poster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .mini-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid var(--cor-borda); cursor: pointer; transition: var(--transicao); }
-        .mini-poster:hover { filter: contrast(110%) brightness(1.1); border-color: #fff; transform: scale(1.05);}
+        .diary-stars { font-size: 0.75rem; color: var(--cor-ouro); margin-left: auto; letter-spacing: 1px;}
 
-        /* MODAL (THE VOID) */
+        .mini-poster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .mini-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; border: 1px solid var(--cor-borda); cursor: pointer; transition: var(--transicao); box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
+        .mini-poster:hover { filter: contrast(110%) brightness(1.1); border-color: #fff; transform: scale(1.05); box-shadow: 0 5px 15px rgba(138, 3, 3, 0.4);}
+
+        /* MODAL */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(3px); transition: var(--transicao); }
-        .modal-content { background: #050505; width: 90%; max-width: 400px; padding: 30px; border-radius: 4px; border: 1px solid var(--cor-borda); animation: fadeInModal 0.4s cubic-bezier(0.19, 1, 0.22, 1); max-height: 95vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,1);}
+        .modal-content { background: var(--cor-fundo); width: 90%; max-width: 400px; padding: 30px; border-radius: 8px; border: 1px solid var(--cor-borda); animation: fadeInModal 0.4s cubic-bezier(0.19, 1, 0.22, 1); max-height: 95vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,1);}
         @keyframes fadeInModal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .close-btn { float: right; font-size: 1.3rem; cursor: pointer; color: var(--cor-texto-sec); transition: var(--transicao); line-height: 1; }
         .close-btn:hover { color: var(--cor-perigo); transform: rotate(90deg); }
         .modal-form label { font-size: 0.65rem; font-weight: 700; color: var(--cor-texto-sec); display: block; margin-bottom: 6px; letter-spacing: 1.5px; margin-top: 18px; text-transform: uppercase;}
-        .modal-form select, .modal-form input, .modal-form textarea { background: #000; border: 1px solid var(--cor-borda); color: white; padding: 12px; border-radius: 2px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.9rem; transition: var(--transicao); }
-        .modal-form select:focus, .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 10px rgba(138, 3, 3, 0.2); }
+        .modal-form select, .modal-form input, .modal-form textarea { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 4px; width: 100%; font-family: 'Inter', sans-serif; font-size: 0.9rem; transition: var(--transicao); }
+        .modal-form select:focus, .modal-form input:focus, .modal-form textarea:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 10px rgba(138, 3, 3, 0.2); background: rgba(0,0,0,0.8);}
 
         .botoes-acao { display: flex; flex-direction: column; gap: 10px; margin-top: 30px; }
-        .btn-salvar { background: var(--cor-texto); border: none; color: #000; padding: 14px; border-radius: 2px; font-weight: 800; width: 100%; cursor: pointer; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.85rem;}
+        .btn-salvar { background: var(--cor-texto); border: none; color: #000; padding: 14px; border-radius: 4px; font-weight: 800; width: 100%; cursor: pointer; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.85rem;}
         .btn-salvar:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,255,255,0.2);}
-        .btn-remover { background: transparent; border: 1px solid var(--cor-borda); color: var(--cor-texto-sec); padding: 12px; border-radius: 2px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-remover { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--cor-texto-sec); padding: 12px; border-radius: 4px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;}
         .btn-remover:hover { border-color: var(--cor-perigo); color: var(--cor-perigo); background: rgba(138, 3, 3, 0.05); }
-        .btn-fav-modal { background: transparent; border: 1px solid var(--cor-borda); color: var(--cor-texto-sec); padding: 12px; border-radius: 2px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-fav-modal { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--cor-texto-sec); padding: 12px; border-radius: 4px; font-weight: 700; width: 100%; cursor: pointer; transition: var(--transicao); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;}
         .btn-fav-modal.ativo { border-color: var(--cor-primaria); color: var(--cor-primaria); background: rgba(138, 3, 3, 0.05); }
 
+        /* Ajuste do Mobile com Padding para os Botões Pílula não cortarem a sombra */
         @media (max-width: 600px) {
             .profile-bento { padding: 30px 20px 10px 20px; align-items: flex-start; flex-direction: column; gap: 20px;}
-            .pill-menu { padding: 0 20px; gap: 15px;}
-            .poster-grid, .poster-grid-favs { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .pill-nav-container { padding: 0; }
+
+            /* Ajuste VIP aqui: padding-bottom 10px para sombra respirar no mobile */
+            .pill-menu { border-radius: 0; border-left: none; border-right: none; padding: 4px 4px 10px 4px;}
+
+            .poster-grid, .poster-grid-favs { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .content-wrapper { gap: 30px; }
+            .glass-widget { padding: 15px; border-radius: 8px; border-left: none; border-right: none; background: transparent; box-shadow: none; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);}
         }
 
-        #view-activity, #view-tags, #view-stats { background-color: var(--cor-card); border: 1px solid var(--cor-borda); border-radius: 4px; padding: 20px; }
-        .activity-list, .tags-cloud, .stats-chart-container { display: flex; flex-direction: column; gap: 15px; }
-        .activity-item { display: flex; align-items: center; gap: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--cor-borda); cursor: pointer; transition: var(--transicao); }
-        .activity-item:hover { border-color: var(--cor-texto-sec); background: rgba(255,255,255,0.01); padding-left: 5px; }
-        .activity-poster { width: 50px; flex-shrink: 0; border-radius: 2px; overflow: hidden; border: 1px solid var(--cor-borda);}
+        #view-tags, #view-stats { background-color: rgba(255,255,255,0.02); border: 1px solid var(--cor-borda); border-radius: 8px; padding: 20px; backdrop-filter: blur(10px);}
+
+        .tags-cloud, .stats-chart-container { display: flex; flex-direction: column; gap: 15px; }
+
+        /* ======= EFEITO PELÍCULA DE FILME NA TIMELINE ======= */
+        .activity-list {
+            display: flex; flex-direction: column; gap: 0;
+            position: relative;
+            background: #000;
+            border-radius: 4px;
+            padding: 10px 45px;
+            border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .activity-list::before, .activity-list::after {
+            content: "";
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 30px;
+            background-color: #090909;
+            background-image: repeating-linear-gradient(to bottom,
+                transparent,
+                transparent 10px,
+                #000 10px,
+                #000 20px
+            );
+            border-left: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .activity-list::before { left: 0; }
+        .activity-list::after { right: 0; }
+
+        .activity-item {
+            display: flex; align-items: center; gap: 15px; padding: 15px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            cursor: pointer; transition: var(--transicao); border-radius: 0;
+            background: transparent;
+            position: relative;
+            z-index: 2;
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-item:hover { background: rgba(192, 160, 98, 0.08); }
+        /* ==================================================== */
+
+        .activity-poster { width: 50px; flex-shrink: 0; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .activity-poster img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; filter: grayscale(20%); }
         .activity-text { flex-grow: 1; font-size: 0.85rem; color: var(--cor-texto-sec); line-height: 1.5; }
         .activity-text strong { color: #fff; font-weight: 700;}
         .activity-date { font-size: 0.65rem; color: var(--cor-texto-sec); font-family: 'Georgia', serif; display: block; margin-top: 2px; text-transform: uppercase;}
 
-        .tags-cloud { flex-direction: row; flex-wrap: wrap; gap: 10px; }
-        .tag-badge { background: transparent; color: var(--cor-texto-sec); padding: 8px 14px; border-radius: 2px; font-size: 0.8rem; font-weight: 600; border: 1px solid var(--cor-borda); display: flex; align-items: center; gap: 8px; transition: var(--transicao); cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .tag-badge { background: transparent; color: var(--cor-texto-sec); padding: 8px 14px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px; transition: var(--transicao); cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
         .tag-count { color: #fff; font-size: 0.7rem; font-family: 'Georgia', serif; font-weight: 700;}
-        .tag-badge:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.02);}
+        .tag-badge:hover { border-color: var(--cor-primaria); color: #fff; background: rgba(138,3,3,0.1);}
 
-        .stats-chart-container { flex-direction: row; align-items: flex-end; justify-content: space-between; height: 180px; padding: 20px 10px; border: 1px solid var(--cor-borda); background: #000; border-radius: 2px;}
+        .stats-chart-container { flex-direction: row; align-items: flex-end; justify-content: space-between; height: 180px; padding: 20px 10px; border: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.5); border-radius: 4px;}
         .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; cursor: default;}
-        .bar { width: 100%; max-width: 25px; background: rgba(255,255,255,0.05); border-radius: 2px 2px 0 0; transition: height 1s ease-out, background 0.3s; min-height: 4px; border: 1px solid transparent;}
+        .bar { width: 100%; max-width: 25px; background: rgba(255,255,255,0.05); border-radius: 4px 4px 0 0; transition: height 1s ease-out, background 0.3s; min-height: 4px; border: 1px solid transparent;}
         .bar:hover { background: var(--cor-primaria); border-color: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(138, 3, 3, 0.4);}
         .bar-label { font-size: 0.65rem; color: var(--cor-texto-sec); margin-top: 10px; font-family: 'Georgia', serif; font-weight: 700; }
-        .bar-tooltip { position: absolute; top: -35px; background: #fff; color: #000; font-size: 0.7rem; font-weight: 800; padding: 5px 8px; border-radius: 2px; opacity: 0; pointer-events: none; transition: var(--transicao); white-space: nowrap; box-shadow: 0 5px 10px rgba(0,0,0,0.5);}
+        .bar-tooltip { position: absolute; top: -35px; background: #fff; color: #000; font-size: 0.7rem; font-weight: 800; padding: 5px 8px; border-radius: 4px; opacity: 0; pointer-events: none; transition: var(--transicao); white-space: nowrap; box-shadow: 0 5px 10px rgba(0,0,0,0.5);}
         .bar-wrapper:hover .bar-tooltip { opacity: 1; top: -42px; }
     </style>
 </head>
@@ -313,6 +446,7 @@
         <a href="#" class="aba-link active" onclick="mudarAba('profile', this); return false;">Visão Geral</a>
         <a href="#" class="aba-link" onclick="mudarAba('sessao-dupla', this); return false;">Assistir Juntos</a>
         <a href="#" class="aba-link" onclick="mudarAba('films', this); return false;">Todos os Filmes</a>
+        <a href="#" class="aba-link" onclick="mudarAba('watching', this); return false;">Assistindo</a>
         <a href="#" class="aba-link" onclick="mudarAba('diary', this); return false;">Diário</a>
         <a href="#" class="aba-link" onclick="mudarAba('reviews', this); return false;">Reviews</a>
         <a href="#" class="aba-link" onclick="mudarAba('watchlist', this); return false;">Watchlist</a>
@@ -338,13 +472,13 @@
                     <h2 class="section-title">Adicionados Recentemente</h2>
                     <a class="section-link" onclick="mudarAba('films', document.querySelectorAll('.aba-link')[2]); return false;">Ver Todos</a>
                 </div>
-                <div class="poster-grid" id="lista-recentes"><p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Carregando...</p></div>
+                <div class="poster-grid" id="lista-recentes"><p style="color: var(--cor-texto-sec); font-size: 0.8rem; text-align: center; width: 100%;">Carregando...</p></div>
             </div>
 
             <div>
                 <div class="section-header">
                     <h2 class="section-title">Últimas Reviews</h2>
-                    <a class="section-link" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[4]); return false;">Ler Mais</a>
+                    <a class="section-link" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[5]); return false;">Ler Mais</a>
                 </div>
                 <div class="review-list" id="lista-reviews-recentes"><p style="color: var(--cor-texto-sec); font-size: 0.8rem;">Carregando...</p></div>
             </div>
@@ -361,6 +495,13 @@
             <div>
                 <div class="section-header"><h2 class="section-title">Todos os Filmes</h2></div>
                 <div class="poster-grid" id="grid-all-films"></div>
+            </div>
+        </div>
+
+        <div id="view-watching" class="tab-view">
+            <div>
+                <div class="section-header"><h2 class="section-title">Assistindo Agora</h2></div>
+                <div class="poster-grid" id="grid-watching"></div>
             </div>
         </div>
 
@@ -409,18 +550,18 @@
     </div>
 
     <div class="sidebar">
-        <div>
+        <div class="glass-widget">
             <div class="section-header">
                 <h3 class="section-title">Watchlist <span id="contador-watchlist" style="margin-left:8px; font-weight: 500; color: var(--cor-texto-sec);">0</span></h3>
-                <a class="section-link" onclick="mudarAba('watchlist', document.querySelectorAll('.aba-link')[5]); return false;">Ver Todos</a>
+                <a class="section-link" onclick="mudarAba('watchlist', document.querySelectorAll('.aba-link')[6]); return false;">Ver Todos</a>
             </div>
             <div class="mini-poster-grid" id="sidebar-watchlist"></div>
         </div>
 
-        <div>
+        <div class="glass-widget">
             <div class="section-header">
                 <h3 class="section-title">Diário <span id="contador-diary" style="margin-left:8px; font-weight: 500; color: var(--cor-texto-sec);">0</span></h3>
-                <a class="section-link" onclick="mudarAba('diary', document.querySelectorAll('.aba-link')[3]); return false;">Ver Todos</a>
+                <a class="section-link" onclick="mudarAba('diary', document.querySelectorAll('.aba-link')[4]); return false;">Ver Todos</a>
             </div>
             <ul class="diary-list" id="sidebar-diary"></ul>
         </div>
@@ -474,13 +615,11 @@
         else { document.body.style.overflow = 'auto'; }
     }
 
-    // Toggle dropdown do Sininho
     function toggleNotificacoes(event) {
         event.stopPropagation();
         document.getElementById('notificacoes-box').classList.toggle('open');
     }
 
-    // Fecha o sininho se clicar fora
     document.addEventListener('click', function(e) {
         const box = document.getElementById('notificacoes-box');
         if(box && box.classList.contains('open') && !e.target.closest('.bell-wrapper')) {
@@ -499,7 +638,6 @@
 
     if (!dadosUser) window.location.href = 'login.html';
 
-    // Se for visita, esconde o sino
     if(isVisita) {
         document.getElementById('btn-bell').style.display = 'none';
     }
@@ -512,17 +650,18 @@
 
     let interacoesGlobais = [];
     let filmesFiltradosWatchlist = [];
-    let cacheTmdb = {};
     let abaAtiva = 'profile';
     let filmeModalAtual = null;
     let isFavoritoModal = false;
-    let amigosSeguindo = []; // Lista pra popular o dropdown
+    let amigosSeguindo = [];
+
+    // CACHE PERSISTENTE (V8)
+    let cacheTmdb = JSON.parse(localStorage.getItem('cinehub_tmdb_cache')) || {};
 
     window.onload = async () => {
         if (isVisita) {
             await ajustarParaVisita();
         } else {
-            // Só carrega isso se estiver na própria conta
             await carregarAmigosSeguindo();
             await carregarNotificacoes();
         }
@@ -555,24 +694,46 @@
     async function renderizarViewSelecionada() {
         if (abaAtiva === 'profile') await renderizarProfile();
         else if (abaAtiva === 'films') await renderizarGrid(interacoesGlobais, 'grid-all-films', 'Nenhum filme na biblioteca.');
+        else if (abaAtiva === 'watching') await renderizarGrid(interacoesGlobais.filter(i => i.status === 'ASSISTINDO'), 'grid-watching', 'Nenhuma obra em andamento no momento.');
         else if (abaAtiva === 'diary') await renderizarGrid(interacoesGlobais.filter(i => i.status === 'JA_VI'), 'grid-diary', 'Você ainda não marcou filmes como Vistos.');
         else if (abaAtiva === 'watchlist') await renderizarGrid(filmesFiltradosWatchlist, 'grid-watchlist', 'Sua watchlist está vazia.');
-        else if (abaAtiva === 'reviews') await renderizarListaReviews(interacoesGlobais.filter(i => i.review && i.review.trim() !== ''), 'list-all-reviews');
+        else if (abaAtiva === 'reviews') {
+            const apenasReviewsReais = interacoesGlobais.filter(i =>
+                i.status !== 'QUERO_VER' &&
+                i.review &&
+                i.review.trim() !== '' &&
+                !i.review.toUpperCase().includes('[AGENDA]')
+            );
+            await renderizarListaReviews(apenasReviewsReais, 'list-all-reviews');
+        }
         else if (abaAtiva === 'activity') await renderizarActivity();
         else if (abaAtiva === 'tags') renderizarTagsCloud();
         else if (abaAtiva === 'stats') renderizarStatsChart();
-        // A Aba Sessão dupla já está renderizada, só precisa ser exibida!
     }
 
+    function formatarData(dataString) {
+        if (!dataString) return '';
+        const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+        const partes = dataString.split('-');
+        if (partes.length !== 3) return dataString;
+        return `${partes[2]} de ${meses[parseInt(partes[1]) - 1]} de ${partes[0]}`;
+    }
+
+    function escapeJS(str) { return !str ? '' : str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, '\\n').replace(/\r/g, ''); }
+
+    // CACHE PERSISTENTE
     async function getInfoFilme(idTmdb) {
         if (cacheTmdb[idTmdb]) return cacheTmdb[idTmdb];
-        try { const res = await fetch(`/api/tmdb/${idTmdb}`); const filme = await res.json(); cacheTmdb[idTmdb] = filme; return filme; }
+        try {
+            const res = await fetch(`/api/tmdb/${idTmdb}`);
+            const filme = await res.json();
+            cacheTmdb[idTmdb] = filme;
+            localStorage.setItem('cinehub_tmdb_cache', JSON.stringify(cacheTmdb));
+            return filme;
+        }
         catch (e) { return {}; }
     }
 
-    // ==========================================
-    // LÓGICA DO CO-WATCH (SESSÃO DUPLA)
-    // ==========================================
     async function carregarAmigosSeguindo() {
         try {
             const res = await fetch(`/usuarios/${dadosUser.id}/seguindo`);
@@ -586,6 +747,7 @@
         } catch(e) {}
     }
 
+    // PROMISE.ALL NAS NOTIFICAÇÕES
     async function carregarNotificacoes() {
         try {
             const res = await fetch(`/convites/pendentes/${dadosUser.id}`);
@@ -597,12 +759,10 @@
                 if(pendentes.length > 0) {
                     badge.style.display = 'block';
                     badge.innerText = pendentes.length;
-                    listaHTML.innerHTML = ''; // Limpa
 
-                    // Buscar o nome dos filmes pra mostrar bonitinho
-                    for(const convite of pendentes) {
+                    const promessas = pendentes.map(async convite => {
                         const f = await getInfoFilme(convite.filmeTmdbId);
-                        listaHTML.innerHTML += `
+                        return `
                             <div class="notif-item">
                                 <div class="notif-texto"><strong>@${convite.remetente.nickname || convite.remetente.nome}</strong> convidou você para assistir: <strong>${f.tituloExibicao}</strong></div>
                                 <div class="notif-botoes">
@@ -611,7 +771,9 @@
                                 </div>
                             </div>
                         `;
-                    }
+                    });
+                    const blocos = await Promise.all(promessas);
+                    listaHTML.innerHTML = blocos.join('');
                 } else {
                     badge.style.display = 'none';
                     listaHTML.innerHTML = '<p style="color: var(--cor-texto-sec); font-size: 0.8rem; margin: 0; font-style: italic;">As sombras estão silenciosas. Nenhum convite.</p>';
@@ -629,11 +791,12 @@
             });
             if(res.ok) {
                 await carregarNotificacoes();
-                await carregarSessaoDupla(); // Recarrega a aba se ele aceitou
+                await carregarSessaoDupla();
             }
         } catch(e) {}
     }
 
+    // PROMISE.ALL NA SESSÃO DUPLA
     async function carregarSessaoDupla() {
         const container = document.getElementById('grid-sessao-dupla');
         if(!container) return;
@@ -647,14 +810,12 @@
                     return;
                 }
 
-                let htmlFinal = '';
-                for(const convite of pactos) {
+                const promessas = pactos.map(async convite => {
                     const f = await getInfoFilme(convite.filmeTmdbId);
-                    // Determina quem é o "amigo" (se eu mandei, é o dest. Se recebi, é o remet)
                     const amigo = convite.remetente.id === dadosUser.id ? convite.destinatario : convite.remetente;
                     const amigoNick = amigo.nickname || amigo.nome.split(' ')[0];
 
-                    htmlFinal += `
+                    return `
                         <div class="card-library" onclick="window.location.href='detalhes.html?id=${f.id || f.idTmdb}'">
                             <div class="poster-container">
                                 <img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CINEHUB'}" loading="lazy" decoding="async">
@@ -665,23 +826,29 @@
                             </div>
                         </div>
                     `;
-                }
-                container.innerHTML = htmlFinal;
+                });
+
+                const htmlBlocos = await Promise.all(promessas);
+                container.innerHTML = htmlBlocos.join('');
             }
         } catch(e) {}
     }
 
-
+    // PROMISE.ALL NA WATCHLIST
     async function processarWatchlist(interacoesOriginais) {
         const rawWatchlist = interacoesOriginais.filter(i => i.status === 'QUERO_VER');
-        filmesFiltradosWatchlist = [];
-        for (const i of rawWatchlist) {
+
+        const promessas = rawWatchlist.map(async i => {
             const f = await getInfoFilme(i.idFilmeTmdb);
-            if(!f.dataExibicao) { filmesFiltradosWatchlist.push(i); continue; }
+            if(!f.dataExibicao) return i;
             const p = f.dataExibicao.split('-');
             const dataFilme = new Date(p[0], p[1] - 1, p[2]);
-            if (dataFilme <= HOJE) { filmesFiltradosWatchlist.push(i); }
-        }
+            if (dataFilme <= HOJE) return i;
+            return null;
+        });
+
+        const resultados = await Promise.all(promessas);
+        filmesFiltradosWatchlist = resultados.filter(x => x !== null);
     }
 
     async function carregarLibrary() {
@@ -696,8 +863,6 @@
             renderizarViewSelecionada();
         } catch (e) { console.error(e); }
     }
-
-    function escapeJS(str) { return !str ? '' : str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, '\\n').replace(/\r/g, ''); }
 
     function gerarEstrelasHtml(nota) {
         if (!nota || nota === 0) return '';
@@ -720,46 +885,59 @@
         let btnRemover = (isFavSlot && !isVisita) ? `<div class="btn-remover-fav" onclick="removerFavorito(${slotIdx}, event)" title="Remover">&times;</div>` : '';
 
         return `
-            <div class="card-library" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
+            <div class="card-wrapper" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
                 ${btnRemover} ${statusBadge}
                 <div class="btn-editar-card" onclick="event.stopPropagation(); abrirModal(${i.idFilmeTmdb}, '${escapeJS(f.tituloExibicao)}', '${i.status}', '${i.nota||""}', '${escapeJS(i.review)}', '${escapeJS(i.tags)}', '${i.idiomaAudio||""}')">✏️</div>
                 <div class="poster-container">
                     <img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CINEHUB'}" onerror="this.src='https://via.placeholder.com/500x750?text=CINEHUB'" loading="lazy" decoding="async">
                     ${badgeDonut}
                 </div>
-                <div class="info-container">${estrelasHtml}</div>
+                <div class="stars-container">
+                    ${estrelasHtml}
+                </div>
+                <div class="info-container">
+                    <h3 class="info-titulo" title="${f.tituloExibicao}">${f.tituloExibicao}</h3>
+                    <p class="info-data">${f.dataExibicao ? formatarData(f.dataExibicao) : ''}</p>
+                </div>
             </div>`;
     }
 
+    // PROMISE.ALL NOS GRIDS DE FILMES
     async function renderizarGrid(arrayFilmes, containerId, msgVazia) {
         const container = document.getElementById(containerId);
         if (!container) return;
         if (arrayFilmes.length === 0) { container.innerHTML = `<p style="text-align:center; width: 100%; color: var(--cor-texto-sec); grid-column: 1/-1; font-style: italic;">${msgVazia}</p>`; return; }
 
-        let htmlFinal = '';
         const idsVistos = new Set();
-        for (const i of arrayFilmes) {
-            if (idsVistos.has(i.idFilmeTmdb)) continue;
+        const filmesFiltrados = arrayFilmes.filter(i => {
+            if (idsVistos.has(i.idFilmeTmdb)) return false;
             idsVistos.add(i.idFilmeTmdb);
+            return true;
+        });
+
+        const promessas = filmesFiltrados.map(async i => {
             const f = await getInfoFilme(i.idFilmeTmdb);
-            htmlFinal += gerarCardHTML(i, f, true);
-        }
-        container.innerHTML = htmlFinal;
+            return gerarCardHTML(i, f, true);
+        });
+
+        const htmlBlocos = await Promise.all(promessas);
+        container.innerHTML = htmlBlocos.join('');
     }
 
+    // PROMISE.ALL NAS REVIEWS E FILTRO APLICADO
     async function renderizarListaReviews(arrayReviews, containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
         if (arrayReviews.length === 0) { container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem; font-style: italic;">Nenhum registro encontrado.</p>`; return; }
 
-        let htmlFinal = '';
-        for (const i of arrayReviews) {
+        const promessas = arrayReviews.map(async i => {
             const f = await getInfoFilme(i.idFilmeTmdb);
             const estrelasHtml = gerarEstrelasHtml(i.nota);
             const ano = f.dataExibicao ? f.dataExibicao.split('-')[0] : '';
 
-            htmlFinal += `
-                <div class="review-item" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[4]); return false;">
+            // O INDICE AQUI É [5]
+            return `
+                <div class="review-item" onclick="mudarAba('reviews', document.querySelectorAll('.aba-link')[5]); return false;">
                     <div class="review-poster" onclick="event.stopPropagation(); window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
                         <img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CH'}" loading="lazy" decoding="async">
                     </div>
@@ -772,10 +950,13 @@
                         <p class="review-text">"${i.review}"</p>
                     </div>
                 </div>`;
-        }
-        container.innerHTML = htmlFinal;
+        });
+
+        const htmlBlocos = await Promise.all(promessas);
+        container.innerHTML = htmlBlocos.join('');
     }
 
+    // PROMISE.ALL NOS FAVORITOS DA HOME E FILTRO DAS REVIEWS DO DASHBOARD
     async function renderizarProfile() {
         const targetId = isVisita ? amigoId : dadosUser.id;
         const divFavs = document.getElementById('lista-favoritos');
@@ -786,14 +967,13 @@
                 if (!Array.isArray(favoritosDoBanco) || favoritosDoBanco.length === 0) {
                     divFavs.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.85rem; grid-column: 1/-1; padding: 10px 0; font-style: italic;">Sem favoritos registrados.</p>`;
                 } else {
-                    let htmlFavs = '';
-                    for (let idx = 0; idx < favoritosDoBanco.length; idx++) {
-                        const fav = favoritosDoBanco[idx];
+                    const promessasFavs = favoritosDoBanco.map(async (fav, idx) => {
                         const interacao = interacoesGlobais.find(x => x.idFilmeTmdb == fav.filmeTmdbId) || { idFilmeTmdb: fav.filmeTmdbId, status: 'JA_VI' };
                         const f = await getInfoFilme(fav.filmeTmdbId);
-                        htmlFavs += gerarCardHTML(interacao, f, false, true, idx);
-                    }
-                    divFavs.innerHTML = htmlFavs;
+                        return gerarCardHTML(interacao, f, false, true, idx);
+                    });
+                    const htmlFavs = await Promise.all(promessasFavs);
+                    divFavs.innerHTML = htmlFavs.join('');
                 }
             } else {
                 divFavs.innerHTML = `<p style="color: var(--cor-perigo); font-size: 0.8rem; grid-column: 1/-1;">Erro de conexão com servidor.</p>`;
@@ -801,17 +981,25 @@
         } catch (e) { console.error("Erro ao carregar favoritos:", e); }
 
         await renderizarGrid(interacoesGlobais.slice(0, 6), 'lista-recentes', 'Sua atividade recente aparecerá aqui.');
-        await renderizarListaReviews(interacoesGlobais.filter(i => i.review && i.review.trim() !== '').slice(0, 3), 'lista-reviews-recentes');
+
+        const reviewsDashboard = interacoesGlobais.filter(i =>
+            i.status !== 'QUERO_VER' &&
+            i.review &&
+            i.review.trim() !== '' &&
+            !i.review.toUpperCase().includes('[AGENDA]')
+        ).slice(0, 3);
+        await renderizarListaReviews(reviewsDashboard, 'lista-reviews-recentes');
     }
 
+    // PROMISE.ALL NA LINHA DO TEMPO (Activity)
     async function renderizarActivity() {
         const container = document.getElementById('list-activity'); container.innerHTML = '';
         if (interacoesGlobais.length === 0) { container.innerHTML = `<p style="color: var(--cor-texto-sec); font-size: 0.8rem; font-style: italic;">Nenhuma atividade registrada.</p>`; return; }
 
-        for (const i of interacoesGlobais) {
+        const promessas = interacoesGlobais.map(async i => {
             const f = await getInfoFilme(i.idFilmeTmdb);
             let acaoTexto = "Interagiu com";
-            if(i.status === 'QUERO_VER' && i.review && i.review.includes('[AGENDA]')) acaoTexto = "Marcou na Agenda";
+            if(i.status === 'QUERO_VER' && i.review && i.review.toUpperCase().includes('[AGENDA]')) acaoTexto = "Marcou na Agenda";
             else if(i.status === 'QUERO_VER') acaoTexto = "Adicionou à Watchlist";
             else if(i.status === 'JA_VI' && i.review) acaoTexto = "Escreveu uma review para";
             else if(i.status === 'JA_VI' && i.nota) acaoTexto = `Avaliou com ${i.nota} estrelas`;
@@ -819,12 +1007,15 @@
             else if(i.status === 'ASSISTINDO') acaoTexto = "Começou a assistir";
             else if(i.status === 'ABANDONEI') acaoTexto = "Abandonou";
 
-            container.innerHTML += `
+            return `
                 <div class="activity-item" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">
                     <div class="activity-poster"><img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CH'}" loading="lazy" decoding="async"></div>
                     <div class="activity-text">Você <strong>${acaoTexto}</strong><br> ${f.tituloExibicao} <span class="activity-date">Recente</span></div>
                 </div>`;
-        }
+        });
+
+        const htmlBlocos = await Promise.all(promessas);
+        container.innerHTML = htmlBlocos.join('');
     }
 
     function renderizarTagsCloud() {
@@ -870,20 +1061,29 @@
         } catch(e) { console.error("Erro ao remover favorito:", e); }
     }
 
+    // PROMISE.ALL NA SIDEBAR
     async function renderizarSidebarFixa(dadosOriginais) {
         document.getElementById('contador-watchlist').innerText = filmesFiltradosWatchlist.length;
         const divWatch = document.getElementById('sidebar-watchlist'); divWatch.innerHTML = '';
-        for (const i of filmesFiltradosWatchlist.slice(0, 4)) {
+
+        const promessasWatch = filmesFiltradosWatchlist.slice(0, 4).map(async i => {
             const f = await getInfoFilme(i.idFilmeTmdb);
-            divWatch.innerHTML += `<img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CH'}" class="mini-poster" loading="lazy" decoding="async" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">`;
-        }
-        const diary = interacoesGlobais.filter(i => i.status === 'JA_VI').slice(0, 5); document.getElementById('contador-diary').innerText = dadosOriginais.filter(i => i.status === 'JA_VI').length;
+            return `<img src="${f.linkPoster || 'https://via.placeholder.com/500x750?text=CH'}" class="mini-poster" loading="lazy" decoding="async" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'">`;
+        });
+        const htmlWatch = await Promise.all(promessasWatch);
+        divWatch.innerHTML = htmlWatch.join('');
+
+        const diary = interacoesGlobais.filter(i => i.status === 'JA_VI').slice(0, 5);
+        document.getElementById('contador-diary').innerText = dadosOriginais.filter(i => i.status === 'JA_VI').length;
         const divDiary = document.getElementById('sidebar-diary'); divDiary.innerHTML = '';
-        for (const i of diary) {
+
+        const promessasDiary = diary.map(async i => {
             const f = await getInfoFilme(i.idFilmeTmdb); let estrelasTexto = '';
             if(i.nota) { for(let x=1; x<=Math.floor(i.nota); x++) estrelasTexto += '★'; if(i.nota % 1 !== 0) estrelasTexto += '½'; }
-            divDiary.innerHTML += `<li class="diary-item" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'"><span class="diary-date">Recente</span><span class="diary-title">${f.tituloExibicao}</span><span class="diary-stars">${estrelasTexto}</span></li>`;
-        }
+            return `<li class="diary-item" onclick="window.location.href='detalhes.html?id=${i.idFilmeTmdb}'"><span class="diary-date">Recente</span><span class="diary-title">${f.tituloExibicao}</span><span class="diary-stars">${estrelasTexto}</span></li>`;
+        });
+        const htmlDiary = await Promise.all(promessasDiary);
+        divDiary.innerHTML = htmlDiary.join('');
     }
 
     function renderizarDashboard(interacoes) {
@@ -907,9 +1107,8 @@
         document.getElementById('modal-nota').value = nota;
         document.getElementById('modal-tags').value = tags;
         document.getElementById('modal-review').value = review;
-        document.getElementById('modal-convite').value = ""; // Reseta o campo de convite
+        document.getElementById('modal-convite').value = "";
 
-        // Se for modo visita, a gente esconde a area do pacto pra ele nao mandar convite da sua conta
         const labelConvite = document.getElementById('label-convite');
         const selectConvite = document.getElementById('modal-convite');
         if(isVisita) {
@@ -1001,10 +1200,8 @@
             review: document.getElementById('modal-review').value
         };
 
-        // 1. Salva na biblioteca normalmente
         await fetch(`/interacoes/usuario/${dadosUser.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
 
-        // 2. Se tiver escolhido um amigo, dispara a requisição de convite pro Back-end!
         if(amigoConvidadoId) {
             try {
                 const resConvite = await fetch('/convites/enviar', {

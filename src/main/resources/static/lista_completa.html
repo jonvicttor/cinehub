@@ -2,120 +2,144 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cinehub - Lista Completa</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cor-primaria: #a333ff; /* Roxo neon moderno */
-            --cor-primaria-glow: rgba(163, 51, 255, 0.4);
-            --cor-fundo: #0a0c0f;
-            --cor-card: #15191e;
-            --cor-texto: #ffffff;
-            --cor-texto-sec: #94a3b8;
-            --cor-sucesso: #21d07a;
-            --cor-alerta: #d2d531;
-            --cor-perigo: #db2360;
-            --cor-borda: rgba(255, 255, 255, 0.08);
-            --transicao: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Paleta Gótica "Abismo Minimalista" */
+            --cor-primaria: #8a0303;
+            --cor-fundo: #020202;
+            --cor-card: #0a0a0c;
+            --cor-texto: #dfdfdf;
+            --cor-texto-sec: #6c757d;
+            --cor-sucesso: #2d8a56;
+            --cor-alerta: #b0a02c;
+            --cor-perigo: #8a0303;
+            --cor-ouro: #c0a062;
+            --cor-borda: #1a1a1a;
+            --transicao: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0;}
 
+        /* SCROLLBAR DAS TREVAS */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--cor-fundo); }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; border: 1px solid var(--cor-fundo); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cor-primaria); }
+
         body {
             background-color: var(--cor-fundo); color: var(--cor-texto);
-            font-family: 'Inter', sans-serif; padding-bottom: 120px; /* Espaço para o novo menu */
+            font-family: 'Inter', sans-serif; padding-bottom: 50px;
             display: flex; flex-direction: column; align-items: center;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ======= HEADER E BRANDING PREMIUM ======= */
-        .header-top {
-            width: 100%; max-width: 1200px; padding: 40px 20px 20px 20px;
-            display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 10px;
+        /* ======= TOP NAV (LETTERBOXD STYLE) ======= */
+        .top-nav {
+            width: 100%; position: sticky; top: 0; background-color: rgba(2, 2, 2, 0.98);
+            backdrop-filter: blur(10px); border-bottom: 1px solid var(--cor-borda);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; z-index: 1000;
         }
 
-        .brand { text-decoration: none; transition: var(--transicao); display: flex; align-items: center; }
-        .brand:hover { transform: scale(1.02); }
-        .brand-text { font-size: 2.8rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin: 0; color: #ffffff; }
-        .brand-text span { font-weight: 800; background: linear-gradient(135deg, #fff 10%, var(--cor-primaria) 90%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-left: 5px; }
+        .btn-hamburger { background: transparent; border: none; color: var(--cor-texto); font-size: 1.5rem; cursor: pointer; padding: 0; display: flex; align-items: center; transition: var(--transicao); }
+        .btn-hamburger:hover { color: var(--cor-primaria); transform: scale(1.1); }
+
+        .brand { text-decoration: none; display: flex; align-items: center; position: absolute; left: 50%; transform: translateX(-50%);}
+        .brand-text { font-size: 1.4rem; font-weight: 900; letter-spacing: 6px; text-transform: uppercase; margin: 0; color: #fff; }
+        .brand-text span { color: var(--cor-primaria); }
+
+        .btn-search-nav { background: transparent; border: none; color: var(--cor-texto); font-size: 1.1rem; cursor: pointer; padding: 0; transition: var(--transicao);}
+        .btn-search-nav:hover { color: var(--cor-primaria); transform: scale(1.1); }
+
+        /* ======= MENU LATERAL (DRAWER) ======= */
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1999; opacity: 0; pointer-events: none; transition: var(--transicao); backdrop-filter: blur(4px); }
+        .menu-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #08080a; z-index: 2000; border-right: 1px solid var(--cor-borda); display: flex; flex-direction: column; padding: 30px 20px; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 10px 0 40px rgba(0,0,0,0.9); }
+        .side-menu.open { left: 0; }
+
+        .side-menu-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--cor-borda); padding-bottom: 20px; margin-bottom: 20px; }
+        .side-menu-header h2 { margin: 0; font-size: 1.1rem; font-weight: 900; letter-spacing: 3px; color: #fff; text-transform: uppercase;}
+        .btn-close-menu { background: transparent; border: none; color: var(--cor-texto-sec); font-size: 1.3rem; cursor: pointer; transition: var(--transicao); }
+        .btn-close-menu:hover { color: var(--cor-perigo); transform: rotate(90deg); }
+
+        .menu-links { display: flex; flex-direction: column; gap: 5px; }
+        .menu-links a { color: var(--cor-texto); text-decoration: none; font-size: 1rem; font-weight: 500; padding: 14px 12px; border-radius: 2px; transition: var(--transicao); display: flex; align-items: center; gap: 15px; border: 1px solid transparent; }
+        .menu-links a:hover, .menu-links a.active { background: rgba(255,255,255,0.02); color: #fff; border-color: var(--cor-borda); }
+        .menu-links a.active { border-color: var(--cor-primaria); color: var(--cor-primaria); font-weight: 700;}
+        .menu-icon { font-size: 1.1rem; opacity: 0.6;}
 
         /* CONTAINER DA PÁGINA */
-        .page-container { width: 100%; max-width: 1200px; padding: 0 20px; }
+        .page-container { width: 100%; max-width: 1200px; padding: 0 20px; margin-top: 20px;}
 
         /* CABEÇALHO DA CATEGORIA */
-        .categoria-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; margin-top: 10px;}
+        .categoria-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px;}
         .btn-voltar {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--cor-borda); color: #fff;
-            padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 700;
-            cursor: pointer; transition: var(--transicao); backdrop-filter: blur(10px);
+            background: transparent; border: 1px solid var(--cor-borda); color: var(--cor-texto-sec);
+            padding: 8px 16px; border-radius: 2px; font-size: 0.75rem; font-weight: 700;
+            cursor: pointer; transition: var(--transicao); text-transform: uppercase; letter-spacing: 1px;
         }
-        .btn-voltar:hover { background: rgba(255,255,255,0.1); border-color: var(--cor-primaria); transform: translateX(-3px); }
-        .categoria-titulo { font-size: 1.6rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .btn-voltar:hover { background: rgba(255,255,255,0.05); color: #fff; border-color: #fff; }
+        .categoria-titulo { font-size: 1.3rem; font-weight: 900; color: #fff; letter-spacing: 1px; text-transform: uppercase;}
 
-        /* GRID DE FILMES (Matemática mantida com visual novo) */
+        /* GRID DE FILMES */
         .grid-filmes {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; margin-bottom: 40px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-bottom: 40px;
         }
 
-        /* ======= CARD TMDB COMPLETO PREMIUM ======= */
-        .card-tmdb {
-            display: flex; flex-direction: column; cursor: pointer; position: relative;
-            border-radius: 12px; background-color: var(--cor-card);
-            border: 1px solid var(--cor-borda); transition: var(--transicao); overflow: visible;
-        }
-        .card-tmdb:hover { transform: translateY(-10px); border-color: var(--cor-primaria); box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
+        /* ======= CARD TMDB GÓTICO ======= */
+        .card-tmdb { flex: 0 0 140px; display: flex; flex-direction: column; cursor: pointer; position: relative; transition: var(--transicao); overflow: visible; }
+        .card-tmdb:hover { transform: translateY(-5px); }
+        .poster-container { position: relative; width: 100%; pointer-events: none; border-radius: 4px;}
+        .poster-container img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; display: block; background-color: #000; border: 1px solid var(--cor-borda); transition: var(--transicao);}
+        .card-tmdb:hover .poster-container img { border-color: var(--cor-primaria); box-shadow: 0 5px 20px rgba(138, 3, 3, 0.25); filter: contrast(110%); }
 
-        .poster-container { position: relative; width: 100%; border-radius: 10px; overflow: hidden; pointer-events: none; }
-        .poster-container img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; background-color: #232a31;}
+        .btn-adicionar-card { pointer-events: auto; position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; background: rgba(0,0,0,0.9); border: 1px solid var(--cor-borda); color: #fff; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 900; cursor: pointer; transition: var(--transicao); z-index: 5; opacity: 0; }
+        .card-tmdb:hover .btn-adicionar-card { opacity: 1; }
+        .btn-adicionar-card:hover { background: var(--cor-primaria); border-color: var(--cor-primaria); transform: scale(1.1); }
 
-        /* NOTA INTEGRADA NO CARD FLUTUANTE */
-        .nota-donut {
-            position: absolute; bottom: 75px; left: 10px; width: 38px; height: 38px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 0.75rem; font-weight: 800; box-shadow: 0 0 10px rgba(0,0,0,0.8);
-            background: conic-gradient(var(--cor-anel) var(--progresso, 0%), rgba(255,255,255,0.1) var(--progresso, 0%));
-            z-index: 5;
-        }
-        .nota-donut::after { content: ""; position: absolute; inset: 3px; background-color: #081c22; border-radius: 50%; z-index: -1; }
-        .nota-donut span { z-index: 6; position: relative; display: flex; }
-        .simbolo-porcento { font-size: 0.4rem; margin-top: 2px; }
+        .nota-donut { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.6rem; font-weight: 800; background: #000 !important; border: 2px solid var(--cor-anel); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+        .simbolo-porcento { font-size: 0.35rem; margin-top: 1px;}
 
-        /* INFO CONTAINER */
-        .info-container { padding: 32px 10px 15px 10px; flex-grow: 1; display: flex; flex-direction: column; gap: 4px; justify-content: flex-start; }
-        .info-titulo { font-size: 0.95rem; font-weight: 700; margin: 0; color: #fff; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; pointer-events: none; }
-        .info-data { font-size: 0.8rem; color: var(--cor-texto-sec); margin: 0; pointer-events: none; }
+        .info-container { padding: 18px 5px 12px 5px; flex-grow: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .info-titulo { font-size: 0.85rem; font-weight: 700; margin: 0 0 4px 0; color: #fff; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; pointer-events: none; }
+        .info-data { font-size: 0.7rem; color: var(--cor-texto-sec); margin: 0; pointer-events: none; font-family: 'Georgia', serif;}
 
-        /* BOTÃO CARREGAR MAIS PREMIUM */
+        /* BOTÃO CARREGAR MAIS */
         .btn-carregar-mais {
-            width: 100%; padding: 18px; background-color: rgba(163, 51, 255, 0.1); color: #fff;
-            border: 1px dashed var(--cor-primaria); border-radius: 12px; font-size: 1.1rem; font-weight: 800; cursor: pointer;
-            transition: var(--transicao); margin-bottom: 30px; letter-spacing: 1px; text-transform: uppercase;
+            width: 100%; padding: 16px; background-color: var(--cor-texto); color: #000;
+            border: none; border-radius: 2px; font-size: 0.85rem; font-weight: 800; cursor: pointer;
+            transition: var(--transicao); margin-bottom: 30px; letter-spacing: 1.5px; text-transform: uppercase;
         }
-        .btn-carregar-mais:hover { background-color: var(--cor-primaria); border-style: solid; box-shadow: 0 10px 25px var(--cor-primaria-glow); transform: translateY(-3px); }
-        .btn-carregar-mais:disabled { opacity: 0.5; cursor: not-allowed; transform: none; border-style: dashed; background-color: rgba(255,255,255,0.05); border-color: var(--cor-borda); color: var(--cor-texto-sec);}
-
-        /* ======= NAV BOTTOM GLASS ======= */
-        .nav-bottom {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 500px;
-            background: rgba(21, 25, 30, 0.7); backdrop-filter: blur(25px);
-            border: 1px solid var(--cor-borda); border-radius: 40px;
-            display: flex; justify-content: space-around; padding: 15px 10px;
-            z-index: 1000; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-        .nav-bottom a { color: var(--cor-texto-sec); text-decoration: none; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: var(--transicao); }
-        .nav-bottom a.active { color: var(--cor-primaria); }
-        .nav-icon { font-size: 1.4rem; }
+        .btn-carregar-mais:hover { background-color: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,255,255,0.2); }
+        .btn-carregar-mais:disabled { opacity: 0.5; cursor: not-allowed; transform: none; background-color: rgba(255,255,255,0.1); color: var(--cor-texto-sec);}
     </style>
 </head>
 <body>
 
-<div class="header-top">
-    <a href="index.html" class="brand">
-        <h1 class="brand-text">CINE<span>HUB</span></h1>
-    </a>
-</div>
+<header class="top-nav">
+    <button class="btn-hamburger" onclick="toggleMenu()">☰</button>
+    <a href="index.html" class="brand"><h1 class="brand-text">CINE<span>HUB</span></h1></a>
+    <button class="btn-search-nav" onclick="window.location.href='index.html'">🔍</button>
+</header>
+
+<div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
+<nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+        <h2>CINEHUB</h2>
+        <button class="btn-close-menu" onclick="toggleMenu()">✕</button>
+    </div>
+    <div class="menu-links">
+        <a href="index.html" class="active"><span class="menu-icon">🏠</span> Home</a>
+        <a href="library.html"><span class="menu-icon">📖</span> Library</a>
+        <a href="calendario.html"><span class="menu-icon">📅</span> Agenda</a>
+        <a href="comunidade.html"><span class="menu-icon">👥</span> Social</a>
+        <a href="perfil.html"><span class="menu-icon">⚙️</span> Perfil</a>
+    </div>
+</nav>
 
 <div class="page-container">
     <div class="categoria-header">
@@ -124,33 +148,34 @@
     </div>
 
     <div class="grid-filmes" id="grid-lista">
-        <p style="color: var(--cor-texto-sec); padding: 20px;">Buscando filmes no servidor...</p>
+        <p style="color: var(--cor-texto-sec); padding: 20px; font-style: italic;">Buscando nas sombras...</p>
     </div>
 
     <button class="btn-carregar-mais" onclick="carregarMais()" id="btn-mais" style="display: none;">Carregar mais</button>
 </div>
 
-<nav class="nav-bottom">
-    <a href="index.html" class="active"><span class="nav-icon">🔍</span>Home</a>
-    <a href="library.html"><span class="nav-icon">📖</span>Library</a>
-    <a href="calendario.html"><span class="nav-icon">📅</span>Agenda</a>
-    <a href="comunidade.html"><span class="nav-icon">👥</span>Social</a>
-    <a href="perfil.html"><span class="nav-icon">⚙️</span>Perfil</a>
-</nav>
-
 <script>
+    function toggleMenu() {
+        const menu = document.getElementById('side-menu');
+        const overlay = document.getElementById('menu-overlay');
+        menu.classList.toggle('open');
+        overlay.classList.toggle('open');
+        if(menu.classList.contains('open')) { document.body.style.overflow = 'hidden'; }
+        else { document.body.style.overflow = 'auto'; }
+    }
+
     const dadosUser = JSON.parse(localStorage.getItem('usuarioLogado'));
     if (dadosUser && dadosUser.corTema) { document.documentElement.style.setProperty('--cor-primaria', dadosUser.corTema); }
     if (!dadosUser) window.location.href = 'login.html';
 
-    const placeholderImagem = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750' style='background:%231b2228'%3E%3Ctext fill='%238c9baf' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24'%3ESem Foto%3C/text%3E%3C/svg%3E";
+    const placeholderImagem = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='750' style='background:%23000'%3E%3Ctext fill='%236c757d' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24'%3ESem Foto%3C/text%3E%3C/svg%3E";
 
-    // Variáveis de controle
+    // Data simulada atual
+    const HOJE = new Date(2026, 2, 31);
+
     let categoriaAtual = '';
     let tipoAtual = '';
     let paginaAtual = 1;
-
-    // >>> O SEGREDO DO SUCESSO: A SALA DE ESPERA (BUFFER) MANTIDO INTACTO <<<
     let filmesBuffer = [];
 
     window.onload = async function() {
@@ -188,12 +213,48 @@
         return `${partes[2]} de ${meses[parseInt(partes[1]) - 1]} de ${partes[0]}`;
     }
 
-    // Função que lê a largura da tela para saber quantas colunas cabem
     function getNumeroColunas() {
         const grid = document.getElementById('grid-lista');
         const gridComputedStyle = window.getComputedStyle(grid);
         return gridComputedStyle.getPropertyValue("grid-template-columns").split(" ").length;
     }
+
+    // NOVA FUNÇÃO: Puxa só as 2 primeiras páginas do TMDB para garantir blockbusters, filtra e ordena.
+    async function fetchUpcomingFiltrado() {
+        let todosFilmes = [];
+        let pagina = 1;
+        let maxPages = 2; // Trava para não puxar filmes indianos/obscuros das páginas profundas
+
+        while (pagina <= maxPages) {
+            try {
+                const response = await fetch(`/api/tmdb/lista?cat=${categoriaAtual}&tipo=${tipoAtual}&page=${pagina}`);
+                const filmesMistos = await response.json();
+                todosFilmes = todosFilmes.concat(filmesMistos);
+            } catch(e) { break; }
+            pagina++;
+        }
+
+        // Filtro Implacável do Futuro
+        let apenasFuturo = todosFilmes.filter(f => {
+            if (!f.dataExibicao) return false;
+            const p = f.dataExibicao.split('-');
+            const dataFilme = new Date(p[0], p[1] - 1, p[2]);
+            return dataFilme > HOJE;
+        });
+
+        // Remove duplicados gerados pelo TMDB
+        const idsVistos = new Set();
+        apenasFuturo = apenasFuturo.filter(filme => {
+            if(idsVistos.has(filme.id)) return false;
+            idsVistos.add(filme.id);
+            return true;
+        });
+
+        // Ordena cronologicamente os blockbusters
+        apenasFuturo.sort((a, b) => new Date(a.dataExibicao) - new Date(b.dataExibicao));
+        return apenasFuturo;
+    }
+
 
     async function buscarLista(isNovaBusca = false) {
         const grid = document.getElementById('grid-lista');
@@ -201,61 +262,50 @@
 
         if (isNovaBusca) {
             paginaAtual = 1;
-            filmesBuffer = []; // Limpa a sala de espera
-            grid.innerHTML = '<p style="color: var(--cor-texto-sec); padding: 20px;">Buscando filmes no servidor...</p>';
+            filmesBuffer = [];
+            grid.innerHTML = '<p style="color: var(--cor-texto-sec); padding: 20px; font-style: italic;">Invocando o acervo...</p>';
             btnMais.style.display = 'none';
         } else {
-            btnMais.innerText = 'Carregando...';
+            btnMais.innerText = 'CARREGANDO...';
             btnMais.disabled = true;
         }
 
         try {
-            const response = await fetch(`/api/tmdb/lista?cat=${categoriaAtual}&tipo=${tipoAtual}&page=${paginaAtual}`);
-            let novosFilmes = await response.json();
+            let novosFilmes = [];
 
             if (categoriaAtual === 'upcoming') {
-                novosFilmes.sort((a, b) => {
-                    if (!a.dataExibicao) return 1;
-                    if (!b.dataExibicao) return -1;
-                    return new Date(a.dataExibicao) - new Date(b.dataExibicao);
-                });
+                if (isNovaBusca) {
+                    filmesBuffer = await fetchUpcomingFiltrado();
+                }
+            } else {
+                const response = await fetch(`/api/tmdb/lista?cat=${categoriaAtual}&tipo=${tipoAtual}&page=${paginaAtual}`);
+                novosFilmes = await response.json();
+                filmesBuffer = filmesBuffer.concat(novosFilmes);
             }
 
-            if (isNovaBusca) {
-                grid.innerHTML = '';
-            }
+            if (isNovaBusca) { grid.innerHTML = ''; }
 
-            // Junta os filmes novos com os que estavam na sala de espera
-            filmesBuffer = filmesBuffer.concat(novosFilmes);
-
-            // Descobre quantas colunas tem na tela agora
             const qtdColunas = getNumeroColunas();
-
-            // Calcula o maior número múltiplo de colunas possível
             let limite = Math.floor(filmesBuffer.length / qtdColunas) * qtdColunas;
 
-            // Se o TMDB mandou menos de 20 filmes, a lista acabou, então exibe tudo que tem.
-            if (novosFilmes.length < 20) {
+            if(categoriaAtual === 'upcoming' && filmesBuffer.length > 15) {
+                 limite = Math.floor(15 / qtdColunas) * qtdColunas;
+            } else if (novosFilmes.length < 20 && categoriaAtual !== 'upcoming') {
                 limite = filmesBuffer.length;
             }
 
-            // Pega exatamente a quantidade para fechar as linhas completas
             const filmesParaRenderizar = filmesBuffer.slice(0, limite);
-
-            // O que sobrar (se não der uma linha cheia) volta pra sala de espera
             filmesBuffer = filmesBuffer.slice(limite);
 
             if (filmesParaRenderizar.length === 0 && isNovaBusca && filmesBuffer.length === 0) {
-                grid.innerHTML = '<p style="color: var(--cor-texto-sec); padding: 20px;">Nenhum título encontrado.</p>';
+                grid.innerHTML = '<p style="color: var(--cor-texto-sec); padding: 20px; font-style: italic;">Nenhum título no horizonte.</p>';
                 return;
             }
 
-            // Manda pra tela!
             const htmlCards = gerarHTMLCards(filmesParaRenderizar);
             grid.insertAdjacentHTML('beforeend', htmlCards);
 
-            // Controla o botão
-            if (novosFilmes.length >= 20 || filmesBuffer.length > 0) {
+            if (filmesBuffer.length > 0 || (novosFilmes.length >= 20 && categoriaAtual !== 'upcoming')) {
                 btnMais.style.display = 'block';
                 btnMais.innerText = 'CARREGAR MAIS';
                 btnMais.disabled = false;
@@ -265,15 +315,19 @@
 
         } catch (e) {
             console.error(e);
-            if (isNovaBusca) grid.innerHTML = '<p style="color: var(--cor-perigo); padding: 20px;">Erro ao carregar a lista do servidor.</p>';
-            btnMais.innerText = 'Tentar novamente';
+            if (isNovaBusca) grid.innerHTML = '<p style="color: var(--cor-perigo); padding: 20px; font-weight: 700;">Falha na conexão.</p>';
+            btnMais.innerText = 'TENTAR NOVAMENTE';
             btnMais.disabled = false;
         }
     }
 
     function carregarMais() {
-        paginaAtual++;
-        buscarLista(false);
+        if(categoriaAtual === 'upcoming') {
+            buscarLista(false);
+        } else {
+            paginaAtual++;
+            buscarLista(false);
+        }
     }
 
     function gerarHTMLCards(filmes) {
@@ -281,22 +335,19 @@
             let valorNota = filme.notaTmdb || filme.vote_average || filme.voteAverage || 0;
             const porcentagemNum = valorNota > 0 ? (valorNota * 10).toFixed(0) : 0;
 
-            let corAnel = 'var(--cor-sucesso)';
-            if (valorNota < 7) corAnel = 'var(--cor-alerta)';
-            if (valorNota < 5 && valorNota > 0) corAnel = 'var(--cor-perigo)';
-            if (valorNota === 0) corAnel = '#666';
+            let corAnel = 'var(--cor-texto-sec)';
+            if (valorNota >= 7) corAnel = 'var(--cor-sucesso)';
+            else if (valorNota >= 5) corAnel = 'var(--cor-alerta)';
 
-            // Ajustado para manter o padrão das outras telas
-            let conteudoNota = porcentagemNum > 0 ? `<span>${porcentagemNum}<span class="simbolo-porcento">%</span></span>` : 'NR';
-
+            let conteudoNota = porcentagemNum > 0 ? `<span>${porcentagemNum}<span class="simbolo-porcento">%</span></span>` : '<span style="font-size: 0.5rem; letter-spacing: 1px;">NR</span>';
             const dataFormatada = formatarData(filme.dataExibicao);
 
             return `
                 <div class="card-tmdb" onclick="window.location.href='detalhes.html?id=${filme.id}'">
                     <div class="poster-container">
-                        <img src="${filme.linkPoster ? filme.linkPoster : placeholderImagem}" alt="${filme.tituloExibicao}" onerror="this.src='${placeholderImagem}'" draggable="false">
+                        <img src="${filme.linkPoster ? filme.linkPoster : placeholderImagem}" alt="${filme.tituloExibicao}" onerror="this.src='${placeholderImagem}'" loading="lazy" decoding="async" draggable="false">
                     </div>
-                    <div class="nota-donut" style="--cor-anel: ${corAnel}; --progresso: ${porcentagemNum}%">
+                    <div class="nota-donut" style="border-color: ${corAnel};">
                         ${conteudoNota}
                     </div>
                     <div class="info-container">
